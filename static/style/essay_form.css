@@ -1,0 +1,43 @@
+.essay-form{
+  width: 70vw;
+  margin: 0 auto;
+}
+.submit {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.grid-submit {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.essay {
+  background-color: var(--white);
+  padding: 16px;
+}
+
+.field-essay {
+  display: flex;
+  flex-direction: column;
+}
+
+.essay textarea, .essay input {
+  width: 100%;
+  border: 2px solid var(--gray-border);
+  border-radius: 4px;
+  outline: none;
+  font-size: 16px;
+}
+
+.essay textarea {
+  resize: none;
+  overflow: unset;
+}
+
+.essay input {
+  font-size: 16px;
+}
