@@ -1,0 +1,65 @@
+@import 'global.less';
+
+header {
+  background-color: @nav-color;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  
+  .nav {
+    align-items: center;
+  }
+  
+  .start-nav {
+    display: flex;
+    justify-content: space-between;
+    
+    .container-logo {
+      .logo {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.theme-nav {
+  margin-left: 64px;
+  
+  .theme {
+    color: @primary-color;
+    border-bottom: 4px solid @primary-color;
+    padding: 10px 0;
+    margin-right: 8px;
+
+    i {
+      margin-right: 4px;
+    }
+  }
+  
+  .reward {
+    color: @text;
+    
+    i {
+      margin-right: 4px;
+    }
+  }
+}
+
+.container-avatar {
+  .avatar {
+    margin-left: 8px;
+  }
+}
+
+.container-logo, .container-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.logo, .avatar {
+  background-color: @background;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
