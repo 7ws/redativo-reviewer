@@ -1,4 +1,8 @@
 <button class="{{class}}" type="{{ type }}" name="{{name}}" value="{{value}}">
-  <i class="{{icon}}" ></i>
+  
+  {% if icon %}
+    <i class="{{icon}}" ></i>
+  {% endif %}
+  
   {{ label }}
 </button>
