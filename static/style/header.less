@@ -2,7 +2,6 @@
 
 header {
   background-color: @nav-color;
-  display: flex;
   justify-content: space-between;
   width: 100%;
   padding: 8px;
@@ -16,6 +15,7 @@ header {
     justify-content: space-between;
     
     .container-logo {
+      margin-left: 8px;
       .logo {
         margin-right: 8px;
       }
@@ -26,29 +26,39 @@ header {
 .theme-nav {
   margin-left: 64px;
   
-  .theme {
-    color: @primary-color;
-    border-bottom: 4px solid @primary-color;
-    padding: 10px 0;
+  .theme, .reward {
+    color: @text;
+    border-bottom: 4px solid @nav-color;
+    padding: 11px 0;
     margin-right: 8px;
+    transition: 400ms;
 
     i {
       margin-right: 4px;
     }
   }
-  
-  .reward {
-    color: @text;
-    
-    i {
-      margin-right: 4px;
-    }
+
+  .reward:hover, .theme:hover {
+    color: @primary-color;
+    border-bottom: 4px solid @primary-color;
+    transition: 400ms;
   }
 }
 
 .container-avatar {
+  cursor: pointer;
+  
   .avatar {
     margin-left: 8px;
+
+    i {
+      color: @gray-text;
+      transition: 400ms;
+    }
+  }
+
+  .user {
+    transition: 400ms;
   }
 }
 
@@ -57,7 +67,7 @@ header {
   align-items: center;
 }
 
-.logo, .avatar {
+.logo {
   background-color: @background;
   width: 30px;
   height: 30px;
