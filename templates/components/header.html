@@ -2,7 +2,7 @@
   <div class="start-nav nav">
     <div class="container-logo">
       <a href="{% url 'home' %}"><div class="logo"></div></a>
-      <a href="{% url 'home' %}"><p>Redativo</p></a>
+      <a href="{% url 'home' %}"><span>Redativo</span></a>
     </div>
 
     <div class="theme-nav">
@@ -10,8 +10,15 @@
       <a class="reward" href="{% url 'themes' %}"><i class="fas fa-medal"></i>Premiações</a>
     </div>
   </div>
-  <div class="container-avatar">
-    <p href="{% url 'themes' %}">Usuário</p>
-    <div class="avatar"></div>
+  <div class="container-avatar dropdown">
+    <div class="container-avatar dropdown-hide" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      {% if request.user.is_authenticated %}
+        <span class="user">{{request.user.username}} </span>
+      {% endif %}
+      <div class="avatar"><i class="fas fa-user-circle fa-2x"></i></div>
+    </div>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      
+    </ul>
   </div>
 </header>
