@@ -1,8 +1,8 @@
+{% load static %}
 <header class="nav">
   <div class="start-nav nav">
     <div class="container-logo">
-      <a href="{% url 'home' %}"><div class="logo"></div></a>
-      <a href="{% url 'home' %}"><span>Redativo</span></a>
+      <a href="{% url 'home' %}"><img class="logo" src="{% static 'img/Logo.svg' %}" alt=""></a>
     </div>
 
     <div class="theme-nav">
@@ -13,7 +13,7 @@
   <div class="container-avatar dropdown">
     <div class="container-avatar dropdown-hide" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
       {% if request.user.is_authenticated %}
-        <span class="user">{{request.user.username}} </span>
+        <span class="user dropdown-toggle">{{request.user.username}} </span>
       {% endif %}
       <div class="avatar"><i class="fas fa-user-circle fa-2x"></i></div>
     </div>
