@@ -2,6 +2,7 @@
 
 header {
   background-color: @nav-color;
+  display: flex;
   justify-content: space-between;
   width: 100%;
   padding: 8px;
@@ -11,13 +12,13 @@ header {
   }
   
   .start-nav {
+    padding: 0 8px;
     display: flex;
     justify-content: space-between;
     
     .container-logo {
-      margin-left: 8px;
       .logo {
-        margin-right: 8px;
+        margin-left: 8px;
       }
     }
   }
@@ -28,20 +29,18 @@ header {
   
   .theme, .reward {
     color: @text;
-    border-bottom: 4px solid @nav-color;
-    padding: 11px 0;
+    border-bottom: 4px solid @text;
+    padding: 9px 0;
     margin-right: 8px;
-    transition: 400ms;
 
     i {
       margin-right: 4px;
     }
   }
-
-  .reward:hover, .theme:hover {
+  
+  .theme:hover, .reward:hover {
     color: @primary-color;
-    border-bottom: 4px solid @primary-color;
-    transition: 400ms;
+    border-color: @primary-color;
   }
 }
 
@@ -49,16 +48,7 @@ header {
   cursor: pointer;
   
   .avatar {
-    margin-left: 8px;
-
-    i {
-      color: @gray-text;
-      transition: 400ms;
-    }
-  }
-
-  .user {
-    transition: 400ms;
+    margin: 0 8px;
   }
 }
 
@@ -67,9 +57,11 @@ header {
   align-items: center;
 }
 
-.logo {
-  background-color: @background;
+.avatar {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+}
+
+.logo {
+  height: 30px;
 }
