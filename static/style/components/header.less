@@ -1,8 +1,9 @@
-@import 'global.less';
+@import '../global.less';
 
 header {
-  background-color: @nav-color;
+  background-color: @primary-color;
   display: flex;
+  font-family: @primary-font;
   justify-content: space-between;
   width: 100%;
   padding: 8px;
@@ -28,10 +29,11 @@ header {
   margin-left: 64px;
   
   .theme, .reward {
-    color: @text;
-    border-bottom: 4px solid @text;
+    color: @secondary-color;
+    border-bottom: 4px solid @secondary-color;
     padding: 9px 0;
     margin-right: 8px;
+    transition: 400ms;
 
     i {
       margin-right: 4px;
@@ -39,8 +41,10 @@ header {
   }
   
   .theme:hover, .reward:hover {
-    color: @primary-color;
-    border-color: @primary-color;
+    color: @light;
+    border-color: @light;
+    opacity: 70%;
+    transition: 400ms;
   }
 }
 
