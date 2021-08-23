@@ -11,21 +11,25 @@
     <link rel="stylesheet/less" type="text/css" href="{% static 'style/global.less' %}">
     <link rel="stylesheet/less" type="text/css" href="{% static 'style/header.less' %}">
     <title>{% block title %}{% endblock title %}</title>
-    {% endblock head %}
+  {% endblock head %}
   </head>
   <body>
     {% block header %}
     {% include 'components/header.html' %}
     {% endblock header %}
 
-    {% block content %}
+    {% block messages %}
       {% if messages %}
         <ul class="messages">
-            {% for message in messages %}
+          {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
+          {% endfor %}
         </ul>
       {% endif %}
+    {% endblock messages %}
+
+    {% block content %}
+
     {% endblock content %}
 
     {% block scripts %}
