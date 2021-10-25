@@ -1,0 +1,59 @@
+body {
+  background: #125fd5;
+  background-image: url("../../img/login-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: auto 80vh;
+  background-position: right center;
+  display: flex;
+  align-items: center;
+}
+
+main#login-form {
+  color: white;
+
+  header {
+    text-align: center;
+    margin-bottom: 3em;
+
+    .logo {
+      height: 3em;
+    }
+  }
+
+  section {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 3em;
+
+    h1 {
+      display: none
+    }
+
+    p.welcome-text {
+      font-size: 1.25em;
+    }
+
+    form {
+      margin: 3em 0;
+
+      p {
+        margin: 1em 0;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+      }
+
+      p.forgot-password {
+        text-align: right;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 30em) and (orientation: landscape) {
+  main#login-form {
+    margin-left: 10vw;
+    width: 400px;
+  }
+}
