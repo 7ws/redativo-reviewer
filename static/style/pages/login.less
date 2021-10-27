@@ -29,7 +29,8 @@ main#login-form {
     border-radius: 10px;
     padding: 52px 60px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    height: 450px;
+    height: 500px;
+    width: 450px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -40,9 +41,15 @@ main#login-form {
 
     p.welcome-text {
       font-size: 1.25em;
+      width: 175px;
     }
 
     form {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 220px;
+
       button[type="submit"] {
         width: 100%;
       }
@@ -50,10 +57,27 @@ main#login-form {
       p.forgot-password {
         text-align: right;
       }
+
+      .form-field {
+        margin: 0;
+
+        .label {
+          margin-bottom: 4px;
+        }
+
+        input {
+          border: 1px solid @primary-color;
+          border-radius: 4px;
+          padding: 8px;
+        }
+      }
     }
     .signup {
+      text-align: center;
+      font-size: 14px;
       strong {
         color: #dbe7f8;
+        font-size: 16px;
       }
     }
   }
