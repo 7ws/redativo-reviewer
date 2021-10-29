@@ -12,4 +12,35 @@
   .logo {
     width: 125px;
   }
+
+  .search {
+    text-align: center;
+    position: relative;
+
+    > button {
+      padding: 0;
+      z-index: 999;
+      
+      > .icon {
+        width: 20px;
+        position: absolute;
+        top: 6px;
+        left: 12%;
+      }
+    }
+
+    > input {
+      background-color: @primary-color;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      padding-left: 32px;
+      width: 80%;
+      margin: 0 auto;
+    }
+    
+    > input::placeholder {
+      color: @light;
+    }
+  }
 }
