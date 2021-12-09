@@ -14,6 +14,11 @@ nav#sidebar {
   padding: 2em;
   padding-top: calc(@header-height + 2em);
 
+  ul.menu {
+    display: flex;
+    flex-direction: column;
+  }
+
   li.menu-item {
     // Menu item links
     a {
@@ -38,5 +43,11 @@ nav#sidebar {
     &.rewards a:before { background-image: url('../../img/icons/sidebar/award.svg') }
     &.reviews a:before { background-image: url('../../img/icons/sidebar/pen.svg') }
     &.settings a:before { background-image: url('../../img/icons/settings.svg') }
+
+    // Special case: settings text is always invisible
+    &.settings {
+      font-size: 0;
+      align-self: center;
+    }
   }
 }
