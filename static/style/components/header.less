@@ -2,12 +2,15 @@
 
 .principal-header {
   background-color: @secondary-color;
+  position: fixed;
   color: @light;
   display: grid;
   grid-template-columns: 0.5fr 0.5fr 1fr 0.5fr 0.5fr;
   align-items: center;
   padding:  0 52px;
-  height: 52px;
+  height: @header-height;
+  width: 100vw;
+  z-index: 1;
 
   .logo {
     width: 125px;
