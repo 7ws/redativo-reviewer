@@ -16,6 +16,10 @@
     {% include 'components/header.html' %}
     {% endblock header %}
 
+    {% block sidebar %}
+      {% include 'components/sidebar-nav.html' %}
+    {% endblock sidebar %}
+
     {% block messages %}
       {% if messages %}
         <ul class="messages">

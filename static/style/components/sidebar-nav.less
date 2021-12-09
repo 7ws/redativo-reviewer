@@ -1,0 +1,42 @@
+@import '../global.less';
+
+.sidebar-nav {
+  background-color: #DDE5F1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  width: 64px;
+  overflow-x: hidden;
+  transition: 0.5s;
+  z-index: 0;
+  padding-top: @header-height;
+
+  .setting {
+    cursor : pointer;
+    z-index: 99999;
+  }
+
+  .slide {
+    clear:both;
+    overflow: hidden;
+    text-align: center;
+    transition: width .4s ease;
+    width: 72px;
+
+    span {
+      display: none;
+      opacity: 0;
+    }
+
+    li {
+      padding : 16px;
+    }
+
+    img {
+      width: 25px;
+    }
+  }
+}
