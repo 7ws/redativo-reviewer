@@ -1,6 +1,6 @@
 @import '../global.less';
 
-.sidebar-nav {
+nav#sidebar {
   background-color: #DDE5F1;
   position: fixed;
   top: 0;
@@ -11,5 +11,32 @@
   overflow-x: hidden;
   transition: 0.5s;
   z-index: 0;
-  padding-top: @header-height;
+  padding: 2em;
+  padding-top: calc(@header-height + 2em);
+
+  li.menu-item {
+    // Menu item links
+    a {
+      color: @title-color;
+      font-size: 1.25em;
+      line-height: 3em;
+      font-weight: bold;
+    }
+
+    // Menu item icons
+    a:before {
+      content: '';
+      display: inline-block;
+      background-repeat: no-repeat;
+      height: 30px;
+      width: 30px;
+      vertical-align: middle;
+      margin-right: 0.5em;
+    }
+    &.themes a:before { background-image: url('../../img/icons/sidebar/book.svg') }
+    &.essays a:before { background-image: url('../../img/icons/sidebar/edit.svg') }
+    &.rewards a:before { background-image: url('../../img/icons/sidebar/award.svg') }
+    &.reviews a:before { background-image: url('../../img/icons/sidebar/pen.svg') }
+    &.settings a:before { background-image: url('../../img/icons/settings.svg') }
+  }
 }
