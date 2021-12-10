@@ -6,10 +6,8 @@ nav#sidebar {
   top: 0;
   left: 0;
   height: 100vh;
-  display: grid;
-  justify-content: center;
+  display: flex;
   overflow-x: hidden;
-  transition: 0.5s;
   z-index: 0;
   padding: 2em;
   padding-top: calc(@header-height + 2em);
@@ -49,20 +47,27 @@ nav#sidebar {
 
     // Special case: settings text is always invisible
     &.settings {
-      font-size: 0;
       align-self: center;
       margin-top: auto;
     }
   }
-}
 
-// Hovering effect (open / collapse)
-#sidebar {
-  .menu-item a {
-    font-size: 0;
-  }
+  // Hovering effect (open / collapse)
+  & {
+    transition: width 0.25s;
+    width: calc(2em + 2em + 30px);
 
-  &:hover .menu-item a {
-    font-size: unset;
+    .menu-item a {
+      font-size: 0;
+      white-space: nowrap;
+    }
+
+    &:hover {
+      width: 300px;
+
+      .menu-item a {
+        font-size: unset;
+      }
+    }
   }
 }
