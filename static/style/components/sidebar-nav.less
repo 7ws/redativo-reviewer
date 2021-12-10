@@ -20,11 +20,14 @@ nav#sidebar {
   }
 
   li.menu-item {
+    height: 3em;
+    display: flex;
+    align-items: center;
+    font-size: 1.25em;
+
     // Menu item links
     a {
       color: @title-color;
-      font-size: 1.25em;
-      line-height: 3em;
       font-weight: bold;
     }
 
@@ -50,5 +53,16 @@ nav#sidebar {
       align-self: center;
       margin-top: auto;
     }
+  }
+}
+
+// Hovering effect (open / collapse)
+#sidebar {
+  .menu-item a {
+    font-size: 0;
+  }
+
+  &:hover .menu-item a {
+    font-size: unset;
   }
 }
