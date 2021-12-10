@@ -11,3 +11,20 @@
     <li class="menu-item settings"><a href="">Configurações</a></li>
   </ul>
 </nav>
+
+<script>
+'use strict';
+(function () {
+  const sidebar = document.querySelector('#sidebar');
+  const header_logo = document.querySelector('#main-header .logo');
+
+  [header_logo, sidebar].map(function (element) {
+    element.addEventListener('mouseenter', function (ev) {
+      document.body.classList.add('open-sidebar');
+    });
+    element.addEventListener('mouseleave', function (ev) {
+      document.body.classList.remove('open-sidebar');
+    });
+  });
+})();
+</script>

@@ -51,23 +51,22 @@ nav#sidebar {
       margin-top: auto;
     }
   }
+}
 
-  // Hovering effect (open / collapse)
-  & {
-    transition: width 0.25s;
-    width: calc(2em + 2em + 30px);
+// Hovering effect (open / collapse)
+nav#sidebar {
+  transition: width 0.25s;
+  width: calc(2em + 2em + 30px);
 
-    .menu-item a {
-      font-size: 0;
-      white-space: nowrap;
-    }
+  .menu-item a {
+    font-size: 0;
+    white-space: nowrap;
+  }
+}
+body.open-sidebar nav#sidebar {
+  width: 300px;
 
-    &:hover {
-      width: 300px;
-
-      .menu-item a {
-        font-size: unset;
-      }
-    }
+  .menu-item a {
+    font-size: unset;
   }
 }
