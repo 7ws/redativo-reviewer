@@ -9,8 +9,8 @@ nav#sidebar {
   display: flex;
   overflow-x: hidden;
   z-index: 0;
-  padding: 2em;
-  padding-top: calc(@header-height + 2em);
+  padding: @frame-margin;
+  padding-top: calc(@header-height + @frame-margin);
 
   ul.menu {
     display: flex;
@@ -34,8 +34,8 @@ nav#sidebar {
       content: '';
       display: inline-block;
       background-repeat: no-repeat;
-      height: 30px;
-      width: 30px;
+      height: @icon-size;
+      width: @icon-size;
       vertical-align: middle;
       margin-right: 0.5em;
     }
@@ -61,7 +61,7 @@ body {  // Collapsed
 
   nav#sidebar {
     transition: width 0.25s;
-    width: calc(2em + 2em + 30px);
+    width: @sidebar-width-collapsed;
 
     .menu-item a {
       font-size: 0;

@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: @sidebar-width 0.5fr 1fr 0.5fr 0.5fr;
   align-items: center;
-  padding-right: 52px;
+  padding-right: @frame-margin;
   height: @header-height;
   width: 100vw;
   z-index: 1;
@@ -19,7 +19,7 @@
     width: 100%;
 
     img {
-      margin-left: 2em;
+      margin-left: @frame-margin;
       width: 125px;
     }
   }
