@@ -54,19 +54,23 @@ nav#sidebar {
 }
 
 // Hovering effect (open / collapse)
-nav#sidebar {
-  transition: width 0.25s;
-  width: calc(2em + 2em + 30px);
+body {  // Collapsed
+  nav#sidebar {
+    transition: width 0.25s;
+    width: calc(2em + 2em + 30px);
 
-  .menu-item a {
-    font-size: 0;
-    white-space: nowrap;
+    .menu-item a {
+      font-size: 0;
+      white-space: nowrap;
+    }
   }
 }
-body.open-sidebar nav#sidebar {
-  width: 300px;
+body.open-sidebar {  // Open
+  nav#sidebar {
+    width: 300px;
 
-  .menu-item a {
-    font-size: unset;
+    .menu-item a {
+      font-size: unset;
+    }
   }
 }
