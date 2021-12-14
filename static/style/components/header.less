@@ -5,15 +5,23 @@
   position: fixed;
   color: @light;
   display: grid;
-  grid-template-columns: 0.5fr 0.5fr 1fr 0.5fr 0.5fr;
+  grid-template-columns: @sidebar-width 0.5fr 1fr 0.5fr 0.5fr;
   align-items: center;
-  padding:  0 52px;
+  padding-right: 52px;
   height: @header-height;
   width: 100vw;
   z-index: 1;
 
   .logo {
-    width: 125px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    img {
+      margin-left: 2em;
+      width: 125px;
+    }
   }
 
   .search {
