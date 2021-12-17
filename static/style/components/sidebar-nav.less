@@ -17,11 +17,35 @@ nav#sidebar {
     flex-direction: column;
   }
 
+  //Avatar image
+  li.user  {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 30px;
+    transition: width 0.25s;
+    height: 180px;
+
+    .user-avatar {
+      width: 30px;
+      transition: width 0.25s;
+    }
+
+    .username {
+      color: @primary-color;
+      font-weight: bold;
+      margin-top: 8px;
+      font-size: 0;
+      white-space: nowrap;
+    }
+  }
+
   li.menu-item {
     height: 3em;
     display: flex;
     align-items: center;
     font-size: 1.25em;
+
 
     // Menu item links
     a {
