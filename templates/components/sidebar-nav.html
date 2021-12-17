@@ -4,6 +4,14 @@
 {% endblock head %}
 <nav id="sidebar">
   <ul class="menu">
+    <li class="user">
+      {% if user.avatar %}
+        <img class="user-avatar" src="{{ user.avatar_image.url }}" alt="">
+      {% else %}
+        <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
+      {% endif %}
+      <span class="username">{{ user.username }}</span>
+    </li>
     <li class="menu-item themes"><a href="">Temas</a></li>
     <li class="menu-item essays"><a href="">Redações</a></li>
     <li class="menu-item rewards"><a href="">Premiações</a></li>
