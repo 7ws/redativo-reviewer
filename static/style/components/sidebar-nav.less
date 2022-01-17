@@ -7,10 +7,10 @@ nav#sidebar {
   left: 0;
   height: 100vh;
   display: flex;
+  justify-content: center;
   overflow-x: hidden;
   z-index: 0;
-  padding: @frame-margin;
-  padding-top: calc(@header-height + @frame-margin);
+  padding-top: calc(@header-height + @size-32px);
 
   ul.menu {
     display: flex;
@@ -21,13 +21,13 @@ nav#sidebar {
   li.user  {
     display: flex;
     align-items: center;
-    flex-direction: column;
-    width: 30px;
     transition: width 0.25s;
-    height: 180px;
+    flex-direction: column;
+    width: @sidebar-width-collapsed;
+    height: calc(@size-120px + @size-64px);
 
     .user-avatar {
-      width: 30px;
+      width: @size-56px;
       transition: width 0.25s;
     }
 
@@ -45,7 +45,8 @@ nav#sidebar {
     display: flex;
     align-items: center;
     font-size: 1.25em;
-
+    width: @sidebar-width-collapsed;
+    transition: width 0.25s;
 
     // Menu item links
     a {
@@ -59,8 +60,9 @@ nav#sidebar {
       display: inline-block;
       background-repeat: no-repeat;
       background-position: center;
-      height: @icon-size;
-      width: @icon-size;
+      height: @icon-normal-size;
+      width: @sidebar-width-collapsed;
+      transition: width 0.25s;
       vertical-align: middle;
       margin-right: 0.5em;
     }
@@ -81,11 +83,14 @@ nav#sidebar {
 body {  // Collapsed
   header#main-header div.logo img {
     clip-path: inset(0 90px 0 0);
+    margin-left: calc(@size-16px + 2px);
+    transition: margin 0.25s;
   }
 
   nav#sidebar {
     transition: width 0.25s;
     width: @sidebar-width-collapsed;
+    justify-content: flex-start;
 
     .menu-item a {
       font-size: 0;
@@ -96,6 +101,7 @@ body {  // Collapsed
 body.open-sidebar {  // Open
   header#main-header div.logo img {
     clip-path: unset;
+    margin-left: @size-56px;
   }
 
   nav#sidebar {
