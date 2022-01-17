@@ -113,7 +113,17 @@ body.open-sidebar {  // Open
         width: 100px;
       }
     }
+    li.menu-item {
+      width: @sidebar-width;
 
+      &.settings {
+        margin-top: auto;
+        a:before {
+          text-align: center;
+          width: @sidebar-width;
+        }
+      }
+    }
     .menu-item a {
       font-size: unset;
     }
