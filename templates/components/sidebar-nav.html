@@ -12,8 +12,8 @@
       {% endif %}
       <span class="username">{{ user.username }}</span>
     </li>
-    <li class="menu-item themes"><a href="">Temas</a></li>
-    <li class="menu-item essays"><a href="">Redações</a></li>
+    <li class="menu-item themes"><a href="/">Temas</a></li>
+    <li class="menu-item essays"><a href="/essays/my_essays/">Redações</a></li>
     <li class="menu-item rewards"><a href="">Premiações</a></li>
     <li class="menu-item reviews"><a href="">Correções</a></li>
     <li class="menu-item settings"><a href="">Configurações</a></li>
@@ -34,5 +34,24 @@
       document.body.classList.remove('open-sidebar');
     });
   });
+})();
+(function () {
+  const path_URL = document.location.pathname;
+  switch (path_URL) {
+    case "/":
+      document.querySelector('.themes').classList.add('active');
+      break;
+    case "/essays/my_essays/":
+      document.querySelector('.essays').classList.add('active');
+      break;
+    case "":
+      document.querySelector('.rewards').classList.add('active');
+      break;
+    case "":
+      document.querySelector('.reviews').classList.add('active');
+      break;
+    default:
+      break;
+  }
 })();
 </script>
