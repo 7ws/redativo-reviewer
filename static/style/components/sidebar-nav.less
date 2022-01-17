@@ -85,6 +85,10 @@ nav#sidebar {
 
 // Hovering effect (open / collapse)
 body {  // Collapsed
+  header#main-header div.logo {
+    width: @sidebar-width-collapsed;
+    transition: width 0.25s;
+  }
   header#main-header div.logo img {
     clip-path: inset(0 90px 0 0);
     margin-left: calc(@size-16px + 2px);
@@ -103,6 +107,9 @@ body {  // Collapsed
   }
 }
 body.open-sidebar {  // Open
+  header#main-header div.logo {
+    width: @sidebar-width;
+  }
   header#main-header div.logo img {
     clip-path: unset;
     margin-left: @size-56px;
