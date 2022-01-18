@@ -35,23 +35,27 @@
     });
   });
 })();
+
 (function () {
   const path_URL = document.location.pathname;
+  let page = "";
+
   switch (path_URL) {
     case "/":
-      document.querySelector('.themes').classList.add('active');
+      page = '.themes'
       break;
     case "/essays/my_essays/":
-      document.querySelector('.essays').classList.add('active');
+      page = '.essays'
       break;
     case "":
-      document.querySelector('.rewards').classList.add('active');
+      page = '.rewards'
       break;
     case "":
-      document.querySelector('.reviews').classList.add('active');
+      page = '.reviews'
       break;
     default:
       break;
   }
+  document.querySelector(page).classList.add('active');
 })();
 </script>
