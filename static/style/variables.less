@@ -3,27 +3,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
 
 // colors
-@primary-color: #0861d1;
-@secondary-color: #4986dc;
-@background-header: rgba(#0e5acd, 85%);
-@light: #FFF8F2;
-@title-color: #0047ad;
-@text: #374551;
-@gray-text: #909DA8;
-@gray-border: #ECECEC;
-@red: #D5455B;
+  //light
 @white: #fff;
-@width: 100vw;
+@light: #E5E5E5;
+@background-body-light: @light;
+@background-paper-light: @light;
+@gray-border: #ECECEC;
+  // primary and secondary
+@primary-color: #125FD5;
+@secondary-color: #1E70F7;
+@background-header: @primary-color;
+@background-sidebar: rgba(@primary-color, 10%);
+@background-logo: #0E5ACD;
+@background-login-form: rgba(@white, 24%);
+  //dark
+@background-body-dark: #515151;
+@background-paper-dark: #F4EDC5;
+  // text and black
+@black: #000;
+@text: rgba(@black, 95%);
+@title-color: #0047AD;
+  //error
+@error: #D5455B;
 
 // fonts
 @primary-font: 'Montserrat', sans-serif;
 @secondary-font: 'Noto Sans', sans-serif;
-
+  // font-size
+@h1: 3.25em;
+@h2: 2.5em;
+@h3: 2em;
+@h4: 1.625em;
+@text-big: 1.25em;
+@text: 1em;
+@text-small: 0.875em;
+@label: 0.75em;
+@label-small: 0.625em;
 // sizes
-@header-height: 72px;
-@frame-margin: 2em;
-@icon-size: 30px;
-@sidebar-width-collapsed: calc(@frame-margin + @frame-margin + @icon-size);
-@sidebar-width: 260px;
+  // simple sizes
+@size-8px: 8px;
+@size-16px: 16px;
+@size-24px: 24px;
+@size-32px: 32px;
+@size-40px: 40px;
+@size-56px: 56px;
+@size-64px: 64px;
+@size-72px: 72px;
+@size-120px: 120px;
+@size-240px: 240px;
 
+  // complex sizes
+@header-height: 72px;
+@icon-small-size: 24px;
+@icon-normal-size: 32px;
+@icon-big-size: 40px;
+@sidebar-width-collapsed: 72px;
+@sidebar-width: 240px;
+@login-form-width: 480px;
+@login-form-height: 600px;
+@logo-small-size: 64px;
+@logo-normal-size: 128px;
+@logo-big-size: 256px;
+@width: 100vw;
 /* Breakpoints */
