@@ -18,6 +18,7 @@ section#login-form {
   header {
     text-align: center;
     margin-bottom: 3em;
+    width: @login-form-width;
 
     .logo {
       height: 3em;
@@ -25,12 +26,12 @@ section#login-form {
   }
 
   section {
-    background: @secondary-color;
+    background: @background-login-form;
     border-radius: 10px;
     padding: 52px 60px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    height: 500px;
-    width: 450px;
+    height: @login-form-height;
+    width: @login-form-width;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
