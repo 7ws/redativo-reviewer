@@ -1,7 +1,7 @@
 @import '../global.less';
 
 nav#sidebar {
-  background-color: #DDE5F1;
+  background-color: @background-sidebar;
   position: fixed;
   top: 0;
   left: 0;
@@ -9,8 +9,8 @@ nav#sidebar {
   display: flex;
   justify-content: center;
   overflow-x: hidden;
-  z-index: 0;
-  padding-top: calc(@header-height + @size-32px);
+  z-index: 1;
+  padding-top: @header-height;
 
   ul.menu {
     display: flex;
@@ -23,8 +23,9 @@ nav#sidebar {
     align-items: center;
     transition: width 0.25s;
     flex-direction: column;
+    margin-top: @size-32px;
     width: @sidebar-width-collapsed;
-    height: calc(@size-120px + @size-64px);
+    height: 184px;
 
     .user-avatar {
       width: @size-56px;
@@ -115,7 +116,7 @@ body.open-sidebar {  // Open
       width: 100%;
 
       > .username {
-        font-size: 1.25em;
+        font-size: @text-big;
       }
 
       > .user-avatar {
