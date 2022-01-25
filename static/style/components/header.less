@@ -7,22 +7,21 @@
   display: grid;
   grid-template-columns: @sidebar-width 0.5fr 1fr 0.5fr 0.5fr;
   align-items: center;
-  padding-right: @frame-margin;
+  padding-right: @size-32px;
   height: @header-height;
   width: 100vw;
-  z-index: 1;
+  z-index: 2;
 
   .logo {
     display: flex;
     align-items: center;
     height: 100%;
-    width: 100%;
+    width: @sidebar-width;
     background-color: @background-logo;
 
     img {
-      margin-left: @frame-margin;
-      padding-top: 1px;
-      width: 125px;
+      margin-left: @size-56px;
+      width: @logo-normal-size;
     }
   }
 
