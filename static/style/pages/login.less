@@ -16,24 +16,27 @@ body {
 }
 
 section#login-form {
-  align-self: center;
-  justify-self: center;
+  align-items: center;
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
 
   header {
     text-align: center;
-    margin-bottom: 3em;
+    margin-bottom: @size-32px;
     width: @login-form-width;
 
-    .logo {
-      height: 3em;
+    .logo img {
+      width: @logo-big-size;
     }
   }
 
   section {
     background: @background-login-form;
     border-radius: 10px;
-    padding: 52px 60px;
+    padding: @size-56px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
     height: @login-form-height;
     width: @login-form-width;
