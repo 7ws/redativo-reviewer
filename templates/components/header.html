@@ -6,7 +6,13 @@
   {% include "components/logo.html" %}
 
   {% if user.username %}
-    <section></section>
+    <section class="dropdown-menu">
+      <a onclick="handleDropdown()" class="dropdown-username down-arrow">Olá, {{ user.username }}</a>
+      <ul class="dropdown" class="dropdown-content">
+        <li><a href="/profile_url/">Meu Perfil</a></li>
+        <li><a href="logout/">Sair</a></li>
+      </ul>
+    </section>
   {% else %}
     <section class="login-signup">
       <ul>
