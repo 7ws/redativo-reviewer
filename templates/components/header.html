@@ -22,3 +22,21 @@
     </section>
   {% endif %}
 </header>
+<script>
+  const handleDropdown = () => {
+    document.querySelector('header#main-header').classList.toggle('open-dropdown')
+  }
+
+  window.onclick = (event) => {
+    if (!event.target.matches('.dropdown-username')){
+      let dropdowns = document.getElementsByClassName('principal-header');
+      let i;
+      for(i = 0; i < dropdowns.length; i++){
+        let openDropdown = dropdowns[i];
+        if(openDropdown.classList.contains('open-dropdown')) {
+          openDropdown.classList.remove('open-dropdown');
+        }
+      }
+    }
+  }
+</script>
