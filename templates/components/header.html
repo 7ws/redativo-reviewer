@@ -5,7 +5,7 @@
 <header id="main-header" class="principal-header">
   {% include "components/logo.html" %}
 
-  {% if user.username %}
+  {% if user.is_authenticated %}
     <section class="dropdown-menu">
       <a onclick="handleDropdown()" class="dropdown-username down-arrow">Olá, {{ user.username }}</a>
       <ul class="dropdown" class="dropdown-content">
