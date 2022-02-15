@@ -10,7 +10,7 @@
       {% else %}
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
-      <span class="username"><a href="/profile_url/">{{ user.username }}</a></span>
+      <span class="username"><a href="{% url 'profile-url' %}">{{ user.username }}</a></span>
     </li>
     <li class="menu-item themes"><a href="/">Temas</a></li>
     <li class="menu-item essays"><a href="/essays/my_essays/">Redações</a></li>
