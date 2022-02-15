@@ -54,6 +54,25 @@ section#signup-form {
       line-height: 32px;
       width: 216px;
     }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      button[type="submit"] {
+        margin-top: @size-24px;
+        width: 100%;
+      }
+
+      .form-field {
+        margin: 0;
+
+        .label {
+          margin-bottom: 4px;
+        }
+      }
+    }
   }
 }
 
