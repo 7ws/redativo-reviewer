@@ -13,7 +13,7 @@
       <span class="username"><a href="{% url 'profile-url' %}">{{ user.username }}</a></span>
     </li>
     <li class="menu-item themes"><a href="{% url 'themes' %}">Temas</a></li>
-    <li class="menu-item essays"><a href="/essays/my_essays/">Redações</a></li>
+    <li class="menu-item essays"><a href="{% url 'writer:all-essays' %}">Redações</a></li>
   </ul>
 </nav>
 
@@ -41,7 +41,7 @@
     case "{% url 'themes' %}":
       page = '#sidebar .menu li.themes'
       break;
-    case "/essays/my_essays/":
+    case "{% url 'writer:all-essays' %}":
       page = '#sidebar .menu li.essays'
       break;
     default:
