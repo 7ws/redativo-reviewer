@@ -88,6 +88,27 @@ section#signup-form {
         position: absolute;
         right: -248px;
         width: 240px;
+
+        p {
+          display: inline-block;
+          color: rgba(@black, 70%);
+          margin-bottom: 4px;
+          text-indent: 4px;
+          list-style-type: '-';
+          text-decoration-style: dashed;
+        }
+
+
+        ul li{
+          color: rgba(@black, 70%);
+          display: block;
+          font-size: @label;
+          margin-bottom: 8px;
+        }
+
+        p::before, li::before{
+          content: '* ';
+        }
       }
 
       .helptext-card::after {
