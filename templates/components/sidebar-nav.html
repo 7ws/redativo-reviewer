@@ -10,10 +10,10 @@
       {% else %}
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
-      <span class="username"><a href="{% url 'profile-url' %}">{{ user.username }}</a></span>
+      <span class="username"><a href="{% url 'profile_url' %}">{{ user.username }}</a></span>
     </li>
     <li class="menu-item themes"><a href="{% url 'themes_active' %}">Temas</a></li>
-    <li class="menu-item essays"><a href="{% url 'writer:all-essays' %}">Redações</a></li>
+    <li class="menu-item essays"><a href="{% url 'writer:all_essays' %}">Redações</a></li>
   </ul>
 </nav>
 
@@ -41,7 +41,7 @@
     case "{% url 'themes_active' %}":
       page = '#sidebar .menu li.themes'
       break;
-    case "{% url 'writer:all-essays' %}":
+    case "{% url 'writer:all_essays' %}":
       page = '#sidebar .menu li.essays'
       break;
     default:
