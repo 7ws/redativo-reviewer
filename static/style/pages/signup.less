@@ -1,0 +1,186 @@
+@import '../global.less';
+
+body {
+  background: @primary-color;
+  background-image: url("../../img/signup-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: auto 80vh;
+  background-position: right center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  main {
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+section#signup-form {
+  align-items: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+
+  header {
+    text-align: center;
+    margin-bottom: @size-32px;
+    width: @login-form-width;
+
+    .logo img {
+      width: @logo-big-size;
+    }
+  }
+
+  section {
+    background: @background-login-form;
+    border-radius: 10px;
+    padding: @size-56px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
+    height: @signup-form-height;
+    width: @login-form-width;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h1 {
+      display: none
+    }
+
+    p.welcome-text {
+      font-size: @text-big;
+      font-weight: @semibold-weight;
+      line-height: 32px;
+      width: 216px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+
+      button[type="submit"] {
+        margin-top: @size-24px;
+        width: 100%;
+      }
+
+      .form-field {
+        margin: 0;
+
+        .label {
+          margin-bottom: 4px;
+        }
+
+        input {
+          border: none;
+          margin-bottom: @size-16px;
+          padding: @size-16px;
+        }
+      }
+
+      .helptext-card {
+        background-color: @white;
+        display: none;
+        padding: 16px;
+        border-radius: 8px;
+        position: absolute;
+        right: -248px;
+        width: 240px;
+
+        p {
+          display: inline-block;
+          color: rgba(@black, 70%);
+          margin-bottom: 4px;
+          text-indent: 4px;
+          list-style-type: '-';
+          text-decoration-style: dashed;
+        }
+
+
+        ul li{
+          color: rgba(@black, 70%);
+          display: block;
+          font-size: @label;
+          margin-bottom: 8px;
+        }
+
+        p::before, li::before{
+          content: '* ';
+        }
+      }
+
+      .helptext-card::after {
+        content: "";
+
+        width: 0;
+        height: 0;
+
+        position: absolute;
+
+        border-right: 10px solid @white;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+
+        top: 4px;
+        left: -8px;
+      }
+
+      .helptext-username {
+        top: 23px;
+      }
+
+      .helptext-password1 {
+        top: 102px;
+      }
+
+      .helptext-password2 {
+        top: 182px;
+      }
+
+      .helptext {
+        display: inline-block;
+        font-size: @label;
+      }
+
+      .show {
+        display: block;
+      }
+
+      .form-field:last-of-type {
+        align-items: center;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+
+        span {
+          font-size: @text-small;
+          margin: 0;
+          font-weight: @medium-weight;
+        }
+
+        > input {
+          margin: 0;
+          margin-right: 8px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+    .access-account {
+      text-align: center;
+      font-size: @text-small;
+      strong {
+        color: @white;
+        font-size: @text;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  body {
+    grid-template-columns: 1fr;
+  }
+}
