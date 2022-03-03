@@ -2,4 +2,22 @@
 
 .essays {
   h1 {display: none}
+
+  &> header .tabs ul {
+    display: flex;
+    padding: @size-40px;
+    justify-content: center;
+
+      &> li {
+       margin-right: @size-56px;
+
+       &> a {
+         color: @primary-color;
+         font-weight: @semibold-weight;
+         border-bottom: 2px solid @light;
+       }
+
+      }
+  }
 }
+
