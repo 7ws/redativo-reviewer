@@ -69,6 +69,25 @@ section.edit-profile {
           border: 1px solid rgba(@black, 20%);
           border-radius: 50%;
         }
+
+        &> .avatar-image-upload {
+          background-color: @primary-color;
+          background-image: url('../../img/icons/edit.svg');
+          background-position: center;
+          background-repeat: no-repeat;
+          border-radius: 50%;
+          position: absolute;
+          cursor: pointer;
+          font-size: 0;
+          height: 32px;
+          top: 80px;
+          right: 126px;
+          width: 32px;
+        }
+
+        &> input[type='file'] {
+          display: none;
+        }
       }
     }
   }
