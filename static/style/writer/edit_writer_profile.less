@@ -57,5 +57,19 @@ section.edit-profile {
     justify-content: space-between;
     margin: 0 auto;
     width: 440px;
+
+    &> form {
+      .avatar-image {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 16px;
+
+        img {
+          border: 1px solid rgba(@black, 20%);
+          border-radius: 50%;
+        }
+      }
+    }
   }
 }
