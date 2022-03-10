@@ -7,13 +7,17 @@ main{
 section.profile {
   width: 90%;
   margin: 0 auto;
+  position: relative;
 
   &> .nav-profile {
-    margin-top: 40px;
+    position: absolute;
+    width: 100%;
+
     ul {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       li {
         .return, .themes-active {
           background-color: @primary-color;
@@ -39,7 +43,6 @@ section.profile {
   .title-page {
     color: @primary-color;
     margin: 40px auto;
-    margin-top: 0;
     width: @profile-card-width;
   }
 
