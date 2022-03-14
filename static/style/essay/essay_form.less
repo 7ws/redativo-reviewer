@@ -1,64 +1,117 @@
 @import '../global.less';
 
-.essay-form{
-  width: @width;
-  margin: 0 auto;
-  
-  .submit {
+main{
+  margin: 0 !important;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  height: @header-height;
+  padding: 0 58px;
+  position: relative;
+
+  &>.logo-blue {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    margin-top: 16px;
-    
-    .grid-submit {
-      display: flex;
-      gap: 8px;
-      align-items: center;
+    align-items: center;
+
+    img {
+      width: @logo-normal-size;
     }
   }
-  
-  .essay {
-    background-color: @white;
-    padding: 16px;
+}
 
-    .title-theme {
-      color: @primary-color;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
+section.essay-edit {
+  width: 1000px;
+  margin: 0 auto;
+  position: relative;
 
-    .description-theme {
-      color: @gray-text;
-      margin-bottom: 16px;
-    }
-    
-    .field-essay {
+  &> form.essay-form {
+    &> header.header-essay{
       display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
+      justify-content: space-between;
 
-      label {
-        margin-bottom: 4px;
-        color: @text;
-        font-weight: 600;
+      &> a.return-to-form-essay{
+        &> button.button-return {
+          background-color: @primary-color;
+          background-image: url('../../img/icons/nav/arrow-left.svg');
+          background-position: center;
+          background-repeat: no-repeat;
+          border-radius: 50%;
+          font-size: 0;
+          height: 48px;
+          width: 48px;
+        }
+      }
+
+      &> section.theme {
+        .theme-title {
+          color: @primary-color;
+          font-weight: @medium-weight;
+          margin-bottom: 8px;
+        }
+
+        .theme-text {
+          color: rgba(@black, 75%);
+          font-weight: @semibold-weight;
+        }
+      }
+
+      &> section.submit-essay{
+        &> button {
+          background-color: @light;
+          background-position: top;
+          background-repeat: no-repeat;
+          background-size: 32px;
+          color: @primary-color;
+          font-size: @label;
+          font-weight: @medium-weight;
+          height: 56px;
+          padding-bottom: 0;
+          padding-top: 24px;
+        }
+
+        .send-essay {
+          background-image: url('../../img/icons/submit/send.svg');
+        }
+
+        .save-essay {
+          background-image: url('../../img/icons/submit/save.svg');
+        }
       }
     }
-    
-    textarea, input {
-      width: 100%;
-      border: 2px solid @gray-border;
-      border-radius: 4px;
-      outline: none;
-      font-size: 16px;
-    }
-    
-    textarea {
-      resize: none;
-      overflow: unset;
-    }
-    
-    input {
-      font-size: 16px;
+
+    &> section.paper-sheet{
+      background-color: @white;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
+      width: 1000px;
+      height: 1000px;
+      margin: 0 auto;
+      margin-top: 72px;
+      padding: 56px 80px;
+
+      &> field textarea, &> field input {
+        width: 840px;
+        border: none;
+        outline: none
+      }
+
+      &> .title input{
+        color: rgba(@black, 75%);
+        font-size: @text-medium;
+        font-weight: @bold-weight;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      &> .text textarea {
+        color: rgba(@black, 90%);
+        font-family: @primary-font;
+        font-size: @text;
+        line-height: 1.75em;
+        height: 90%;
+        resize: none;
+      }
     }
   }
 }
