@@ -47,5 +47,18 @@ section.essay-detail {
     .themes-active {
       background-image: url('../../img/icons/nav/home.svg');
     }
+
+    &> section.theme-essay {
+      .theme-text {
+        color: @primary-color;
+        font-weight: @medium-weight;
+        margin-bottom: 8px;
+      }
+
+      .theme {
+        color: rgba(@black, 75%);
+        font-weight: @semibold-weight;
+      }
+    }
   }
 }
