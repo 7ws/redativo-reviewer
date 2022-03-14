@@ -44,7 +44,14 @@
     case "{% url 'writer:all_essays' %}":
       page = '#sidebar .menu li.essays'
       break;
-    default:
+    case "{% url 'writer:in_progress_essays' %}":
+      page = '#sidebar .menu li.essays'
+      break;
+    case "{% url 'writer:submitted_essays' %}":
+      page = '#sidebar .menu li.essays'
+      break;
+    case "{% url 'writer:reviewed_essays' %}":
+      page = '#sidebar .menu li.essays'
       break;
   }
   document.querySelector(page).classList.add('active');
