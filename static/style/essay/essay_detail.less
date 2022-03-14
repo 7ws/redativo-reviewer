@@ -82,4 +82,37 @@ section.essay-detail {
       justify-self: flex-end;
     }
   }
+
+  &> section.paper-sheet{
+    background-color: @white;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
+    width: 1000px;
+    height: 1000px;
+    margin: 0 auto;
+    margin-top: 32px;
+    padding: 56px 80px;
+
+    .title {
+      color: rgba(@black, 75%);
+      font-size: @text-medium;
+      font-weight: @bold-weight;
+      text-align: center;
+      margin-bottom: 40px;
+      width: 840px;
+    }
+
+    .text {
+      color: rgba(@black, 90%);
+      height: 90%;
+      resize: none;
+      overflow: unset;
+      width: 840px;
+    }
+
+    textarea, input {
+      width: 100%;
+      border: none;
+      outline: none
+    }
+  }
 }
