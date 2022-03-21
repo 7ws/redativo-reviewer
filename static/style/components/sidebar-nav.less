@@ -33,11 +33,14 @@ nav#sidebar {
     }
 
     .username {
-      color: @primary-color;
       font-weight: bold;
       margin-top: 8px;
       font-size: 0;
       white-space: nowrap;
+
+      &> a {
+        color: @primary-color;
+      }
     }
   }
 
