@@ -5,8 +5,8 @@
 <nav id="sidebar">
   <ul class="menu">
     <li class="user">
-      {% if user.avatar %}
-        <img class="user-avatar" src="{{ user.avatar_image.url }}" alt="">
+      {% if user.profile.avatar_image %}
+      <img class="user-avatar" src="{{ user.profile.avatar_image.url }}" alt="">
       {% else %}
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
