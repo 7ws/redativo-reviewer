@@ -6,7 +6,7 @@
   <ul class="menu">
     <li class="user">
       {% if user.profile.avatar_image %}
-      <img class="user-avatar" src="{{ user.profile.avatar_image.url }}" alt="">
+        <img class="user-avatar" src="{{ user.profile.avatar_image.url }}" alt="">
       {% else %}
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
