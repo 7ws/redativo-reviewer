@@ -78,6 +78,10 @@ nav#sidebar {
 
 // Hovering effect (open / collapse)
 body {  // Collapsed
+  main {
+    margin-left: @sidebar-width-collapsed;
+    transition: margin-left 0.25s;
+  }
   header#main-header div.logo {
     width: @sidebar-width-collapsed;
     transition: width 0.25s;
@@ -100,6 +104,9 @@ body {  // Collapsed
   }
 }
 body.open-sidebar {  // Open
+  main {
+    margin-left: @sidebar-width;
+  }
   header#main-header div.logo {
     width: @sidebar-width;
   }
