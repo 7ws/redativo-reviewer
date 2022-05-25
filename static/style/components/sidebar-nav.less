@@ -29,15 +29,19 @@ nav#sidebar {
 
     .user-avatar {
       width: @size-56px;
+      border-radius: 50%;
       transition: width 0.25s;
     }
 
     .username {
-      color: @primary-color;
       font-weight: bold;
       margin-top: 8px;
       font-size: 0;
       white-space: nowrap;
+
+      &> a {
+        color: @primary-color;
+      }
     }
   }
 
