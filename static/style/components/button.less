@@ -1,1 +1,37 @@
-@import '../global.less';
+@import '../variables.less';
+// buttons
+button {
+  border: none;
+  border-radius: 8px;
+  font-size: @text;
+  padding: 8px;
+  font-family: @secondary-font;
+  font-weight: @semibold-weight;
+  height: 48px;
+}
+
+.primary-button, .primary-button-small {
+  color: @white;
+  background-color: @primary-color;
+}
+
+.secondary-button {
+  background-color: @light;
+  color: @primary-color;
+  border: 1px solid @primary-color;
+}
+
+.primary-button-small {
+  height: @size-32px;
+  font-size: @label;
+}
+
+.round-button {
+  background-color: @primary-color;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  font-size: 0;
+  height: 48px;
+  width: 48px;
+}
