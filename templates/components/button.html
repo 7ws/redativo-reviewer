@@ -1,8 +1,7 @@
-<button class="{{class}}" type="{{ type }}" name="{{name}}" value="{{value}}">
-  
-  {% if icon %}
-    <i class="{{icon}}" ></i>
-  {% endif %}
-  
+{% load static %}
+{% block head %}
+  <link rel="stylesheet/less" type="text/css" href="{% static 'style/components/button.less' %}">
+{% endblock head %}
+<button class="{{class}}" type="{{ type }}" name="{{name}}" value="{{value}}" onclick="{{onclick}}">
   {{ label }}
 </button>
