@@ -1,6 +1,6 @@
 @import '../global.less';
 
-.principal-header {
+header.principal-header {
   background-color: @background-header;
   position: fixed;
   color: @light;
@@ -24,18 +24,18 @@
     }
   }
 
-  .dropdown-menu {
+  &> section.dropdown-menu {
     color: @white;
     font-weight: @semibold-weight;
     justify-self: flex-end;
     position: relative;
     margin-right: @size-32px;
 
-    .dropdown-username {
+    &> a.dropdown-username {
       border-bottom: 1px solid @primary-color;
     }
 
-    .dropdown-username:hover {
+    &> a.dropdown-username:hover {
       border-bottom: 1px solid @white;
     }
 
@@ -80,12 +80,12 @@
     }
   }
 
-  .login-signup {
+  &> section.login-signup {
     justify-self: flex-end;
     position: relative;
     margin-right: @size-40px;
 
-    ul li {
+    &> ul li {
       display: inline-block;
       margin-left: @size-16px;
 
