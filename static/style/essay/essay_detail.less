@@ -21,7 +21,7 @@ header {
 }
 
 section.essay-detail {
-  width: 1000px;
+  width: @main-content-width;
   margin: 0 auto;
   position: relative;
 
@@ -82,7 +82,7 @@ section.essay-detail {
   &> section.paper-sheet{
     background-color: @white;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    width: 1000px;
+    width: @main-content-width;
     height: 1000px;
     margin: 0 auto;
     margin-top: 32px;
@@ -94,7 +94,7 @@ section.essay-detail {
       font-weight: @bold-weight;
       text-align: center;
       margin-bottom: 40px;
-      width: 840px;
+      width: calc(@main-content-width - 160px);
     }
 
     .text {
@@ -102,7 +102,7 @@ section.essay-detail {
       height: 90%;
       resize: none;
       overflow: unset;
-      width: 840px;
+      width: calc(@main-content-width - 160px);
     }
 
     textarea, input {
