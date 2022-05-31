@@ -4,6 +4,12 @@ main{
   margin-left: 0 !important;
 }
 
+header.principal-header {
+  &> div.logo {
+    background-color: @primary-color !important;
+  }
+}
+
 section.edit-profile {
   width: 90%;
   margin: 0 auto;
@@ -58,6 +64,8 @@ section.edit-profile {
         img {
           border: 1px solid rgba(@black, 20%);
           border-radius: 50%;
+          height: 128px;
+          width: 128px;
         }
 
         &> .avatar-image-upload {

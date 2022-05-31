@@ -5,12 +5,18 @@
 <nav id="sidebar">
   <ul class="menu">
     <li class="user">
-      {% if user.avatar %}
-        <img class="user-avatar" src="{{ user.avatar_image.url }}" alt="">
+      {% if user.profile.avatar_image %}
+        <img class="user-avatar" src="{{ user.profile.avatar_image.url }}" alt="">
       {% else %}
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
-      <span class="username"><a href="{% url 'profile_url' %}">{{ user.username }}</a></span>
+      <span class="username"><a href="{% url 'profile_url' %}">
+        {% if user.first_name %}
+          {{ user.first_name }}
+        {% else %}
+          {{ user.username }}
+        {% endif %}
+      </a></span>
     </li>
     <li class="menu-item themes"><a href="{% url 'themes_active' %}">Temas</a></li>
     <li class="menu-item essays"><a href="{% url 'writer:all_essays' %}">Redações</a></li>
@@ -44,7 +50,14 @@
     case "{% url 'writer:all_essays' %}":
       page = '#sidebar .menu li.essays'
       break;
-    default:
+    case "{% url 'writer:in_progress_essays' %}":
+      page = '#sidebar .menu li.essays'
+      break;
+    case "{% url 'writer:submitted_essays' %}":
+      page = '#sidebar .menu li.essays'
+      break;
+    case "{% url 'writer:reviewed_essays' %}":
+      page = '#sidebar .menu li.essays'
       break;
   }
   document.querySelector(page).classList.add('active');
