@@ -11,17 +11,8 @@ header.principal-header {
   width: 100vw;
   z-index: 2;
 
-  .logo {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    width: @sidebar-width;
+  &> div.logo {
     background-color: @background-logo;
-
-    img {
-      margin-left: @size-56px;
-      width: @logo-normal-size;
-    }
   }
 
   &> section.dropdown-menu {

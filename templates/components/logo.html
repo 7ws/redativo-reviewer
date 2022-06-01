@@ -1,6 +1,13 @@
 {% load static %}
-
-
+{% block head %}
+  <link rel="stylesheet/less" type="text/css" href="{% static 'style/components/logo.less' %}">
+{% endblock head %}
 <div class="logo">
-  <img src="{% static 'img/logo.svg' %}" alt="Logo do Redativo: um balão de texto escrito 'Redativo' com uma caneta." >
+  <a href="{% url 'home' %}">
+    {% if logo == 'blue' %}
+      <img src="{% static 'img/logo-azul.svg' %}" alt="Logo do Redativo: um balão de texto escrito 'Redativo' com uma caneta." >
+    {% else %}
+      <img src="{% static 'img/logo.svg' %}" alt="Logo do Redativo: um balão de texto escrito 'Redativo' com uma caneta." >
+    {% endif %}
+  </a>
 </div>
