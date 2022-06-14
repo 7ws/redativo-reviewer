@@ -19,7 +19,9 @@
       </a></span>
     </li>
     <li class="menu-item themes"><a href="{% url 'themes_active' %}">Temas</a></li>
-    <li class="menu-item essays"><a href="{% url 'writer:all_essays' %}">Redações</a></li>
+    {% if user.profile.PROFILE_TYPE == 'Writer' %}
+      <li class="menu-item essays"><a href="{% url 'writer:all_essays' %}">Redações</a></li>
+    {% endif %}
   </ul>
 </nav>
 
