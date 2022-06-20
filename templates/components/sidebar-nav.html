@@ -11,11 +11,7 @@
         <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
       {% endif %}
       <span class="username"><a href="{% url 'profile_url' %}">
-        {% if user.first_name %}
-          {{ user.first_name }}
-        {% else %}
-          {{ user.username }}
-        {% endif %}
+        Olá, {{ user.get_name }}
       </a></span>
     </li>
     <li class="menu-item themes"><a href="{% url 'themes_active' %}">Temas</a></li>

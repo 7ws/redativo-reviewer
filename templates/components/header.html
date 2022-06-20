@@ -8,11 +8,7 @@
   {% if user.is_authenticated %}
     <section class="dropdown-menu">
       <a onclick="handleDropdown()" class="dropdown-username down-arrow">
-        {% if user.first_name %}
-          Olá, {{ user.first_name }} {{ user.last_name }}
-        {% else %}
-          Olá, {{ user.username }}
-        {% endif %}
+        Olá, {{ user.get_name }}
       </a>
       <ul class="dropdown">
         <li><a href="{% url 'profile_url' %}">Meu Perfil</a></li>
