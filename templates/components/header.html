@@ -8,7 +8,7 @@
   {% if user.is_authenticated %}
     <section class="dropdown-menu">
       <a onclick="handleDropdown()" class="dropdown-username down-arrow">
-        Olá, {{ user.get_name }}
+        Olá, {{ user.name }}
       </a>
       <ul class="dropdown">
         <li><a href="{% url 'profile_url' %}">Meu Perfil</a></li>
