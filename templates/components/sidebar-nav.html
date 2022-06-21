@@ -14,9 +14,9 @@
         Olá, {{ user.name }}
       </a></span>
     </li>
-    <li class="menu-item themes"><a href="{% url 'themes_active' %}">Temas</a></li>
+    <li class="menu-item themes"><a href="{% url 'active_themes' %}">Temas</a></li>
     {% if user.profile.PROFILE_TYPE == 'Writer' %}
-      <li class="menu-item essays"><a href="{% url 'writer:all_essays' %}">Redações</a></li>
+      <li class="menu-item essays"><a href="{% url 'writer:essays' writer_id=user.id %}">Redações</a></li>
     {% endif %}
   </ul>
 </nav>
@@ -42,7 +42,7 @@
   let page = "";
 
   switch (path_URL) {
-    case "{% url 'themes_active' %}":
+    case "{% url 'active_themes' %}":
       page = '#sidebar .menu li.themes'
       break;
     case "{% url 'writer:all_essays' %}":
