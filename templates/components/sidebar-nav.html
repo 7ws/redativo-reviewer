@@ -16,7 +16,7 @@
     </li>
     <li class="menu-item themes"><a href="{% url 'theme:active' %}">Temas</a></li>
     {% if user.profile.PROFILE_TYPE == 'Writer' %}
-      <li class="menu-item essays"><a href="{% url 'writer:essays' writer_id=user.id %}">Redações</a></li>
+      <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
     {% endif %}
   </ul>
 </nav>
