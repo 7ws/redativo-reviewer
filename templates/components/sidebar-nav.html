@@ -5,19 +5,23 @@
 <nav id="sidebar">
   <ul class="menu">
     <li class="user">
-      {% if user.avatar_image %}
-        <img class="user-avatar" src="{{ user.avatar_image.url }}" alt="">
-      {% else %}
-        <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
+      {% if request.user.is_authenticated %}
+        {% if request.user.avatar_image %}
+          <img class="user-avatar" src="{{ request.user.avatar_image.url }}" alt="">
+        {% else %}
+          <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
+        {% endif %}
+        <span class="username"><a href="{% url 'profile_url' %}">
+          Olá, {{ request.user.full_name }}
+        </a></span>
+        </li>
+        {% if user_type == 'writer' %}
+          <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
+        {% elif user_type == 'reviewer' %}
+          <li class="menu-item essays"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Revisões</a></li>
+        {% endif %}
       {% endif %}
-      <span class="username"><a href="{% url 'profile_url' %}">
-        Olá, {{ user.name }}
-      </a></span>
-    </li>
     <li class="menu-item themes"><a href="{% url 'theme:active' %}">Temas</a></li>
-    {% if user.profile.PROFILE_TYPE == 'Writer' %}
-      <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
-    {% endif %}
   </ul>
 </nav>
 
