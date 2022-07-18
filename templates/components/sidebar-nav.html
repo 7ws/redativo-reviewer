@@ -19,6 +19,7 @@
           <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
         {% elif user_type == 'reviewer' %}
           <li class="menu-item essays"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Revisões</a></li>
+          <li class="menu-item essays"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Redações para Revisar</a></li>
         {% endif %}
       {% endif %}
     <li class="menu-item themes"><a href="{% url 'theme:active' %}">Temas</a></li>
