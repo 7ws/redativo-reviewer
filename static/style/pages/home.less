@@ -221,3 +221,47 @@ section.free-themes {
 section.about {
   height: 60vh;
 }
+
+footer {
+  background-color: #8935BB;
+  padding: @size-72px @size-120px;
+
+  &>section.footer-content {
+    padding-top: @size-72px;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 auto;
+    max-width: 2000px;
+
+    &>div.logo img {
+      width: @logo-big-size;
+      margin-left: 0;
+    }
+
+    &>nav.nav-footer {
+      &>ul {
+        display: flex;
+        justify-content: flex-end;
+
+        &>li {
+          margin-left: 32px;
+
+          &>a {
+            color: @white;
+            font-weight: @semibold-weight;
+          }
+        }
+      }
+    }
+
+    section.copyright {
+      color: @white;
+      font-weight: @semibold-weight;
+      grid-column-start: 1;
+      grid-column-end: 3;
+      margin-top: @size-72px;
+      text-align: center;
+    }
+  }
+}
