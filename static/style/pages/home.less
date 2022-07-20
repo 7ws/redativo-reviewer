@@ -3,3 +3,99 @@
 main {
   margin: 0 !important;
 }
+
+section.welcome {
+  background-image: url('../../img/home-assets/redativo-bg-welcome.png');
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: 20%;
+  height: 100vh;
+  box-sizing: border-box;
+
+  &>section.content {
+    background-image: @background-gradient-color;
+    box-sizing: border-box;
+    padding: @size-56px;
+    height: 100vh;
+    position: relative;
+
+    // Header
+
+    &>header.main-header {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 @size-56px;
+      margin: 0 auto;
+      max-width: 2000px;
+      height: 10%;
+
+      &>div.logo img {
+        margin-left: 0;
+        width: @logo-big-size;
+      }
+
+      &>nav.nav-header ul li {
+        display: inline;
+        margin-left: 24px;
+
+        &>a {
+          color: @white;
+          font-size: @text-big;
+          font-weight: @semibold-weight;
+        }
+
+        &>a.login {
+          border: 2px solid @white;
+          border-radius: 8px;
+          padding: 8px 16px;
+        }
+      }
+    }
+
+    // Main Section
+
+    &>section.main-welcome {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4vw;
+      height: 90%;
+      box-sizing: border-box;
+      margin: 0 auto;
+      max-width: 2000px;
+
+      &>div {
+        width: 46%;
+
+        &>h1 {
+          color: @white;
+          font-size: @h2;
+        }
+
+        &>p {
+          color: @white;
+          font-size: @h3;
+          margin-top: 24px;
+          margin-bottom: 40px;
+        }
+
+        &>div.create-first-essay {
+          text-align: center;
+
+          &>a button {
+            color: #8716CB;
+            font-family: @primary-font;
+            padding: 8px 24px;
+          }
+        }
+      }
+
+      &>picture.foto-redativo {
+        img {}
+      }
+    }
+
+  }
+}
