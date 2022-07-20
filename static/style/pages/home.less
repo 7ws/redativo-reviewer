@@ -165,3 +165,55 @@ section.how-works {
     }
   }
 }
+
+section.free-themes {
+  background-image: @background-gradient-color;
+  padding: @size-72px;
+  position: relative;
+  z-index: 1;
+
+  &>div {
+    h2 {
+      color: @white;
+      font-size: @h2;
+      margin-bottom: @size-16px;
+      text-align: center;
+    }
+
+    p {
+      color: @white;
+      font-size: @h4;
+      margin-bottom: @size-72px;
+      text-align: center;
+    }
+  }
+
+  &>ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  &>ul li.card-free-theme {
+    background-color: @white;
+    border-radius: 16px;
+    padding: @size-56px @size-32px;
+    width: 300px;
+
+    h3 {
+      font-size: @text-big;
+      font-weight: @semibold-weight;
+      margin-bottom: 32px;
+    }
+
+    p {
+      color: rgba(@black, 60%);
+      font-weight: @medium-weight;
+      margin-bottom: @size-32px;
+      text-align: justify;
+    }
+  }
+}
