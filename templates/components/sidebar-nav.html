@@ -12,7 +12,7 @@
           <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
         {% endif %}
         <span class="username"><a href="{% url 'profile_url' %}">
-          Olá, {{ request.user.full_name }}
+          Olá, {{ request.user.name }}
         </a></span>
         </li>
         {% if user_type == 'writer' %}
