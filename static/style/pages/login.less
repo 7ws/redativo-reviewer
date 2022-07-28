@@ -1,13 +1,7 @@
 @import '../global.less';
 
 body {
-  background: @primary-color;
-  background-image: url("../../img/login-bg.jpg");
-  background-repeat: no-repeat;
-  background-size: auto 80vh;
-  background-position: right center;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  position: relative;
 
   main {
     margin-left: 0;
@@ -15,6 +9,20 @@ body {
   }
 }
 
+body::before {
+  content: "";
+  position: absolute;
+  background-image: url('../../img/home-assets/redativo-bg-welcome.png');
+  background-repeat: no-repeat;
+  background-size: auto 80vh;
+  background-position: left center;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  transform: scaleX(-1);
+}
 section#login-form {
   align-items: center;
   color: white;
