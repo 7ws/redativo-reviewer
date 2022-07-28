@@ -31,6 +31,7 @@ section.main-login {
 }
 
 section#login-form {
+  z-index: 1;
   align-items: center;
   color: white;
   display: flex;
@@ -38,19 +39,19 @@ section#login-form {
   justify-content: center;
   height: 100vh;
 
-  header {
+  &>header {
     text-align: center;
     margin-bottom: @size-32px;
     width: @login-form-width;
     display: flex;
     justify-content: center;
 
-    .logo img {
+    &>.logo img {
       width: @logo-big-size;
     }
   }
 
-  section {
+  &>section {
     background: @background-login-form;
     border-radius: 10px;
     padding: @size-56px;
@@ -61,48 +62,50 @@ section#login-form {
     flex-direction: column;
     justify-content: space-between;
 
-    h1 {
+    &>h1 {
       display: none
     }
 
-    p.welcome-text {
+    &>p.welcome-text {
       font-size: @text-big;
       font-weight: @semibold-weight;
       line-height: 32px;
       width: 184px;
     }
 
-    form {
+    &>form {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
 
-      button[type="submit"] {
+      &>button[type="submit"] {
         margin-top: @size-24px;
         width: 100%;
       }
 
-      p.forgot-password {
+      &>p.forgot-password {
         text-align: right;
       }
 
-      .form-field {
+      &>.form-field {
         margin: 0;
 
-        .label {
+        &>.label {
           margin-bottom: 4px;
         }
 
-        input {
+        &>input {
           border: none;
           margin-bottom: @size-16px;
           padding: @size-16px;
         }
       }
     }
-    .create-account {
+
+    &>.create-account {
       text-align: center;
       font-size: @text-small;
+
       strong {
         color: @white;
         font-size: @text;
