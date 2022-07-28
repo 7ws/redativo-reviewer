@@ -38,14 +38,14 @@ section#signup-form {
   justify-content: center;
   height: 100vh;
 
-  header {
+  &>header {
     text-align: center;
     margin-bottom: @size-32px;
     width: @login-form-width;
     display: flex;
     justify-content: center;
 
-    .logo img {
+    &>.logo img {
       width: @logo-big-size;
     }
   }
@@ -55,49 +55,49 @@ section#signup-form {
     border-radius: 10px;
     padding: @size-56px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    height: @signup-form-height;
     width: @login-form-width;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    h1 {
+    &>h1 {
       display: none
     }
 
-    p.welcome-text {
+    &>p.welcome-text {
       font-size: @text-big;
       font-weight: @semibold-weight;
       line-height: 32px;
+      margin-bottom: 24px;
       width: 216px;
     }
 
-    form {
+    &>form {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
 
-      button[type="submit"] {
+      &>button[type="submit"] {
         margin-top: @size-24px;
         width: 100%;
       }
 
-      .form-field {
+      &>.form-field {
         margin: 0;
 
-        .label {
+        &>.label {
           margin-bottom: 4px;
         }
 
-        input {
+        &>input {
           border: none;
           margin-bottom: @size-16px;
           padding: @size-16px;
         }
       }
 
-      .helptext-card {
+      &>.helptext-card {
         background-color: @white;
         display: none;
         padding: 16px;
@@ -106,7 +106,7 @@ section#signup-form {
         right: -248px;
         width: 240px;
 
-        p {
+        &>p {
           display: inline-block;
           color: rgba(@black, 70%);
           margin-bottom: 4px;
@@ -116,19 +116,20 @@ section#signup-form {
         }
 
 
-        ul li{
+        &> ul li {
           color: rgba(@black, 70%);
           display: block;
           font-size: @label;
           margin-bottom: 8px;
         }
 
-        p::before, li::before{
+        &>p::before,
+        &>ul li::before {
           content: '* ';
         }
       }
 
-      .helptext-card::after {
+      &>.helptext-card::after {
         content: "";
 
         width: 0;
@@ -144,40 +145,48 @@ section#signup-form {
         left: -8px;
       }
 
-      .helptext-username {
+      &>.helptext-cpf {
         top: 23px;
       }
 
-      .helptext-password1 {
+      &>.helptext-password1 {
         top: 102px;
       }
 
-      .helptext-password2 {
+      &>.helptext-password2 {
         top: 182px;
       }
 
-      .helptext {
+      &>.helptext-full_name {
+        top: 260px;
+      }
+
+      &>.helptext-email {
+        top: 340px;
+      }
+
+      &>.helptext {
         display: inline-block;
         font-size: @label;
       }
 
-      .show {
+      &>.show {
         display: block;
       }
 
-      .form-field:last-of-type {
+      &>.form-field:last-of-type {
         align-items: center;
         display: flex;
         flex-direction: row-reverse;
         justify-content: flex-end;
 
-        span {
+        &>span {
           font-size: @text-small;
           margin: 0;
           font-weight: @medium-weight;
         }
 
-        > input {
+        &>input {
           margin: 0;
           margin-right: 8px;
           width: 16px;
@@ -185,9 +194,12 @@ section#signup-form {
         }
       }
     }
-    .access-account {
-      text-align: center;
+
+    &>.access-account {
       font-size: @text-small;
+      margin-top: 24px;
+      text-align: center;
+
       strong {
         color: @white;
         font-size: @text;
@@ -197,7 +209,7 @@ section#signup-form {
 }
 
 @media screen and (max-width: 1000px) {
-  body {
+  section.main-signup {
     grid-template-columns: 1fr;
   }
 }
