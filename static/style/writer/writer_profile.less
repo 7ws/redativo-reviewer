@@ -1,6 +1,6 @@
 @import '../global.less';
 
-main{
+main {
   margin-left: 0 !important;
 }
 
@@ -15,17 +15,17 @@ section.profile {
   margin: 0 auto;
   position: relative;
 
-  &> .nav-profile {
+  &>.nav-profile {
     position: absolute;
     width: 100%;
 
-    ul {
+    &>ul {
       display: flex;
       justify-content: space-between;
       align-items: center;
 
-      li {
-        .button-return{
+      &>li {
+        .button-return {
           background-image: url('../../img/icons/nav/arrow-left.svg');
         }
 
@@ -36,13 +36,13 @@ section.profile {
     }
   }
 
-  .title-page {
+  &>.title-page {
     color: @primary-color;
     margin: 40px auto;
     width: @profile-card-width;
   }
 
-  .card-profile {
+  &>.card-profile {
     background-color: @white;
     border-radius: 10px;
     padding: @size-40px;
@@ -54,50 +54,52 @@ section.profile {
     margin: 0 auto;
     width: @profile-card-width;
 
-    &>ul li section.avatar-image {
-      position: relative;
-      border: 1px solid rgba(@black, 20%);
-      border-radius: 50%;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 16px;
-      height: 128px;
-      width: 128px;
-      overflow: hidden;
-      text-align: center;
-      clear: both;
-      background-size: cover;
+    &>ul {
+      &>li {
+        border-bottom: 1px solid rgba(@primary-color, 40%);
+        padding: 16px;
+        color: rgba(@black, 70%);
 
-      &>img {
-        width: 100%;
-        vertical-align: middle;
-        object-fit: fill;
+        &:first-of-type {
+          padding-top: 0;
+          padding-bottom: 32px;
+        }
+
+        &>section.avatar-image {
+          position: relative;
+          border: 1px solid rgba(@black, 20%);
+          border-radius: 50%;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 16px;
+          height: 128px;
+          width: 128px;
+          overflow: hidden;
+          text-align: center;
+          clear: both;
+          background-size: cover;
+
+          &>img {
+            width: 100%;
+            vertical-align: middle;
+            object-fit: fill;
+          }
+        }
+
+        &>p span {
+          display: inline-block;
+          width: 40%;
+          font-weight: @semibold-weight;
+        }
       }
     }
 
-    li {
-      border-bottom: 1px solid rgba(@primary-color, 40%);
-      padding: 16px;
-      color: rgba(@black, 70%);
-    }
-
-    ul li:first-of-type {
-      padding-top: 0;
-      padding-bottom: 32px;
-    }
-
-    ul li p span {
-      display: inline-block;
-      width: 40%;
-      font-weight: @semibold-weight;
-    }
-
-    .edit-button {
+    &>a.edit-button {
       width: 128px;
       text-align: right;
       width: 100%;
 
-      button {
+      &>button {
         width: 128px;
         color: @white;
       }
