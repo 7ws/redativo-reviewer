@@ -1,6 +1,6 @@
 @import '../global.less';
 
-main{
+main {
   margin-left: 0 !important;
 }
 
@@ -15,34 +15,34 @@ section.edit-profile {
   margin: 0 auto;
   position: relative;
 
-  &> .nav-edit-profile {
+  &>nav.nav-edit-profile {
     position: absolute;
     width: 100%;
 
-    ul {
+    &>ul {
       display: flex;
       justify-content: space-between;
       align-items: center;
 
-      li {
-        .button-return{
+      &>li {
+        &>button.button-return {
           background-image: url('../../img/icons/nav/arrow-left.svg');
         }
 
-        .themes-active {
+        &>a button.themes-active {
           background-image: url('../../img/icons/nav/home.svg');
         }
       }
     }
   }
 
-  .title-page {
+  &>h1.title-page {
     color: @primary-color;
     margin: 40px auto;
     width: 440px;
   }
 
-  .card-edit-profile {
+  &>section.card-edit-profile {
     background-color: @white;
     border-radius: 10px;
     padding: @size-40px;
@@ -56,7 +56,7 @@ section.edit-profile {
     width: 440px;
 
     &>form {
-      &>.avatar-image {
+      &>section.avatar-image {
         position: relative;
         border: 1px solid rgba(@black, 20%);
         border-radius: 50%;
@@ -72,7 +72,7 @@ section.edit-profile {
 
         &>img.avatar {
           max-width: 100%;
-          vertical-align:middle;
+          vertical-align: middle;
           object-fit: fill;
         }
 
@@ -89,7 +89,7 @@ section.edit-profile {
           display: none;
         }
 
-        &>input#avatar_image-clear_id + label {
+        &>input#avatar_image-clear_id+label {
           background-image: url('../../img/icons/delete.svg');
           background-color: @primary-color;
           background-position: center;
@@ -103,13 +103,13 @@ section.edit-profile {
           width: 32px;
         }
 
-        &>input#avatar_image-clear_id:checked + label {
+        &>input#avatar_image-clear_id:checked+label {
           background-image: url('../../img/icons/delete 2.svg');
         }
 
         &>#id_avatar_image {
           font-size: 0;
-          width:0;
+          width: 0;
           height: 0;
         }
 
@@ -129,18 +129,17 @@ section.edit-profile {
         }
       }
 
-      &> .fields label {
+      &>.fields label {
         padding: 8px 0 16px 0;
         border-bottom: 1px solid rgba(@primary-color, 40%);
         margin: 0;
 
-        span {
+        &>span {
           color: rgba(@black, 50%);
           font-size: @text;
           margin-bottom: 6px;
         }
 
-        input {
         &>input[type="text"],
         &>input[type="email"] {
           border: 1px solid rgba(@primary-color, 50%);
@@ -149,21 +148,22 @@ section.edit-profile {
         }
       }
 
-      &> .fields label:last-of-type {
+      &>.fields label:last-of-type {
         border-bottom: none;
       }
 
-      .buttons {
+      &>section.buttons {
         text-align: right;
         flex: 1;
         margin-top: 40px;
 
-        &> .save, &> a.edit-button button.primary-button-small {
+        &>.save,
+        &>a.edit-button button.primary-button-small {
           width: 102px;
           margin-top: auto;
         }
 
-        &> a.edit-button {
+        &>a.edit-button {
           margin-left: 16px;
         }
       }
