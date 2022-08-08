@@ -7,9 +7,13 @@
     <li class="user">
       {% if request.user.is_authenticated %}
         {% if request.user.avatar_image %}
-          <img class="user-avatar" src="{{ request.user.avatar_image.url }}" alt="">
+          <div class="user-avatar">
+            <img src="{{ request.user.avatar_image.url }}" alt="">
+          </div>
         {% else %}
-          <img class="user-avatar" src="{% static 'img/default-avatar.svg' %}" alt="">
+          <div class="user-avatar">
+            <img src="{% static 'img/default-avatar.svg' %}" alt="">
+          </div>
         {% endif %}
         <span class="username"><a href="{% url 'profile_url' %}">
           Olá, {{ request.user.name }}
