@@ -52,39 +52,80 @@ section.edit-profile {
     flex-direction: column;
     justify-content: space-between;
     margin: 0 auto;
+    position: relative;
     width: 440px;
 
-    &> form {
-      .avatar-image {
-        display: flex;
-        justify-content: center;
+    &>form {
+      &>.avatar-image {
         position: relative;
+        border: 1px solid rgba(@black, 20%);
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
         margin-bottom: 16px;
+        height: 128px;
+        width: 128px;
+        overflow: hidden;
+        text-align: center;
+        clear: both;
+        background-size: cover;
 
-        img {
-          border: 1px solid rgba(@black, 20%);
-          border-radius: 50%;
-          height: 128px;
-          width: 128px;
+        &>img.avatar {
+          max-width: 100%;
+          vertical-align:middle;
+          object-fit: fill;
         }
 
-        &> .avatar-image-upload {
+        &>img.default-avatar {
+          height: 100%;
+          width: 100%;
+        }
+      }
+
+      &>.fields label:first-of-type {
+        font-size: 0;
+
+        &>input#avatar_image-clear_id {
+          display: none;
+        }
+
+        &>input#avatar_image-clear_id + label {
+          background-image: url('../../img/icons/delete.svg');
           background-color: @primary-color;
-          background-image: url('../../img/icons/edit.svg');
           background-position: center;
           background-repeat: no-repeat;
           border-radius: 50%;
           position: absolute;
           cursor: pointer;
-          font-size: 0;
           height: 32px;
-          top: 80px;
-          right: 126px;
+          top: 42px;
+          right: 150px;
           width: 32px;
         }
 
-        &> input[type='file'] {
-          display: none;
+        &>input#avatar_image-clear_id:checked + label {
+          background-image: url('../../img/icons/delete 2.svg');
+        }
+
+        &>#id_avatar_image {
+          font-size: 0;
+          width:0;
+          height: 0;
+        }
+
+        &>input[type='file']::before {
+          content: "";
+          background-image: url('../../img/icons/edit.svg');
+          background-color: @primary-color;
+          background-position: center;
+          background-repeat: no-repeat;
+          border-radius: 50%;
+          position: absolute;
+          cursor: pointer;
+          height: 32px;
+          top: 135px;
+          right: 150px;
+          width: 32px;
         }
       }
 
@@ -100,6 +141,8 @@ section.edit-profile {
         }
 
         input {
+        &>input[type="text"],
+        &>input[type="email"] {
           border: 1px solid rgba(@primary-color, 50%);
           color: rgba(@black, 60%);
           padding: @size-16px;
