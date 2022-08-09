@@ -1,7 +1,7 @@
 @import '../global.less';
 
 header.principal-header {
-  background-color: @background-header;
+  background-image: linear-gradient(to right, #1e70f7, #306af1, #3d65eb, #465fe5, #4e59df, #5754da, #6050d6, #674bd1, #7146cc, #7a41c6, #823bc1, #8935bb);
   position: fixed;
   color: @light;
   display: grid;
@@ -10,83 +10,94 @@ header.principal-header {
   height: @header-height;
   width: 100vw;
   z-index: 2;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
 
-  &> div.logo {
+  &>div.logo {
     background-color: @background-logo;
   }
 
-  &> section.dropdown-menu {
+  &>section.dropdown-menu {
     color: @white;
     font-weight: @semibold-weight;
     justify-self: flex-end;
     position: relative;
     margin-right: @size-32px;
 
-    &> a.dropdown-username {
-      border-bottom: 1px solid @primary-color;
-    }
-
-    &> a.dropdown-username:hover {
+    &>a.dropdown-username:hover {
       border-bottom: 1px solid @white;
     }
 
-    .dropdown {
+    &>.dropdown {
       background-color: @white;
       border-radius: 8px;
       box-shadow: 0 1px 2px rgba(@black, 80%);
+      border: 1px solid @secondary-color;
       display: none;
       position: absolute;
       top: 32px;
       right: 0;
       width: 160px;
 
-      li {
+      &>li {
         padding: 16px 16px;
         text-align: center;
         width: 100%;
       }
 
-      li:first-child {
+      &>li:first-child {
         padding-bottom: 0;
       }
 
-      li:hover {
-        background-color: rgba(@primary-color, 16%)
+      &>li:hover {
+        background-color: rgba(@secondary-color, 10%)
       }
 
-      li a {
-        color: @primary-color;
+      &>li a {
+        color: #1F1F1F;
         display: inline-block;
         font-weight: @semibold-weight;
         width: 100%;
       }
 
-      li:first-of-type {
+      &>li:first-of-type {
         a {
-          border-bottom: 1px solid rgba(@primary-color, 50%);
+          border-bottom: 1px solid rgba(#1F1F1F, 20%);
           display: inline-block;
           padding-bottom: 16px;
         }
       }
     }
+
+    &>a.down-arrow:after {
+      content: "";
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: @size-8px;
+      width: 0;
+      height: 0;
+
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid @white;
+    }
   }
 
-  &> section.login-signup {
+  &>section.login-signup {
     justify-self: flex-end;
     position: relative;
     margin-right: @size-40px;
 
-    &> ul li {
+    &>ul li {
       display: inline-block;
       margin-left: @size-16px;
 
-      a {
+      &>a {
         color: @white;
         font-weight: @semibold-weight;
         border-bottom: 1px solid @primary-color;
       }
 
-      a:hover {
+      &>a:hover {
         border-bottom: 1px solid @white;
       }
     }
@@ -94,21 +105,7 @@ header.principal-header {
 }
 
 header.open-dropdown {
-  section.dropdown-menu
-  .dropdown {
+  &>section.dropdown-menu .dropdown {
     display: block;
   }
-}
-
-.down-arrow:after {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: @size-8px;
-  width: 0;
-  height: 0;
-
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid @white;
 }
