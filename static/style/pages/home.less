@@ -29,11 +29,15 @@ section.welcome {
       padding: 0 @size-56px;
       margin: 0 auto;
       max-width: 2000px;
-      height: 10%;
+      height: 90px;
 
-      &>div.logo img {
-        margin-left: 0;
-        width: @logo-big-size;
+      &>div.logo a {
+        font-size: 0;
+
+        &>img {
+          margin-left: 0;
+          width: @logo-big-size;
+        }
       }
 
       &>nav.nav-header ul li {
@@ -55,6 +59,10 @@ section.welcome {
         &>a.username {
           cursor: default;
         }
+
+        &>a:hover {
+          border-bottom: 1px solid @white;
+        }
       }
     }
 
@@ -62,25 +70,25 @@ section.welcome {
 
     &>section.main-welcome {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      gap: 4vw;
-      height: 90%;
+      padding: 0 @size-56px;
+      height: calc(100vh - 202px);
       box-sizing: border-box;
       margin: 0 auto;
       max-width: 2000px;
 
       &>div {
-        width: 46%;
+        width: 50%;
 
         &>h1 {
           color: @white;
-          font-size: @h2;
+          font-size: @h3;
         }
 
         &>p {
           color: @white;
-          font-size: @h3;
+          font-size: @h4;
           margin-top: 24px;
           margin-bottom: 40px;
         }
@@ -97,10 +105,16 @@ section.welcome {
       }
 
       &>picture.foto-redativo {
-        img {}
+        width: 50%;
+
+        img {
+          max-width: 100%;
+          max-height: calc(100vh - 202px);
+          width: auto;
+          height: auto;
+        }
       }
     }
-
   }
 }
 
