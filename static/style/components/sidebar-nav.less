@@ -27,10 +27,25 @@ nav#sidebar {
     width: @sidebar-width-collapsed;
     height: 184px;
 
-    .user-avatar {
-      width: @size-56px;
+    &>.user-avatar  {
+      position: relative;
+      border: 1px solid rgba(@black, 20%);
       border-radius: 50%;
-      transition: width 0.25s;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 16px;
+      height: @size-56px;
+      width: @size-56px;
+      overflow: hidden;
+      text-align: center;
+      clear: both;
+      background-size: cover;
+
+      &>img {
+        width: @size-56px;
+        vertical-align:middle;
+        object-fit: fill;
+      }
     }
 
     .username {
@@ -130,8 +145,12 @@ body.open-sidebar {  // Open
         font-size: @text-big;
       }
 
-      > .user-avatar {
+      >.user-avatar {
+        height: 100px;
         width: 100px;
+        img {
+          width: 100%;
+        }
       }
     }
     li.menu-item {
