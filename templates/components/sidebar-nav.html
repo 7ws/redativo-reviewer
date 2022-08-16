@@ -46,4 +46,19 @@
       });
     });
   })();
+  (function () {
+    const path_URL = document.location.pathname;
+    let page = "";
+
+    switch (path_URL) {
+      case "/temas/ativos/":
+        page = '#sidebar .menu li.themes';
+        break;
+      default:
+        page = '#sidebar .menu li.essays';
+        break;
+    }
+
+    document.querySelector(page).classList.add('active');
+  })()
 </script>
