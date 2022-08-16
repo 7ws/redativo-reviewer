@@ -1,48 +1,49 @@
 {% load static %}
 {% block head %}
-  <link rel="stylesheet/less" type="text/css" href="{% static 'style/components/sidebar-nav.less' %}">
+<link rel="stylesheet/less" type="text/css" href="{% static 'style/components/sidebar-nav.less' %}">
 {% endblock head %}
 <nav id="sidebar">
   <ul class="menu">
     <li class="user">
       {% if request.user.is_authenticated %}
-        {% if request.user.avatar_image %}
-          <div class="user-avatar">
-            <img src="{{ request.user.avatar_image.url }}" alt="">
-          </div>
-        {% else %}
-          <div class="user-avatar">
-            <img src="{% static 'img/default-avatar.svg' %}" alt="">
-          </div>
-        {% endif %}
-        <span class="username"><a href="{% url 'profile_url' %}">
-          Olá, {{ request.user.name }}
-        </a></span>
-        </li>
-        {% if user_type == 'writer' %}
-          <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
-        {% elif user_type == 'reviewer' %}
-          <li class="menu-item essays"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Revisões</a></li>
-          <li class="menu-item essays"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Redações para Revisar</a></li>
-        {% endif %}
+      {% if request.user.avatar_image %}
+      <div class="user-avatar">
+        <img src="{{ request.user.avatar_image.url }}" alt="">
+      </div>
+      {% else %}
+      <div class="user-avatar">
+        <img src="{% static 'img/default-avatar.svg' %}" alt="">
+      </div>
       {% endif %}
+      <span class="username"><a href="{% url 'profile_url' %}">
+          Olá, {{ request.user.short_name }}
+        </a></span>
+    </li>
     <li class="menu-item themes"><a href="{% url 'theme:active' %}">Temas</a></li>
+    {% if user_type == 'writer' %}
+    <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
+    {% elif user_type == 'reviewer' %}
+    <li class="menu-item essays"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Revisões</a></li>
+    <li class="menu-item essays"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Redações para
+        Revisar</a></li>
+    {% endif %}
+    {% endif %}
   </ul>
 </nav>
 
 <script>
-'use strict';
-(function () {
-  const sidebar = document.querySelector('#sidebar');
-  const header_logo = document.querySelector('#main-header .logo');
+  'use strict';
+  (function () {
+    const sidebar = document.querySelector('#sidebar');
+    const header_logo = document.querySelector('#main-header .logo');
 
-  [header_logo, sidebar].map(function (element) {
-    element.addEventListener('mouseenter', function (ev) {
-      document.body.classList.add('open-sidebar');
+    [header_logo, sidebar].map(function (element) {
+      element.addEventListener('mouseenter', function (ev) {
+        document.body.classList.add('open-sidebar');
+      });
+      element.addEventListener('mouseleave', function (ev) {
+        document.body.classList.remove('open-sidebar');
+      });
     });
-    element.addEventListener('mouseleave', function (ev) {
-      document.body.classList.remove('open-sidebar');
-    });
-  });
-})();
+  })();
 </script>
