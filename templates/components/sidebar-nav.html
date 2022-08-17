@@ -47,15 +47,14 @@
   })();
   (function () {
     const path_URL = document.location.pathname;
+    const menu_List = ["temas", "redacoes", "para_revisao", "revisoes"];
+    const className = ["themes", "essays", "reviewable", "reviews"];
     let page = "";
 
-    switch (path_URL) {
-      case "/temas/ativos/":
-        page = '#sidebar .menu li.themes';
-        break;
-      default:
-        page = '#sidebar .menu li.essays';
-        break;
+    for (let [index, menu] of menu_List.entries()) {
+      if(path_URL.includes(menu)) {
+        page = `#sidebar .menu li.${className[index]}`
+      }
     }
 
     document.querySelector(page).classList.add('active');
