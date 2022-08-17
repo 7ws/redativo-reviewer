@@ -56,7 +56,7 @@ nav#sidebar {
         white-space: nowrap;
 
         &>a {
-          color: #125FD5;
+          color: @title-color;
         }
       }
     }
@@ -71,7 +71,7 @@ nav#sidebar {
 
       // Menu item links
       &>a {
-        color: @title-color;
+        color: @primary-color;
         font-weight: bold;
       }
 
@@ -107,7 +107,7 @@ nav#sidebar {
 
     // Current page
     &>li.active {
-      border-right: 4px solid #0047AD;
+      border-right: 4px solid @primary-color;
     }
 
     &>li.menu-item:hover {
