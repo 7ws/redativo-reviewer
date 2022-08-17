@@ -23,9 +23,8 @@
     {% if user_type == 'writer' %}
     <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
     {% elif user_type == 'reviewer' %}
-    <li class="menu-item essays"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Revisões</a></li>
-    <li class="menu-item essays"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Redações para
-        Revisar</a></li>
+    <li class="menu-item reviewable"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Corrigir</a></li>
+    <li class="menu-item reviews"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Corrigidas</a></li>
     {% endif %}
     {% endif %}
   </ul>
