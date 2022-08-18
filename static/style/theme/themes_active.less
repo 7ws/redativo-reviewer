@@ -77,9 +77,20 @@ section.themes {
             vertical-align: center;
           }
 
-          .note {
-            >img {
-              width: @size-32px;
+          &>a.note {
+            &::before {
+              content: '';
+              display: flex;
+              background-image: url('../../img/icons/note.svg');
+              background-repeat: no-repeat;
+              background-position: center;
+              height: 36px;
+              width: 32px;
+              vertical-align: middle;
+            }
+
+            &:hover::before {
+              background-image: url('../../img/icons/note-hover.svg');
             }
           }
         }
