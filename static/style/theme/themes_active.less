@@ -29,25 +29,25 @@ section.themes {
       width: 100%;
       gap: 16px;
 
-      .background-image-card {
+      &>img.background-image-card {
         border: 1px solid rgba(0, 0, 0, 0.16);
         width: 200px;
         height: 200px;
         border-radius: 12px;
       }
 
-      &> section {
+      &>section {
         display: flex;
         flex-direction: column;
         padding-top: 8px;
 
-        &> h3.theme-name a {
+        &>h3.theme-name a {
           font-size: @text-big;
           font-weight: @semibold-weight;
           color: @text-color;
         }
 
-        &> p.short-description {
+        &>p.short-description {
           color: rgba(@text-color, 90%);
           display: inline-block;
           font-size: @text;
@@ -56,7 +56,7 @@ section.themes {
           margin-top: 16px;
         }
 
-        .status-details {
+        &>section.status-details {
           display: grid;
           grid-template-columns: 25px 1fr 35px;
           gap: 4px;
@@ -65,12 +65,12 @@ section.themes {
           align-items: center;
           width: 100%;
 
-          .clock {
+          &>img.clock {
             width: @size-24px;
             justify-self: flex-start;
           }
 
-          .available-until {
+          &>p.available-until {
             font-weight: bold;
             font-size: @text-small;
             color: @primary-color;
