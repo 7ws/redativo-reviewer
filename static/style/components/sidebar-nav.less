@@ -199,4 +199,11 @@ body.open-sidebar {
       }
     }
   }
+
+  section.themes {
+    &> header, &>section.available-themes ul {
+      width: calc(100vw - @sidebar-width - 42px);
+    }
+  }
+
 }
