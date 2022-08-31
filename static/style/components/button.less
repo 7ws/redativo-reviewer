@@ -44,3 +44,20 @@ button {
   color: @white;
   cursor: default;
 }
+
+.upload-image-button {
+  &>label {
+    .button();
+    .primary-button-small();
+
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+  }
+
+  &>input {
+    display: none;
+  }
+}
