@@ -61,3 +61,30 @@ button {
     display: none;
   }
 }
+
+.delete-image-button {
+  &>label {
+    .button();
+    .secondary-button-small();
+    position: relative;
+
+    cursor: pointer;
+    background-color: @white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+  }
+
+  &>label::before {
+    content: "";
+    background-image: url('../../img/icons/delete.svg');
+    margin-right: 8px;
+    height: 16px;
+    width: 16px;
+  }
+
+  &>input {
+    display: none;
+  }
+}
