@@ -35,3 +35,12 @@ button {
   height: 48px;
   width: 48px;
 }
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.primary-button-small:disabled {
+  background-color: @gray-color;
+  border-color: @gray-color;
+  color: @white;
+  cursor: default;
+}

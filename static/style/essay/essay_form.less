@@ -1,38 +1,40 @@
 @import '../global.less';
 
-main{
+main {
   margin: 0 !important;
-}
-
-header {
-  display: flex;
-  align-items: center;
-  height: @header-height;
-  padding: 0 58px;
   position: relative;
-
-  &>.logo-blue {
-    display: flex;
-    align-items: center;
-
-    img {
-      width: @logo-normal-size;
-    }
-  }
 }
 
 section.essay-edit {
-  width: @main-content-width;
-  margin: 0 auto;
-  position: relative;
+  &>form.essay-form {
+    &>header.form {
+      &>section.logo {
+        display: flex;
+        align-items: center;
+        height: @header-height;
+        padding: 0 58px;
+        position: relative;
 
-  &> form.essay-form {
-    &> header.header-essay{
-      display: flex;
-      justify-content: space-between;
+        &>.logo-blue {
+          display: flex;
+          align-items: center;
 
-      &> a.return-to-form-essay{
-        &> button.button-return {
+          img {
+            width: @logo-normal-size;
+          }
+        }
+      }
+
+      &>section.header-essay {
+        display: grid;
+        gap: 80px;
+        grid-template-columns: 48px 1fr;
+        align-items: center;
+        justify-items: space-around;
+        margin: 0 auto;
+        width: @main-content-width;
+
+        &>a.return-to-form-essay button.button-return {
           background-color: @primary-color;
           background-image: url('../../img/icons/nav/arrow-left.svg');
           background-position: center;
@@ -42,46 +44,23 @@ section.essay-edit {
           height: 48px;
           width: 48px;
         }
-      }
 
-      &> section.theme {
-        .theme-title {
-          color: @primary-color;
-          font-weight: @medium-weight;
-          margin-bottom: 8px;
-        }
+        &>section.theme {
+          h2.theme-title {
+            color: @primary-color;
+            font-weight: @medium-weight;
+            margin-bottom: 8px;
+          }
 
-        .theme-text {
-          color: rgba(@black, 75%);
-          font-weight: @semibold-weight;
-        }
-      }
-
-      &> section.submit-essay{
-        &> button {
-          background-color: @light;
-          background-position: top;
-          background-repeat: no-repeat;
-          background-size: 32px;
-          color: @primary-color;
-          font-size: @label;
-          font-weight: @medium-weight;
-          height: 56px;
-          padding-bottom: 0;
-          padding-top: 24px;
-        }
-
-        .send-essay {
-          background-image: url('../../img/icons/submit/send.svg');
-        }
-
-        .save-essay {
-          background-image: url('../../img/icons/submit/save.svg');
+          h2.theme-text {
+            color: rgba(@black, 75%);
+            font-weight: @semibold-weight;
+          }
         }
       }
     }
 
-    &> section.paper-sheet{
+    &>section.paper-sheet {
       background-color: @white;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
       width: @main-content-width;
@@ -90,13 +69,14 @@ section.essay-edit {
       margin-top: 72px;
       padding: 56px 80px;
 
-      &> field textarea, &> field input {
+      &>field textarea,
+      &>field input {
         width: calc(@main-content-width - 160px);
         border: none;
         outline: none
       }
 
-      &> .title input{
+      &>.title input {
         color: rgba(@black, 75%);
         font-size: @text-medium;
         font-weight: @bold-weight;
@@ -104,7 +84,7 @@ section.essay-edit {
         margin-bottom: 40px;
       }
 
-      &> .text textarea {
+      &>.text textarea {
         color: rgba(@black, 90%);
         font-family: @primary-font;
         font-size: @text;
@@ -112,6 +92,68 @@ section.essay-edit {
         height: 90%;
         resize: none;
       }
+    }
+
+    &>section.doneButton {
+      margin: 42px 0;
+      text-align: center;
+    }
+
+    &>section.submit-essay {
+      background-color: rgba(@black, 25%);
+      display: none;
+      // display: flex;
+      position: fixed;
+      align-items: center;
+      justify-content: center;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+
+      &>section.card-submit-essay {
+        background-color: @light;
+        box-shadow: 0px 4px 37px rgba(@black, 25%);
+        padding: 40px 52px;
+        text-align: center;
+
+        &>p.confirm-text,
+        &>p.warning-text {
+          font-size: @text-medium;
+          font-weight: @semibold-weight;
+          margin-bottom: 12px;
+        }
+
+        &>p.confirm-text {
+          color: @title-color;
+        }
+
+        &>p.warning-text {
+          color: @secondary-color;
+        }
+
+        &>section.confirm-check {
+          display: flex;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+
+        &>section.confirm-send {
+          display: flex;
+          justify-content: space-around;
+
+          &>button {
+            font-size: @text-small;
+            line-height: @text-small;
+            height: @size-32px;
+            width: 40%;
+          }
+        }
+      }
+    }
+
+    &>section.showPopUp {
+      display: flex;
     }
   }
 }
