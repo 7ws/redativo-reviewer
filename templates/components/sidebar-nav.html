@@ -57,6 +57,8 @@
       }
     }
 
-    document.querySelector(page).classList.add('active');
+    if (page) {
+      document.querySelector(page).classList.add('active');
+    }
   })()
 </script>
