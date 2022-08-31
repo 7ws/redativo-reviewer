@@ -1,46 +1,14 @@
 @import '../global.less';
 
-main {
-  margin-left: 0 !important;
-}
-
-header.principal-header {
-  &> div.logo {
-    background-color: rgba(0, 0, 0, 0) !important;
-    justify-content: center;
-  }
-}
-
 section.edit-profile {
-  width: 90%;
-  margin: 0 auto;
-  position: relative;
-
-  &>nav.nav-edit-profile {
-    position: absolute;
-    width: 100%;
-
-    &>ul {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      &>li {
-        &>button.button-return {
-          background-image: url('../../img/icons/nav/arrow-left.svg');
-        }
-
-        &>a button.themes-active {
-          background-image: url('../../img/icons/nav/home.svg');
-        }
-      }
-    }
-  }
+  height: calc(100vh - 152px);
+  margin-top: 80px;
 
   &>h1.title-page {
-    color: @primary-color;
+    display: block;
+    color: @title-color;
     margin: 40px auto;
-    width: 440px;
+    width: @profile-card-width;
   }
 
   &>section.card-edit-profile {
@@ -54,89 +22,59 @@ section.edit-profile {
     justify-content: space-between;
     margin: 0 auto;
     position: relative;
-    width: 440px;
+    width: @profile-card-width;
 
     &>form {
-      &>section.avatar-image {
-        position: relative;
-        border: 1px solid rgba(@black, 20%);
-        border-radius: 50%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 16px;
-        height: 128px;
-        width: 128px;
-        overflow: hidden;
-        text-align: center;
-        clear: both;
-        background-size: cover;
+      &>section.header-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 48px;
 
-        &>img.avatar {
-          max-width: 100%;
-          vertical-align: middle;
-          object-fit: fill;
+        &>section.avatar-image {
+          position: relative;
+          border: 1px solid rgba(@black, 20%);
+          border-radius: 50%;
+          height: 128px;
+          width: 128px;
+          overflow: hidden;
+          text-align: center;
+          clear: both;
+          background-size: cover;
+
+          &>img.avatar {
+            max-width: 100%;
+            vertical-align: middle;
+            object-fit: fill;
+          }
+
+          &>img.default-avatar {
+            height: 100%;
+            width: 100%;
+          }
         }
 
-        &>img.default-avatar {
-          height: 100%;
-          width: 100%;
+        &> label {
+          &>section.upload-image-button {
+            margin-bottom: 8px;
+          }
         }
       }
 
-      &>.fields label:first-of-type {
-        font-size: 0;
-
-        &>input#avatar_image-clear_id {
-          display: none;
-        }
-
-        &>input#avatar_image-clear_id+label {
-          background-image: url('../../img/icons/delete.svg');
-          background-color: @primary-color;
-          background-position: center;
-          background-repeat: no-repeat;
-          border-radius: 50%;
-          position: absolute;
-          cursor: pointer;
-          height: 32px;
-          top: 42px;
-          right: 150px;
-          width: 32px;
-        }
-
-        &>input#avatar_image-clear_id:checked+label {
-          background-image: url('../../img/icons/delete 2.svg');
-        }
-
-        &>#id_avatar_image {
-          font-size: 0;
-          width: 0;
-          height: 0;
-        }
-
-        &>input[type='file']::before {
-          content: "";
-          background-image: url('../../img/icons/edit.svg');
-          background-color: @primary-color;
-          background-position: center;
-          background-repeat: no-repeat;
-          border-radius: 50%;
-          position: absolute;
-          cursor: pointer;
-          height: 32px;
-          top: 135px;
-          right: 150px;
-          width: 32px;
-        }
+      &>p.text-avatar-image {
+        color: @title-color;
+        font-size: @label;
+        text-align: center;
+        margin: 8px 0;
+        margin-bottom: 24px;
       }
 
       &>.fields label {
         padding: 8px 0 16px 0;
-        border-bottom: 1px solid rgba(@primary-color, 40%);
         margin: 0;
 
         &>span {
-          color: rgba(@black, 50%);
+          color: @title-color;
           font-size: @text;
           margin-bottom: 6px;
         }
@@ -149,18 +87,14 @@ section.edit-profile {
         }
       }
 
-      &>.fields label:last-of-type {
-        border-bottom: none;
-      }
-
       &>section.buttons {
-        text-align: right;
+        text-align: center;
         flex: 1;
         margin-top: 40px;
 
         &>.save,
         &>a.edit-button button.primary-button-small {
-          width: 102px;
+          width: 140px;
           margin-top: auto;
         }
 
@@ -168,6 +102,44 @@ section.edit-profile {
           margin-left: 16px;
         }
       }
+
+      &>section.delete-image-popup {
+        background-color: rgba(@black, 25%);
+        display: none;
+        position: fixed;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+
+        &>section.card-delete-image {
+          background-color: @light;
+          box-shadow: 0px 4px 37px rgba(@black, 25%);
+          margin-left: @sidebar-width-collapsed;
+          padding: 40px 52px;
+          text-align: center;
+
+          &>p.confirm-text {
+            color: @title-color;
+            font-size: @text-medium;
+            font-weight: @semibold-weight;
+            margin-bottom: 16px;
+          }
+
+          &>section.confirm-delete {
+            display: flex;
+            justify-content: space-around;
+          }
+        }
+      }
+
+      &>section.showPopUp {
+        display: flex;
+      }
     }
   }
+
+
 }
