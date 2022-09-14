@@ -13,7 +13,7 @@
   <main class="main-404">
     <h1 class="error-name">404</h1>
     <p class="error-feedbacks">Opa, parece que esta página não existe.</p>
-    <a class="return-link" href="http://{% url 'home' %}"">
+    <a class="return-link" href="{% url 'home' %}">
       {% include 'components/button.html' with class='primary-button' label='Voltar para Home' type='button' %}
     </a>
   </main>
