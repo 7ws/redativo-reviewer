@@ -63,19 +63,95 @@ section.essay-detail {
   }
 
   &> section.handle-status{
-    display: flex;
-    justify-content: space-between;
     margin: 0 auto;
     margin-top: 72px;
-    width: 840px;
+    width: @main-content-width;
 
-    &> a, &> p {
-      border-bottom: 1px solid rgba(@primary-color, 80%);
-      color: rgba(@primary-color, 80%);
-      font-size: @label;
-      font-weight: @bold-weight;
-      display: inline-block;
-      justify-self: flex-end;
+    &> section.current-status-content {
+      &> a, &> p {
+        border-bottom: 1px solid rgba(@primary-color, 80%);
+        color: rgba(@primary-color, 80%);
+        font-size: @label;
+        font-weight: @bold-weight;
+        display: inline-block;
+        justify-self: flex-end;
+      }
+
+      &>section.general-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &>div.progress-bar-score {
+          border: 1px solid @primary-color;
+          border-radius: 12px;
+          margin-top: 6px;
+          height: 8px;
+          width: 182px;
+
+          &:after {
+            content: '';
+            display: block;
+            background-color: @primary-color;
+            border-radius: 12px;
+            width: 10%;
+            height: 100%;
+          }
+        }
+      }
+
+      &>ul.list-skill-tabs {
+        margin-top: 42px;
+        display: flex;
+        justify-content: space-between;
+
+        li.skill-tab {
+          background-color: @white;
+          border-radius: 12px;
+          box-shadow: 0px 2px 4px rgba(@black, 16%);
+          font-weight: @medium-weight;
+          padding: 20px 26px;
+        }
+
+        li.current-skill-tab {
+          background-color: @primary-color;
+          color: @white;
+          font-weight: @bold-weight;
+        }
+      }
+
+      &>dl.revision-skill-list {
+        padding: 0 42px;
+
+        dd.revision-skill {
+          border-bottom: 2px solid @gray-color;
+          border-top: 2px solid @gray-color;
+          display: none;
+          margin-top: 42px;
+          padding: 32px 0;
+
+          h4.skill-title {
+            color: @primary-color;
+            font-weight: @bold-weight;
+            font-size: @text-big;
+          }
+
+          p.skill-score {
+            background-color: @primary-color;
+            border-radius: 0 12px 12px 0;
+            color: @white;
+            display: inline-block;
+            font-weight: @bold-weight;
+            font-size: @text-big;
+            margin: 24px 0;
+            padding: 8px 16px;
+          }
+        }
+
+        dd.current-revision-skill {
+          display: block;
+        }
+      }
     }
   }
 
