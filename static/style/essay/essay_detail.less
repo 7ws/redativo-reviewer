@@ -227,6 +227,95 @@ section.essay-detail {
       }
     }
 
+    &> ul.comment-list {
+      height: @paper-sheet-height;
+      position: relative;
+
+      &>li.comment-container {
+        display: flex;
+        position: relative;
+
+        &>section.sticky-note {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: @primary-color;
+          border-radius: 4px;
+          cursor: pointer;
+          clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+          margin-right: 8px;
+          margin-bottom: 8px;
+          padding-left: 8px;
+          height: 24px;
+          width: 40px;
+
+          &>span.selected-text-id {
+            font-size: 0;
+          }
+
+          &>span.number-id-comment {
+            color: @white;
+            font-weight: @bold-weight;
+          }
+        }
+
+        &>section.current-sticky-note {
+          scale: 1.1;
+        }
+
+        &>div.comment-card {
+          background-color: @white;
+          border: 1px solid @primary-color;
+          border-top: 25px solid @primary-color;
+          border-radius: 6px;
+          box-shadow: 0px 4px 4px rgba(@black, 25%);
+          margin-bottom: 12px;
+          width: 400px;
+          height: max-content;
+
+          &>ul.comments {
+            &>li.comment {
+              border-bottom: 1px solid @gray-color;
+              padding: 16px;
+
+              span.comment-id {
+                display: inline-block;
+                color: @secondary-color;
+                font-weight: @semibold-weight;
+                margin-bottom: 4px;
+              }
+              p.comment-text {
+                font-weight: @medium-weight;
+              }
+            }
+          }
+
+          &>section.submit-comment-form {
+            padding: 16px;
+
+            &>textarea.submit-comment-input {
+              border-color: @gray-color;
+              border-radius: 8px;
+              resize: none;
+              width: 100%;
+            }
+
+            &>section.buttons {
+              margin-top: 8px;
+            }
+          }
+
+          div.selected-text,
+          div.comment,
+          div.subcomment-form {
+            display: block;
+          }
+        }
+
+        &>div.comment-card-collapsed {
+          display: none;
+        }
+      }
     }
   }
 }
