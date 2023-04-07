@@ -226,6 +226,15 @@ section.essay-detail {
         resize: none;
         overflow: unset;
         width: calc(@main-content-width - 160px);
+
+        span.selected-text {
+          background: rgba(@primary-color, 12%);
+          cursor: pointer;
+        }
+
+        span.current-selected-text {
+          background: rgba(@primary-color, 41%);
+        }
       }
     }
 
