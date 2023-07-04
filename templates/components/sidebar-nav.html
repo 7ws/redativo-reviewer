@@ -19,7 +19,7 @@
           Olá, {{ request.user.short_name }}
         </a></span>
     </li>
-    <li class="menu-item themes"><a href="{% url 'theme:active' %}">Temas</a></li>
+    <li class="menu-item themes"><a href="{% url 'theme:history' %}">Temas</a></li>
     {% if user_type == 'writer' %}
     <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
     {% elif user_type == 'reviewer' %}
