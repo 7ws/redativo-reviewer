@@ -278,7 +278,7 @@ section.essay-detail {
           margin-bottom: 12px;
           width: 400px;
 
-          &>ul.comment-list {
+          &>ul.comments {
             &>li.comment {
               border-bottom: 1px solid rgba(@gray-color, 40%);
               padding: 16px;
@@ -302,12 +302,23 @@ section.essay-detail {
             &>textarea.submit-comment-input {
               border-color: @gray-color;
               border-radius: 8px;
+              padding: 8px;
+              outline: none;
               resize: none;
               width: 100%;
             }
 
             &>section.buttons {
+              margin-top: 0px;
+              max-height: 0px;
+              overflow: hidden;
+              transition: all 0.2s ease;
+            }
+
+            &>section.buttons-opened {
               margin-top: 8px;
+              max-height: 200px;
+              overflow: hidden;
             }
           }
 
