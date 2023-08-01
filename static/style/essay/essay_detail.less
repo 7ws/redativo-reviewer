@@ -306,6 +306,12 @@ section.essay-detail {
               outline: none;
               resize: none;
               width: 100%;
+
+              &:disabled {
+                border: none;
+                background-color: @white;
+                text-align: right;
+              }
             }
 
             &>section.buttons {
