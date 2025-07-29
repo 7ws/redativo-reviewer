@@ -243,8 +243,6 @@ section.review-edit {
 
     &>section.container-essay {
       display: flex;
-      align-items: center;
-      position: relative;
       margin: 32px 0;
 
       &>section.paper-sheet {
@@ -382,6 +380,42 @@ section.review-edit {
           &>div.current-comment-card {
             max-height: 1000px;
             border-top: 25px solid @primary-color;
+          }
+        }
+      }
+
+      &>section.comment-section{
+        &>div.thread {
+          background: white;
+          padding: 1rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+          z-index: 1000;
+          max-height: 80vh;
+          overflow-y: auto;
+
+          .comment-text {
+            width: 100%;
+            min-height: 100px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+          }
+
+          button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover {
+              background: #3367d6;
+            }
           }
         }
       }
