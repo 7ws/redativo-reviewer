@@ -1,0 +1,46 @@
+@import "../variables.less";
+
+section.theme {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+
+  .lable-text {
+    color: @primary-color;
+    font-weight: @medium-weight;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  .title {
+    color: rgba(@black, 75%);
+    font-weight: @semibold-weight;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 321px) {
+  section.theme {
+    .lable-text {
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .title {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (min-width: 560px) {
+  section.theme {
+    .lable-text {
+      margin-bottom: 8px;
+      font-size: 24px;
+    }
+
+    .title {
+      font-size: 20px;
+    }
+  }
+}
