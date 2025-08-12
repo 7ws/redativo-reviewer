@@ -127,7 +127,10 @@
       for (let [index, currentSticky] of [...stickyNoteList].entries()) {
         // wait for sticky note click event
         containerEssay.addEventListener('click', function (event) {
-          if (
+          if (event.target.closest('.current-thread')) {
+            // does nothing if this class exists
+            return;
+          } else if (
             // does nothing if this class exists
             event.target.classList.contains('current-sticky-note')
             ||
@@ -151,6 +154,22 @@
 
             // now make it draggable
             makeDraggable(threadContainer, essayText);
+          } else {
+            if (window.innerWidth >= 1024){
+              return;
+            }
+            [...selectedTextList].map(element => {
+              // removes the class that shows the current element from the list
+              element.classList.remove('current-selected-text');
+            });
+            [...stickyNoteList].map(element => {
+              // removes the class that shows the current element from the list
+              element.classList.remove('current-sticky-note');
+            });
+            [...commentList].map(element => {
+              // removes the class that shows the current element from the list
+              element.classList.remove('current-thread');
+            });
           }
         });
       }
