@@ -1,0 +1,273 @@
+@import "../variables.less";
+
+/*ul.threads {
+  padding-top: 12px;
+  height: autofill;
+  min-height: 200px;
+  width: 95%;
+
+  & > li.thread-container {
+    display: flex;
+
+    & > section.sticky-note {
+      align-items: center;
+      background-color: @primary-color;
+      border-radius: 4px;
+      clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+      color: @white;
+      cursor: pointer;
+      display: flex;
+      font-weight: @bold-weight;
+      height: 24px;
+      justify-content: center;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      padding-left: 8px;
+      width: 40px;
+    }
+
+    & > section.current-sticky-note {
+      transition: scale 0.25s;
+      scale: 1.1;
+    }
+
+    & > div.thread {
+      background-color: @white;
+      border-width: 0px;
+      border-radius: 6px;
+      box-shadow: 0px 4px 4px rgba(@black, 25%);
+      overflow: hidden;
+      max-height: 0;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+      width: 400px;
+
+      & > ul.comments {
+        & > li.comment {
+          border-bottom: 1px solid rgba(@gray-color, 40%);
+          padding: 16px;
+
+          span.comment-id {
+            display: inline-block;
+            color: @primary-color;
+            font-style: italic;
+            font-weight: @semibold-weight;
+            margin-bottom: 4px;
+          }
+          p.comment-text {
+            font-weight: @medium-weight;
+          }
+        }
+      }
+
+      & > section.submit-comment-form {
+        padding: 16px;
+
+        & > textarea.submit-comment-input {
+          border-color: @gray-color;
+          border-radius: 8px;
+          padding: 8px;
+          outline: none;
+          resize: none;
+          width: 100%;
+
+          &:disabled {
+            border: none;
+            background-color: @white;
+            text-align: right;
+          }
+        }
+
+        & > section.buttons {
+          margin-top: 0px;
+          max-height: 0px;
+          overflow: hidden;
+          transition: all 0.2s ease;
+        }
+
+        & > section.buttons-opened {
+          margin-top: 8px;
+          max-height: 200px;
+          overflow: hidden;
+        }
+      }
+
+      div.selected-text,
+      div.comment,
+      div.subcomment-form {
+        display: block;
+      }
+    }
+
+    & > div.current-thread {
+      max-height: 1000px;
+      border-top: 25px solid @primary-color;
+    }
+  }
+}*/
+
+ul.threads {
+  padding-top: 12px;
+  height: autofill;
+  min-height: 200px;
+  width: 95%;
+  z-index: 999;
+
+  & > li.thread-container {
+    display: flex;
+
+    & > section.sticky-note {
+      align-items: center;
+      background-color: @primary-color;
+      border-radius: 4px;
+      clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+      color: @white;
+      cursor: pointer;
+      display: flex;
+      font-weight: @bold-weight;
+      height: 24px;
+      justify-content: center;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      padding-left: 8px;
+      width: 40px;
+    }
+
+    & > section.current-sticky-note {
+      transition: scale 0.25s;
+      scale: 1.1;
+    }
+
+    & > div.thread {
+      background-color: @white;
+      border-width: 0px;
+      border-radius: 6px;
+      box-shadow: 0px 4px 4px rgba(@black, 25%);
+      overflow: hidden;
+      max-height: 0;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+      width: 400px;
+
+      & > ul.comments {
+        & > li.comment {
+          border-bottom: 1px solid rgba(@gray-color, 40%);
+          padding: 16px;
+
+          span.comment-id {
+            display: inline-block;
+            color: @primary-color;
+            font-style: italic;
+            font-weight: @semibold-weight;
+            margin-bottom: 4px;
+          }
+          p.comment-text {
+            font-weight: @medium-weight;
+          }
+        }
+      }
+
+      & > section.submit-comment-form {
+        padding: 16px;
+
+        & > textarea.submit-comment-input {
+          border-color: @gray-color;
+          border-radius: 8px;
+          padding: 8px;
+          outline: none;
+          resize: none;
+          width: 100%;
+
+          &:disabled {
+            border: none;
+            background-color: @white;
+            text-align: right;
+          }
+        }
+
+        & > section.buttons {
+          margin-top: 0px;
+          max-height: 0px;
+          overflow: hidden;
+          transition: all 0.2s ease;
+        }
+
+        & > section.buttons-opened {
+          margin-top: 8px;
+          max-height: 200px;
+          overflow: hidden;
+        }
+      }
+
+      div.selected-text,
+      div.comment,
+      div.subcomment-form {
+        display: block;
+      }
+    }
+
+    & > div.current-thread {
+      max-height: 1000px;
+      border-top: 25px solid @primary-color;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  ul.threads {
+    padding-top: 12px;
+    min-height: 200px;
+    width: 400px;
+
+    & > li.thread-container {
+      display: flex;
+
+      & > section.sticky-note {
+        height: 24px;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        padding-left: 8px;
+        width: 40px;
+      }
+
+      & > section.current-sticky-note {
+        scale: 1.1;
+      }
+
+      & > div.thread {
+        margin-bottom: 12px;
+        width: 400px;
+
+        & > ul.comments {
+          & > li.comment {
+            border-bottom: 1px solid rgba(@gray-color, 40%);
+            padding: 16px;
+
+            span.comment-id {
+              margin-bottom: 4px;
+            }
+          }
+        }
+
+        & > section.submit-comment-form {
+          padding: 16px;
+
+          & > textarea.submit-comment-input {
+            border-radius: 8px;
+            padding: 8px;
+          }
+
+          & > section.buttons-opened {
+            margin-top: 8px;
+            max-height: 200px;
+          }
+        }
+      }
+
+      & > div.current-thread {
+        max-height: 1000px;
+        border-top: 25px solid @primary-color;
+      }
+    }
+  }
+}

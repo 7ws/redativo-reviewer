@@ -1,0 +1,233 @@
+<script>
+  // function to insert comments
+  function addComments(comments) {
+    let result = '';
+
+      if(comments) {
+        for (let index = 0; index <  comments.length; index++) {
+          const evenOrOdd = index % 2 === 0;
+          result += `
+          <li class="comment" style="text-align: ${evenOrOdd ? 'left' : 'right'}">
+            <span class="comment-id">${evenOrOdd ? 'Revisor' : 'Usuário'}</span>
+            <p class="comment-text">${comments[index].content}</p>
+          </li>
+          `
+        }
+    } else {
+      return;
+    }
+
+    return result;
+  }
+</script>
+
+<script>
+  // handle cards and stickies
+  (function () {
+    // get text element
+    let essay_text = document.querySelector('.text');
+
+    // split text
+    const splittedText = essay_text.innerHTML.split('');
+
+    // get comment list element
+    const threadListElement = document.querySelector('.threads');
+
+    // function to insert selections in essay text
+    function insertSelectedtext(thread) {
+      for (let [index, textCharacter] of [...splittedText].entries()) {
+        const start = thread.start_text_selection;
+        const end = start + thread.selected_text_length;
+
+        // insert span on select start
+        if (index === start) {
+          splittedText[index] =
+            '<span class="selected-text">' + splittedText[index];
+        }
+
+        // insert span on select end
+        if (index === end) {
+          splittedText[index] = splittedText[index] + '</span>';
+        }
+      }
+    }
+
+    let threadIdList = [];
+
+    fetch('{{ threads_url }}')
+      .then((res) => res.json())
+      .then((data) => {
+        data.sort((a, b) => a.start_text_selection - b.start_text_selection);
+
+        for (let [index, thread] of [...data].entries()) {
+          threadIdList.push(thread.id);
+
+          // insert selected text into text element
+          insertSelectedtext(thread);
+
+          // insert comment card and sticky in list
+          // start comment list function
+          threadListElement.innerHTML += `
+          <li class="thread-container">
+            <section class="sticky-note">${index + 1}</section>
+            <div class="thread">
+              <ul class="comments">
+                ${addComments([...thread.comments])}
+              </ul>
+              <section class="submit-comment-form">
+                <textarea class="submit-comment-input" id="submit-comment-input type="text" rows="1" wrap="soft"></textarea>
+                <section class="buttons">
+                  {% include 'components/button.html' with class='primary-button-small send-response' label='Responder'%}
+                  {% include 'components/button.html' with class='secondary-button-small cancel-response' label='Cancelar'%}
+                </section>
+              </section>
+            </div>
+          </li>
+          `
+        }
+      })
+      .catch(error => {
+        console.log('error ' + error);
+      })
+      .finally(() => {
+        // join splitted text and insert into text element
+        essay_text.innerHTML = splittedText.join('');
+
+        // start listener to sticky element
+        handleStickyAndCard();
+
+        // start listener to send comment button
+        handleSendComment();
+    });
+
+    function handleStickyAndCard() {
+      const containerEssay = document.querySelector('.detail');
+      // get comment card list elements
+      const commentList = document.querySelectorAll('.thread');
+      // get sticky note list elements
+      const stickyNoteList = document.querySelectorAll('.sticky-note');
+      // get selected text list elements
+      const selectedTextList = document.querySelectorAll('.selected-text');
+
+      // show first comment card element
+      [...commentList][0].classList.add('current-thread');
+      // indicate the sticky note corresponding of first comment card element
+      [...stickyNoteList][0].classList.add('current-sticky-note');
+      // indicate the selected text corresponding of first comment card element
+      [...selectedTextList][0].classList.add('current-selected-text');
+
+      for (let [index, currentSticky] of [...stickyNoteList].entries()) {
+        // wait for sticky note click event
+        containerEssay.addEventListener('click', function (event) {
+          if (
+            // does nothing if this class exists
+            event.target.classList.contains('current-sticky-note')
+            ||
+            event.target.classList.contains('current-selected-text')
+          ) {
+            return;
+          } else if (
+            // does nothing if this class exists
+            event.target.classList.contains('sticky-note')
+            ||
+            event.target.classList.contains('selected-text')
+          ) {
+            // highlights current selected text
+            handleCurrent(selectedTextList, index, 'current-selected-text');
+            // scale up current sticky note
+            handleCurrent(stickyNoteList, index, 'current-sticky-note');
+            // show current comment card
+            handleCurrent(commentList, index, 'current-thread');
+          }
+        });
+      }
+    }
+
+    function handleSendComment() {
+      const submitFormList = document.querySelectorAll('.submit-comment-form');
+      const comments = document.querySelectorAll('.comments');
+      const submitCommentInputList = document.querySelectorAll('.submit-comment-input');
+      const sectionButtonList = document.querySelectorAll('.buttons');
+
+      for(let [index, submitForm] of [...submitFormList].entries()) {
+        submitForm.addEventListener('click', function (event) {
+          if(!event.target.disabled) {
+            if(event.target.classList.contains('submit-comment-input')) {
+              submitCommentInputList[index].rows =  '4';
+              sectionButtonList[index].classList.add('buttons-opened');
+            }
+
+            if(event.target.classList.contains('cancel-response')) {
+              submitCommentInputList[index].rows =  '1';
+              sectionButtonList[index].classList.remove('buttons-opened');
+            }
+
+            if(event.target.classList.contains('send-response')) {
+              if(submitCommentInputList[index].value != '') {
+                const commentText = submitCommentInputList[index].value
+                createComment(commentText, threadIdList[index]);
+
+                comments[index].innerHTML += `
+                  <li class="comment" style="text-align: right">
+                    <span class="comment-id">Usuário</span>
+                    <p class="comment-text">${submitCommentInputList[index].value}</p>
+                  </li>
+                `
+                disableInput()
+                sectionButtonList[index].classList.remove('buttons-opened');
+              } else {
+                console.log('campo vazio');
+              }
+            }
+          }
+        })
+
+        const commentElements = comments[index].children;
+
+        for(let [index, comment] of [...commentElements].entries()) {
+          if(((index + 1) == commentElements.length)) {
+            if(index % 2 != 0) {
+              disableInput()
+            }
+          }
+        }
+
+        function disableInput() {
+          submitCommentInputList[index].value = '';
+          submitCommentInputList[index].rows =  '1';
+          submitCommentInputList[index].disabled = true;
+          submitCommentInputList[index].placeholder = 'Mensagem enviada, aguardando resposta...';
+        }
+      }
+    }
+
+    function createComment(commentText, threadId) {
+      if(commentText && threadId) {
+        const bodyData = JSON.stringify({
+          'content': commentText,
+        });
+
+        const requestHeaders = {
+          'Content-Type':'application/json',
+          'X-CSRFToken':'{{ csrf_token }}',
+        };
+
+        const threadURLTemplate = "{% url 'commenting:comments' thread_id='00000000-0000-0000-0000-000000000000' %}"
+        const threadURL = threadURLTemplate.replace('00000000-0000-0000-0000-000000000000', threadId)
+
+        fetch(threadURL, {
+          method: 'POST',
+          headers: requestHeaders,
+          body: bodyData,
+        })
+        .then(function(response) {
+          console.log(response.status);
+        }).catch(function(error) {
+          console.log(error);
+        });
+      } else {
+        return
+      }
+    }
+  })();
+</script>
