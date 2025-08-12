@@ -20,15 +20,30 @@
     return result;
   }
 </script>
+<!--
+<script>
+  // handle current element to be highlighted or opened
+  const handleCurrent = (list, id, current) => {
+    // scan list
+    [...list].map(element => {
+      // removes the class that shows the current element from the list
+      element.classList.remove(current);
+    });
+
+    // adds class that indicates the current element to open or highlight
+    [...list][id].classList.add(current);
+  };
+</script> -->
 
 <script>
   // handle cards and stickies
   (function () {
+    const containerEssay = document.querySelector('.detail');
     // get text element
-    let essay_text = document.querySelector('.text');
+    let essayText = document.querySelector('.text');
 
     // split text
-    const splittedText = essay_text.innerHTML.split('');
+    const splittedText = essayText.innerHTML.split('');
 
     // get comment list element
     const threadListElement = document.querySelector('.threads');
@@ -43,7 +58,7 @@
         if (index === start) {
           splittedText[index] =
             '<span class="selected-text">' + splittedText[index];
-        }
+          }
 
         // insert span on select end
         if (index === end) {
@@ -90,8 +105,9 @@
         console.log('error ' + error);
       })
       .finally(() => {
+
         // join splitted text and insert into text element
-        essay_text.innerHTML = splittedText.join('');
+        essayText.innerHTML = splittedText.join('');
 
         // start listener to sticky element
         handleStickyAndCard();
@@ -101,20 +117,12 @@
     });
 
     function handleStickyAndCard() {
-      const containerEssay = document.querySelector('.detail');
       // get comment card list elements
       const commentList = document.querySelectorAll('.thread');
       // get sticky note list elements
       const stickyNoteList = document.querySelectorAll('.sticky-note');
       // get selected text list elements
       const selectedTextList = document.querySelectorAll('.selected-text');
-
-      // show first comment card element
-      [...commentList][0].classList.add('current-thread');
-      // indicate the sticky note corresponding of first comment card element
-      [...stickyNoteList][0].classList.add('current-sticky-note');
-      // indicate the selected text corresponding of first comment card element
-      [...selectedTextList][0].classList.add('current-selected-text');
 
       for (let [index, currentSticky] of [...stickyNoteList].entries()) {
         // wait for sticky note click event
@@ -138,6 +146,11 @@
             handleCurrent(stickyNoteList, index, 'current-sticky-note');
             // show current comment card
             handleCurrent(commentList, index, 'current-thread');
+
+            let threadContainer = document.querySelector('.current-thread');
+
+            // now make it draggable
+            makeDraggable(threadContainer, essayText);
           }
         });
       }
@@ -230,4 +243,104 @@
       }
     }
   })();
+</script>
+
+
+<script>
+/**
+ * Make an element draggable within a container.
+ * @param {HTMLElement} el - the element to drag (absolute-positioned .thread-container).
+ * @param {HTMLElement} container - the positioned ancestor the el is relative to (e.g. .paper-sheet).
+ * @param {Object} [options] - optional settings
+ */
+function makeDraggable(el, container, options = {}) {
+  // Only enable dragging on small screens
+  if (window.innerWidth >= 1024) return;
+  centerThreadAtViewport(el, container); // center it initially
+  // Use sticky-note as handle if exists, otherwise whole element
+  const handle = el;
+  handle.style.touchAction = 'none';
+  handle.style.cursor = 'grab';
+
+  handle.addEventListener('pointerdown', function onPointerDown(e) {
+    if (e.button && e.button !== 0) return; // only left button
+    e.preventDefault();
+
+    // measure starting positions
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const startClientX = e.clientX;
+    const startClientY = e.clientY;
+
+    // compute original offset of el relative to container
+    const origLeft = elRect.left - containerRect.left + container.scrollLeft;
+    const origTop  = elRect.top  - containerRect.top  + container.scrollTop;
+
+    handle.setPointerCapture(e.pointerId);
+    handle.style.cursor = 'grabbing';
+    el.style.zIndex = 1000; // bring to front while dragging
+    document.body.style.userSelect = 'none';
+
+    function onPointerMove(ev) {
+      ev.preventDefault();
+      // delta in client coords
+      const dx = ev.clientX - startClientX;
+      const dy = ev.clientY - startClientY;
+
+      let newLeft = origLeft + dx;
+      let newTop  = origTop + dy;
+
+      // clamp so it stays inside the container (use container.scroll + client dims)
+      const maxLeft = container.scrollLeft + container.clientWidth - el.offsetWidth;
+      const maxTop  = container.scrollTop  + container.clientHeight - el.offsetHeight;
+
+      newLeft = Math.max(container.scrollLeft, Math.min(newLeft, maxLeft));
+      newTop  = Math.max(container.scrollTop,  Math.min(newTop,  maxTop));
+
+      // apply as px (absolute positioning required)
+      el.style.left = `${newLeft}px`;
+      el.style.top  = `${newTop}px`;
+    }
+
+    function onPointerUp(ev) {
+      try { handle.releasePointerCapture(ev.pointerId); } catch(_) {}
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+      handle.style.cursor = 'grab';
+      el.style.zIndex = '';
+      document.body.style.userSelect = '';
+      // optionally persist position: el.dataset.left = el.style.left; ...
+    }
+
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+  });
+
+  function centerThreadAtViewport(threadEl, container) {
+    // Get viewport center in page coordinates
+    const viewportCenterX = window.scrollX + (window.innerWidth / 2);
+    const viewportCenterY = window.scrollY + (window.innerHeight / 2);
+
+    // Get container position relative to the page
+    const containerRect = container.getBoundingClientRect();
+    const containerPageX = window.scrollX + containerRect.left;
+    const containerPageY = window.scrollY + containerRect.top;
+
+    // Calculate position relative to container
+    let left = viewportCenterX - containerPageX - (threadEl.offsetWidth / 2);
+    let top = viewportCenterY - containerPageY - (threadEl.offsetHeight / 2);
+
+    // Clamp so the thread stays inside container bounds
+    const maxLeft = container.clientWidth - threadEl.offsetWidth;
+    const maxTop = container.clientHeight - threadEl.offsetHeight;
+
+    left = Math.max(0, Math.min(left, maxLeft));
+    top = Math.max(0, Math.min(top, maxTop));
+
+    threadEl.style.position = 'absolute';
+    threadEl.style.left = `${left}px`;
+    threadEl.style.top = `${top}px`;
+  }
+
+}
 </script>

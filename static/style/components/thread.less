@@ -1,34 +1,22 @@
 @import "../variables.less";
 
-/*ul.threads {
-  padding-top: 12px;
+ul.threads {
+  padding-top: 6px;
   height: autofill;
-  min-height: 200px;
-  width: 95%;
+  min-height: 100px;
 
   & > li.thread-container {
     display: flex;
 
     & > section.sticky-note {
-      align-items: center;
-      background-color: @primary-color;
-      border-radius: 4px;
-      clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
-      color: @white;
-      cursor: pointer;
-      display: flex;
-      font-weight: @bold-weight;
-      height: 24px;
-      justify-content: center;
-      margin-bottom: 8px;
-      margin-right: 8px;
-      padding-left: 8px;
-      width: 40px;
+      width: 0px;
+      height: 0px;
+      scale: 0;
     }
 
     & > section.current-sticky-note {
       transition: scale 0.25s;
-      scale: 1.1;
+      scale: 0;
     }
 
     & > div.thread {
@@ -39,37 +27,40 @@
       overflow: hidden;
       max-height: 0;
       transition: all 0.3s ease;
-      margin-bottom: 12px;
-      width: 400px;
+      margin-bottom: 6px;
 
       & > ul.comments {
         & > li.comment {
           border-bottom: 1px solid rgba(@gray-color, 40%);
-          padding: 16px;
+          padding: 4px;
 
           span.comment-id {
             display: inline-block;
             color: @primary-color;
             font-style: italic;
+            font-size: 8px;
             font-weight: @semibold-weight;
             margin-bottom: 4px;
           }
           p.comment-text {
             font-weight: @medium-weight;
+            text-align: justify;
+            font-size: 6px;
           }
         }
       }
 
       & > section.submit-comment-form {
-        padding: 16px;
+        padding: 4px;
 
         & > textarea.submit-comment-input {
           border-color: @gray-color;
-          border-radius: 8px;
-          padding: 8px;
+          border-radius: 6px;
+          padding: 4px;
           outline: none;
           resize: none;
           width: 100%;
+          font-size: 6px;
 
           &:disabled {
             border: none;
@@ -86,7 +77,7 @@
         }
 
         & > section.buttons-opened {
-          margin-top: 8px;
+          margin-top: 4px;
           max-height: 200px;
           overflow: hidden;
         }
@@ -100,143 +91,158 @@
     }
 
     & > div.current-thread {
-      max-height: 1000px;
-      border-top: 25px solid @primary-color;
+      max-height: 600px;
+      border-top: 8px solid @primary-color;
+      touch-action: none
+      width: 200px;
     }
   }
-}*/
+}
 
-ul.threads {
-  padding-top: 12px;
-  height: autofill;
-  min-height: 200px;
-  width: 95%;
-  z-index: 999;
+@media (min-width: 321px) {
+  ul.threads {
+    padding-top: 10px;
+    min-height: 150px;
 
-  & > li.thread-container {
-    display: flex;
-
-    & > section.sticky-note {
-      align-items: center;
-      background-color: @primary-color;
-      border-radius: 4px;
-      clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
-      color: @white;
-      cursor: pointer;
+    & > li.thread-container {
       display: flex;
-      font-weight: @bold-weight;
-      height: 24px;
-      justify-content: center;
-      margin-bottom: 8px;
-      margin-right: 8px;
-      padding-left: 8px;
-      width: 40px;
-    }
 
-    & > section.current-sticky-note {
-      transition: scale 0.25s;
-      scale: 1.1;
-    }
+      & > div.thread {
+        margin-bottom: 10px;
 
-    & > div.thread {
-      background-color: @white;
-      border-width: 0px;
-      border-radius: 6px;
-      box-shadow: 0px 4px 4px rgba(@black, 25%);
-      overflow: hidden;
-      max-height: 0;
-      transition: all 0.3s ease;
-      margin-bottom: 12px;
-      width: 400px;
+        & > ul.comments {
+          & > li.comment {
+            padding: 8px;
 
-      & > ul.comments {
-        & > li.comment {
-          border-bottom: 1px solid rgba(@gray-color, 40%);
-          padding: 16px;
-
-          span.comment-id {
-            display: inline-block;
-            color: @primary-color;
-            font-style: italic;
-            font-weight: @semibold-weight;
-            margin-bottom: 4px;
+            span.comment-id {
+              margin-bottom: 4px;
+              font-size: 8px;
+            }
+            p.comment-text {
+              font-size: 8px;
+            }
           }
-          p.comment-text {
-            font-weight: @medium-weight;
+        }
+
+        & > section.submit-comment-form {
+          padding: 6px;
+
+          & > textarea.submit-comment-input {
+            border-radius: 8px;
+            padding: 6px;
+            font-size: 10px;
+          }
+
+          & > section.buttons-opened {
+            margin-top: 4px;
+            max-height: 200px;
+            overflow: hidden;
           }
         }
       }
 
-      & > section.submit-comment-form {
-        padding: 16px;
+      & > div.current-thread {
+        max-height: 700px;
+        border-top: 16px solid @primary-color;
+        width: 240px;
+      }
+    }
+  }
+}
 
-        & > textarea.submit-comment-input {
-          border-color: @gray-color;
-          border-radius: 8px;
-          padding: 8px;
-          outline: none;
-          resize: none;
-          width: 100%;
+@media (min-width: 561px) {
+  ul.threads {
+    padding-top: 12px;
+    min-height: 200px;
 
-          &:disabled {
-            border: none;
-            background-color: @white;
-            text-align: right;
+    & > li.thread-container {
+      display: flex;
+
+      & > div.thread {
+        margin-bottom: 8px;
+
+        & > ul.comments {
+          & > li.comment {
+            padding: 6px;
+
+            span.comment-id {
+              margin-bottom: 4px;
+              font-size: 12px;
+            }
+            p.comment-text {
+              font-size: 10px;
+            }
           }
         }
 
-        & > section.buttons {
-          margin-top: 0px;
-          max-height: 0px;
-          overflow: hidden;
-          transition: all 0.2s ease;
-        }
+        & > section.submit-comment-form {
+          padding: 7px;
 
-        & > section.buttons-opened {
-          margin-top: 8px;
-          max-height: 200px;
-          overflow: hidden;
+          & > textarea.submit-comment-input {
+            border-radius: 8px;
+            padding: 7px;
+            font-size: 10px;
+          }
+
+          & > section.buttons-opened {
+            margin-top: 4px;
+            max-height: 200px;
+            overflow: hidden;
+          }
         }
       }
 
-      div.selected-text,
-      div.comment,
-      div.subcomment-form {
-        display: block;
+      & > div.current-thread {
+        max-height: 800px;
+        border-top: 20px solid @primary-color;
+        width: 280px;
       }
-    }
-
-    & > div.current-thread {
-      max-height: 1000px;
-      border-top: 25px solid @primary-color;
     }
   }
 }
 
 @media (min-width: 1024px) {
   ul.threads {
-    padding-top: 12px;
+    padding-top: 60px;
+    height: autofill;
     min-height: 200px;
-    width: 400px;
 
     & > li.thread-container {
       display: flex;
 
       & > section.sticky-note {
+        align-items: center;
+        background-color: @primary-color;
+        border-radius: 4px;
+        clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
+        color: @white;
+        cursor: pointer;
+        display: flex;
+        font-weight: @bold-weight;
         height: 24px;
+        width: 40px;
+        justify-content: center;
         margin-bottom: 8px;
         margin-right: 8px;
         padding-left: 8px;
-        width: 40px;
+        scale: 1;
       }
 
       & > section.current-sticky-note {
+        transition: scale 0.25s;
         scale: 1.1;
+        font-size: 14px;
       }
 
       & > div.thread {
+        background-color: @white;
+        border-width: 0px;
+        border-radius: 6px;
+        box-shadow: 0px 4px 4px rgba(@black, 25%);
+        overflow: hidden;
+        max-height: 0;
+        transition: all 0.3s ease;
         margin-bottom: 12px;
-        width: 400px;
 
         & > ul.comments {
           & > li.comment {
@@ -244,7 +250,16 @@ ul.threads {
             padding: 16px;
 
             span.comment-id {
+              display: inline-block;
+              color: @primary-color;
+              font-style: italic;
+              font-weight: @semibold-weight;
               margin-bottom: 4px;
+              font-size: 14px;
+            }
+            p.comment-text {
+              font-weight: @medium-weight;
+              font-size: 12px;
             }
           }
         }
@@ -253,20 +268,46 @@ ul.threads {
           padding: 16px;
 
           & > textarea.submit-comment-input {
+            border-color: @gray-color;
             border-radius: 8px;
             padding: 8px;
+            outline: none;
+            resize: none;
+            width: 100%;
+            font-size: 12px;
+
+            &:disabled {
+              border: none;
+              background-color: @white;
+              text-align: right;
+            }
+          }
+
+          & > section.buttons {
+            margin-top: 0px;
+            max-height: 0px;
+            overflow: hidden;
+            transition: all 0.2s ease;
           }
 
           & > section.buttons-opened {
             margin-top: 8px;
             max-height: 200px;
+            overflow: hidden;
           }
+        }
+
+        div.selected-text,
+        div.comment,
+        div.subcomment-form {
+          display: block;
         }
       }
 
       & > div.current-thread {
         max-height: 1000px;
         border-top: 25px solid @primary-color;
+        width: 400px;
       }
     }
   }
