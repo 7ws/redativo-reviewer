@@ -25,27 +25,32 @@
 
   &> section.essay-list {
     margin: 0 auto;
-    width: 950px;
+    max-width: var(--main-content-width);
 
     li.essay-card {
-      align-items: center;
       background-color: var(--white);
       border-radius: 12px;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-      display: grid;
-      grid-template-columns: var(--size-72px) 1fr var(--size-240px) 140px;
-      gap: var(--size-16px);
-      height: 104px;
       margin-bottom: var(--size-16px);
-      padding: var(--size-16px);
 
-      &> section.image img.background-image {
+      > a {
+        align-items: center;
+        display: grid;
+        grid-template-columns: var(--size-72px) 1fr auto;
+        gap: var(--size-16px);
+        height: 104px;
+        padding: var(--size-16px);
+        text-decoration: none;
+        color: inherit;
+      }
+
+      > a > section.image img.background-image {
         border-radius: 8px;
         height: var(--size-72px);
         width: var(--size-72px);
       }
 
-      &> section.detail {
+      > a > section.detail {
         align-self: flex-start;
 
         .title {
@@ -53,15 +58,10 @@
           display: inline-block;
           font-size: var(--text-medium);
           margin-bottom: var(--size-8px);
-          line-height: var(--text-medium);
-          max-width: 400px;
+          max-width: 250px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-        }
-
-        .theme, .date  {
-          color: rgba(var(--black), 50%);
         }
 
         .theme  {
@@ -76,16 +76,16 @@
         }
       }
 
-      &> section.status {
+      > a > section.status {
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
+        width: 116px;
 
         .pill-status {
           border-radius: 24px;
           border: 1px solid;
           font-size: var(--label);
           padding: 8px 24px;
-          width: 116px;
           text-align: center;
         }
 
@@ -110,9 +110,6 @@
         }
       }
 
-      &> section.view-essay {
-        justify-self: center;
-      }
     }
 
     .empty{
@@ -126,6 +123,169 @@
         color: rgba(black, 50%);
         font-size: var(--text-color);
         font-weight: @semibold-weight;
+      }
+    }
+  }
+}
+
+// Responsive breakpoints for mobile and tablet
+
+// Tablet landscape breakpoint (1024px)
+@media (max-width: @breakpoint-tablet-landscape) {
+  .essays {
+    &> section.essay-list {
+      li.essay-card {
+        > a {
+          grid-template-columns: var(--size-72px) 1fr auto;
+          height: auto;
+
+          &> section.status {
+            .pill-status {
+              padding: 6px 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Tablet breakpoint (768px and below)
+@media (max-width: @breakpoint-tablet) {
+  .essays {
+    &> header .tabs ul {
+      flex-direction: column;
+      align-items: center;
+      padding: var(--size-16px);
+      padding-top: var(--size-56px);
+
+      &> li {
+        margin-right: 0;
+        margin-bottom: var(--size-16px);
+
+        &> a {
+          font-size: var(--text-medium);
+        }
+      }
+    }
+
+    &> section.essay-list {
+      width: 100%;
+
+      li.essay-card {
+        > a {
+          grid-template-columns: var(--size-72px) 1fr auto;
+          height: auto;
+
+        &> section.image img.background-image {
+          height: var(--size-64px);
+          width: var(--size-64px);
+        }
+
+        &> section.detail {
+
+          .title {
+            font-size: var(--text);
+            max-width: 200px;
+          }
+        }
+
+        &> section.status {
+          .pill-status {
+            font-size: var(--label);
+            padding: 4px 4px;
+          }
+        }
+        }
+      }
+    }
+  }
+}
+
+
+// Tablet breakpoint (680px and below)
+@media (max-width: @breakpoint-tablet) {
+  .essays {
+    &> header .tabs ul {
+      padding: var(--size-8px);
+      padding-top: var(--size-56px);
+
+      &> li {
+        margin-bottom: var(--size-8px);
+      }
+    }
+
+    &> section.essay-list {
+
+      li.essay-card {
+        > a {
+
+        &> section.detail {
+
+          .title {
+            font-size: var(--text);
+            max-width: 130px;
+          }
+
+          .theme, .date {
+            font-size: var(--label);
+          }
+        }
+        }
+      }
+    }
+  }
+}
+
+// Mobile breakpoint (480px and below)
+@media (max-width: @breakpoint-mobile) {
+  .essays {
+    &> header .tabs ul {
+      padding: var(--size-8px);
+      padding-top: var(--size-56px);
+
+      &> li {
+        margin-bottom: var(--size-8px);
+      }
+    }
+
+    &> section.essay-list {
+
+      li.essay-card {
+        > a {
+          grid-template-columns: 1fr;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding: 4px;
+          margin-bottom: 4px;
+
+        &> section.image img.background-image {
+          height: var(--size-48px);
+          width: var(--size-48px);
+        }
+
+        &> section.detail {
+          align-self: center;
+
+          .title {
+            font-size: var(--text-small);
+            max-width: 200px;
+            margin-bottom: var(--size-4px);
+          }
+
+          .theme, .date {
+            font-size: var(--label-small);
+          }
+        }
+
+        &> section.status {
+          .pill-status {
+            font-size: var(--label-small);
+            padding: 2px 4px;
+          }
+        }
+        }
       }
     }
   }
