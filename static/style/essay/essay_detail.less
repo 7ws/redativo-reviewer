@@ -6,7 +6,7 @@ main{
 header {
   display: flex;
   align-items: center;
-  height: @header-height;
+  height: var(--header-height);
   padding: 0 58px;
   position: relative;
 
@@ -15,7 +15,7 @@ header {
     align-items: center;
 
     img {
-      width: @logo-normal-size;
+      width: var(--logo-normal-size);
     }
   }
 }
@@ -45,7 +45,7 @@ section.essay-detail {
 
       .theme {
         color: rgba(var(--black), 75%);
-        font-weight: @semibold-weight;
+        font-weight: var(--semibold-weight);
       }
     }
   }
@@ -59,7 +59,7 @@ section.essay-detail {
         border-bottom: 1px solid rgba(var(--primary-color), 80%);
         color: rgba(var(--primary-color), 80%);
         font-size: var(--label);
-        font-weight: @bold-weight;
+        font-weight: var(--bold-weight);
         display: inline-block;
         justify-self: flex-end;
       }
@@ -116,7 +116,7 @@ section.essay-detail {
           a.current-skill-tab {
             background-color: var(--primary-color);
             color: var(--white);
-            font-weight: @bold-weight;
+            font-weight: var(--bold-weight);
             position: relative;
 
             &::before {
@@ -148,16 +148,16 @@ section.essay-detail {
         }
 
         &>li.current-revision-skill {
-          border-bottom: 2px solid @gray-color;
+          border-bottom: 2px solid var(--gray-color);
           display: block;
           padding-bottom: 32px;
           height: 290px;
 
           h3.skill-title {
-            border-top: 2px solid @gray-color;
+            border-top: 2px solid var(--gray-color);
             color: var(--primary-color);
             display: block;
-            font-weight: @bold-weight;
+            font-weight: var(--bold-weight);
             font-size: var(--text-color);
             margin-top: 32px;
             padding-top: 32px;
@@ -170,7 +170,7 @@ section.essay-detail {
             border-radius: 0 12px 12px 0;
             color: var(--white);
             display: inline-block;
-            font-weight: @bold-weight;
+            font-weight: var(--bold-weight);
             font-size: var(--text-color);
             margin: 24px 0;
             padding: 8px 16px;
@@ -193,14 +193,14 @@ section.essay-detail {
     &> section.paper-sheet{
       background-color: var(--white);
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-      height: @paper-sheet-height;
-      width: @paper-sheet-width;
+      height: var(--paper-sheet-height);
+      width: var(--paper-sheet-width);
       padding: 56px 80px;
 
       .title {
         color: rgba(var(--black), 75%);
         font-size: var(--text-medium);
-        font-weight: @bold-weight;
+        font-weight: var(--bold-weight);
         text-align: center;
         margin-bottom: 40px;
         width: calc(var(--main-content-width) - 160px);
@@ -226,7 +226,7 @@ section.essay-detail {
 
     &> ul.comment-list {
       padding-top: 112px;
-      height: @paper-sheet-height;
+      height: var(--paper-sheet-height);
 
       &>li.comment-container {
         display: flex;
@@ -239,7 +239,7 @@ section.essay-detail {
           color: var(--white);
           cursor: pointer;
           display: flex;
-          font-weight: @bold-weight;
+          font-weight: var(--bold-weight);
           height: 24px;
           justify-content: center;
           margin-bottom: 8px;
@@ -266,14 +266,14 @@ section.essay-detail {
 
           &>ul.comments {
             &>li.comment {
-              border-bottom: 1px solid rgba(@gray-color, 40%);
+              border-bottom: 1px solid rgba(var(--gray-color), 40%);
               padding: 16px;
 
               span.comment-id {
                 display: inline-block;
                 color: var(--primary-color);
                 font-style: italic;
-                font-weight: @semibold-weight;
+                font-weight: var(--semibold-weight);
                 margin-bottom: 4px;
               }
               p.comment-text {
@@ -286,7 +286,7 @@ section.essay-detail {
             padding: 16px;
 
             &>textarea.submit-comment-input {
-              border-color: @gray-color;
+              border-color: var(--gray-color);
               border-radius: 8px;
               padding: 8px;
               outline: none;

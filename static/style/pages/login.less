@@ -27,7 +27,7 @@ body::before {
 section.main-login {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-image: @background-gradient-color;
+  background-image: var(--background-gradient-color);
 }
 
 section#login-form {
@@ -41,23 +41,23 @@ section#login-form {
 
   &>header {
     text-align: center;
-    margin-bottom: @size-32px;
-    width: @login-form-width;
+    margin-bottom: var(--size-32px);
+    width: var(--login-form-width);
     display: flex;
     justify-content: center;
 
     &>.logo img {
-      width: @logo-big-size;
+      width: var(--logo-big-size);
     }
   }
 
   &>section {
-    background: @background-login-form;
+    background: var(--background-login-form);
     border-radius: 10px;
     padding: var(--size-56px);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    height: @login-form-height;
-    width: @login-form-width;
+    height: var(--login-form-height);
+    width: var(--login-form-width);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -68,7 +68,7 @@ section#login-form {
 
     &>p.welcome-text {
       font-size: var(--text-color);
-      font-weight: @semibold-weight;
+      font-weight: var(--semibold-weight);
       line-height: 32px;
       width: 184px;
     }

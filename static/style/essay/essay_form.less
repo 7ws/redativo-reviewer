@@ -11,7 +11,7 @@ section.essay-edit {
       &>section.logo {
         display: flex;
         align-items: center;
-        height: @header-height;
+        height: var(--header-height);
         padding: 0 58px;
         position: relative;
 
@@ -20,7 +20,7 @@ section.essay-edit {
           align-items: center;
 
           img {
-            width: @logo-normal-size;
+            width: var(--logo-normal-size);
           }
         }
       }
@@ -54,7 +54,7 @@ section.essay-edit {
 
           h2.theme-text {
             color: rgba(var(--black), 75%);
-            font-weight: @semibold-weight;
+            font-weight: var(--semibold-weight);
           }
         }
       }
@@ -79,14 +79,14 @@ section.essay-edit {
       &>.title input {
         color: rgba(var(--black), 75%);
         font-size: var(--text-medium);
-        font-weight: @bold-weight;
+        font-weight: var(--bold-weight);
         text-align: center;
         margin-bottom: 40px;
       }
 
       &>.text textarea {
         color: rgba(var(--black), 90%);
-        font-family: @primary-font;
+        font-family: var(--primary-font);
         font-size: var(--text);
         line-height: 1.75em;
         height: 90%;
@@ -120,7 +120,7 @@ section.essay-edit {
         &>p.confirm-text,
         &>p.warning-text {
           font-size: var(--text-medium);
-          font-weight: @semibold-weight;
+          font-weight: var(--semibold-weight);
           margin-bottom: 12px;
         }
 
@@ -129,7 +129,7 @@ section.essay-edit {
         }
 
         &>p.warning-text {
-          color: @secondary-color;
+          color: var(--secondary-color);
         }
 
         &>section.confirm-check {
@@ -145,7 +145,7 @@ section.essay-edit {
           &>button {
             font-size: var(--text-small);
             line-height: var(--text-small);
-            height: @size-32px;
+            height: var(--size-32px);
             width: 40%;
           }
         }

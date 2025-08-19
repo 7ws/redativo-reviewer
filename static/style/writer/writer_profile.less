@@ -40,7 +40,7 @@ section.profile {
   &>.title-page {
     color: var(--primary-color);
     margin: 40px auto;
-    width: @profile-card-width;
+    width: var(--profile-card-width);
   }
 
   &>.card-profile {
@@ -48,12 +48,12 @@ section.profile {
     border-radius: 10px;
     padding: var(--size-40px);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
-    height: @profile-card-height;
+    height: var(--profile-card-height);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin: 0 auto;
-    width: @profile-card-width;
+    width: var(--profile-card-width);
 
     &>ul {
       &>li {
@@ -90,7 +90,7 @@ section.profile {
         &>p span {
           display: inline-block;
           width: 40%;
-          font-weight: @semibold-weight;
+          font-weight: var(--semibold-weight);
         }
       }
     }

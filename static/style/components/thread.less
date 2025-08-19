@@ -31,7 +31,7 @@ ul.threads {
 
       & > ul.comments {
         & > li.comment {
-          border-bottom: 1px solid rgba(@gray-color, 40%);
+          border-bottom: 1px solid rgba(var(--gray-color), 40%);
           padding: 4px;
 
           span.comment-id {
@@ -39,7 +39,7 @@ ul.threads {
             color: var(--primary-color);
             font-style: italic;
             font-size: 8px;
-            font-weight: @semibold-weight;
+            font-weight: var(--semibold-weight);
             margin-bottom: 4px;
           }
           p.comment-text {
@@ -54,7 +54,7 @@ ul.threads {
         padding: 4px;
 
         & > textarea.submit-comment-input {
-          border-color: @gray-color;
+          border-color: var(--gray-color);
           border-radius: 6px;
           padding: 4px;
           outline: none;
@@ -219,7 +219,7 @@ ul.threads {
         color: var(--white);
         cursor: pointer;
         display: flex;
-        font-weight: @bold-weight;
+        font-weight: var(--bold-weight);
         height: 24px;
         width: 40px;
         justify-content: center;
@@ -247,14 +247,14 @@ ul.threads {
 
         & > ul.comments {
           & > li.comment {
-            border-bottom: 1px solid rgba(@gray-color, 40%);
+            border-bottom: 1px solid rgba(var(--gray-color), 40%);
             padding: 16px;
 
             span.comment-id {
               display: inline-block;
               color: var(--primary-color);
               font-style: italic;
-              font-weight: @semibold-weight;
+              font-weight: var(--semibold-weight);
               margin-bottom: 4px;
               font-size: 14px;
             }
@@ -269,7 +269,7 @@ ul.threads {
           padding: 16px;
 
           & > textarea.submit-comment-input {
-            border-color: @gray-color;
+            border-color: var(--gray-color);
             border-radius: 8px;
             padding: 8px;
             outline: none;

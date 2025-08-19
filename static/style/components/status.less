@@ -10,7 +10,7 @@ section.status {
       border-bottom: 1px solid rgba(var(--primary-color), 80%);
       color: rgba(var(--primary-color), 80%);
       font-size: 8px;
-      font-weight: @bold-weight;
+      font-weight: var(--bold-weight);
       display: inline-block;
       justify-self: flex-end;
     }
@@ -68,7 +68,7 @@ section.status {
         a.current-skill-tab {
           background-color: var(--primary-color);
           color: var(--white);
-          font-weight: @bold-weight;
+          font-weight: var(--bold-weight);
           position: relative;
 
           &::before {
@@ -100,16 +100,16 @@ section.status {
       }
 
       & > li.current-revision-skill {
-        border-bottom: 2px solid @gray-color;
+        border-bottom: 2px solid var(--gray-color);
         display: block;
         padding-bottom: 4px;
         min-height: 100px;
 
         h3.skill-title {
-          border-top: 2px solid @gray-color;
+          border-top: 2px solid var(--gray-color);
           color: var(--primary-color);
           display: block;
-          font-weight: @bold-weight;
+          font-weight: var(--bold-weight);
           font-size: 10px;
           margin-top: 20px;
           padding-top: 4px;
@@ -121,7 +121,7 @@ section.status {
           border-radius: 0 8px 8px 0;
           color: var(--white);
           display: inline-block;
-          font-weight: @bold-weight;
+          font-weight: var(--bold-weight);
           font-size: 10px;
           margin: 4px 0;
           padding: 6px 10px;
