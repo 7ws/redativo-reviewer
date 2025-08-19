@@ -4,28 +4,25 @@ section.themes {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
   position: relative;
   z-index: 0;
 
   &>header {
-    color: @title-color;
-    width: calc(100vw - @sidebar-width-collapsed - 42px);
-    max-width: @main-content-width;
-    min-width: 660px;
+    color: var(--title-color);
+    width: calc(100vw - var--(sidebar-width-collapsed) - 42px);
+    max-width: var(--main-content-width);
     padding: 40px 0;
     transition: width 0.25s;
   }
 
   &>section.available-themes ul {
-    width: calc(100vw - @sidebar-width-collapsed - 42px);
-    max-width: @main-content-width;
-    min-width: 660px;
+    width: calc(100vw - var--(sidebar-width-collapsed) - 42px);
+    max-width: var(--main-content-width);
     transition: width 0.25s;
 
     &>li.theme-card {
       position: relative;
-      background-color: @white;
+      background-color: var(--white);
       margin-bottom: 24px;
       padding: 16px;
       display: grid;
@@ -46,17 +43,25 @@ section.themes {
         flex-direction: column;
         padding-top: 8px;
 
-        &>h3.theme-name a {
-          font-size: @text-big;
-          font-weight: @semibold-weight;
-          color: @text-color;
+        &>h3.theme-name {
+          color: var(--primary-color);
+          font-weight: var(--semibold-weight);
+          font-size: var(--text-big);
+          margin-bottom: 8px;
+        }
+
+        &>p.essay-title {
+          color: var(--primary-color);
+          font-weight: var(--semibold-weight);
+          font-size: var(--text);
+          margin-bottom: 8px;
         }
 
         &>p.short-description {
-          color: rgba(@text-color, 90%);
+          color: rgba(var(--text-color), 90%);
           display: inline-block;
-          font-size: @text;
-          font-weight: @medium-weight;
+          font-size: var(--text);
+          font-weight: var(--medium-weight);
           justify-self: flex-start;
           margin-top: 16px;
         }
@@ -71,14 +76,14 @@ section.themes {
           width: 100%;
 
           &>img.clock {
-            width: @size-24px;
+            width: var(--size-24px);
             justify-self: flex-start;
           }
 
           &>p.available-until {
             font-weight: bold;
-            font-size: @text-small;
-            color: @primary-color;
+            font-size: var(--text-small);
+            color: var(--primary-color);
             vertical-align: center;
           }
 
@@ -98,6 +103,73 @@ section.themes {
               background-image: url('../../img/icons/note-hover.svg');
             }
           }
+        }
+      }
+    }
+  }
+}
+
+// Responsive breakpoints for mobile and tablet
+
+// Tablet breakpoint (768px and below)
+@media (max-width: @breakpoint-tablet) {
+  section.themes {
+    padding-top: 20px;
+
+    &>header {
+      width: 100%;
+      padding: 20px 0;
+    }
+
+    &>section.available-themes ul {
+      width: 100%;
+      padding: 10;
+
+      &>li.theme-card {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        margin-bottom: 16px;
+
+        &>img.background-image-card {
+          width: 80%;
+          height: auto;
+        }
+
+        &>section {
+          padding-top: 16px;
+
+          &>h3.theme-name a {
+            font-size: var(--text);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mobile breakpoint (480px and below)
+@media (max-width: @breakpoint-mobile) {
+  section.themes {
+    padding-top: 40px;
+    &>header {
+      width: 100%;
+      padding: 16px 0;
+    }
+
+    &>section.available-themes ul {
+      width: 80%;
+      padding: 0;
+
+      &>li.theme-card {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 4px;
+        margin-bottom: 4px;
+
+        &>img.background-image-card {
+          width: auto;
         }
       }
     }

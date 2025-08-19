@@ -1,7 +1,7 @@
 @import '../global.less';
 
 nav#sidebar {
-  background-color: @background-sidebar;
+  background-color: var(--background-sidebar);
   position: fixed;
   top: 0;
   left: 0;
@@ -10,7 +10,7 @@ nav#sidebar {
   justify-content: center;
   overflow-x: hidden;
   z-index: 1;
-  padding-top: @header-height;
+  padding-top: var(--header-height);
 
   &>ul.menu {
     display: flex;
@@ -22,20 +22,20 @@ nav#sidebar {
       align-items: center;
       transition: width 0.25s;
       flex-direction: column;
-      margin-top: @size-32px;
-      width: @sidebar-width-collapsed;
+      margin-top: var(--size-32px);
+      width: var(--sidebar-width-collapsed);
       height: 184px;
 
       &>div.user-avatar {
         position: relative;
-        border: 1px solid rgba(@black, 20%);
+        border: 1px solid rgba(var(--black, 20%));
         border-radius: 50%;
         margin-left: auto;
         margin-right: auto;
         margin-bottom: 16px;
         transition: all 0.25s;
-        height: @size-56px;
-        width: @size-56px;
+        height: var(--size-56px);
+        width: var(--size-56px);
         overflow: hidden;
         text-align: center;
         clear: both;
@@ -56,7 +56,7 @@ nav#sidebar {
         white-space: nowrap;
 
         &>a {
-          color: @title-color;
+          color: var(--title-color);
         }
       }
     }
@@ -66,13 +66,13 @@ nav#sidebar {
       display: flex;
       align-items: center;
       font-size: 1.25em;
-      width: @sidebar-width-collapsed;
+      width: var(--sidebar-width-collapsed);
       transition: width 0.25s;
 
       // Menu item links
       &>a {
-        color: @primary-color;
-        font-weight: @medium-weight;
+        color: var(--primary-color);
+        font-weight: var(--medium-weight);
       }
 
       // Menu item icons
@@ -81,8 +81,8 @@ nav#sidebar {
         display: inline-block;
         background-repeat: no-repeat;
         background-position: center;
-        height: @icon-normal-size;
-        width: @sidebar-width-collapsed;
+        height: var(--icon-normal-size);
+        width: var(--sidebar-width-collapsed);
         transition: width 0.25s;
         vertical-align: middle;
         margin-right: 0.5em;
@@ -107,11 +107,11 @@ nav#sidebar {
 
     // Current page
     &>li.active {
-      border-right: 4px solid @primary-color;
+      border-right: 4px solid var(--primary-color);
     }
 
     &>li.menu-item:hover {
-      background-color: @background-sidebar;
+      background-color: var(--background-sidebar);
     }
   }
 }
@@ -121,24 +121,24 @@ body {
 
   // Collapsed
   main {
-    margin-left: @sidebar-width-collapsed;
+    margin-left: var(--sidebar-width-collapsed);
     transition: margin-left 0.25s;
   }
 
   header#main-header div.logo {
-    width: @sidebar-width-collapsed;
+    width: var(--sidebar-width-collapsed);
     transition: width 0.25s;
   }
 
   header#main-header div.logo img {
     clip-path: inset(0 90px 0 0);
-    margin-left: calc(@size-16px + 2px);
+    margin-left: calc(var(--size-16px) + 2px);
     transition: margin 0.25s;
   }
 
   nav#sidebar {
     transition: width 0.25s;
-    width: @sidebar-width-collapsed;
+    width: var(--sidebar-width-collapsed);
     justify-content: flex-start;
 
     &>ul.menu {
@@ -155,20 +155,20 @@ body.open-sidebar {
 
   // Open
   main {
-    margin-left: @sidebar-width;
+    margin-left: var(--sidebar-width);
   }
 
   header#main-header div.logo {
-    width: @sidebar-width;
+    width: var(--sidebar-width);
   }
 
   header#main-header div.logo img {
     clip-path: unset;
-    margin-left: @size-56px;
+    margin-left: var(--size-56px);
   }
 
   nav#sidebar {
-    width: @sidebar-width;
+    width: var(--sidebar-width);
 
     &>ul.menu {
 
@@ -177,7 +177,7 @@ body.open-sidebar {
         width: 100%;
 
         &>span.username {
-          font-size: @text-big;
+          font-size: var(--text-big);
         }
 
         &>div.user-avatar {
@@ -191,7 +191,7 @@ body.open-sidebar {
       }
 
       &>li.menu-item {
-        width: @sidebar-width;
+        width: var(--sidebar-width);
 
         &>a {
           font-size: unset;
@@ -202,8 +202,7 @@ body.open-sidebar {
 
   section.themes {
     &> header, &>section.available-themes ul {
-      width: calc(100vw - @sidebar-width - 42px);
+      width: calc(100vw - var(--sidebar-width - 42px));
     }
   }
-
 }

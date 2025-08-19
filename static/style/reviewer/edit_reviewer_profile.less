@@ -6,15 +6,15 @@ section.edit-profile {
 
   &>h1.title-page {
     display: block;
-    color: @title-color;
+    color: var(--title-color);
     margin: 40px auto;
     width: @profile-card-width;
   }
 
   &>section.card-edit-profile {
-    background-color: @white;
+    background-color: var(--white);
     border-radius: 10px;
-    padding: @size-40px;
+    padding: var(--size-40px);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
     height: max-content;
     display: flex;
@@ -33,7 +33,7 @@ section.edit-profile {
 
         &>section.avatar-image {
           position: relative;
-          border: 1px solid rgba(@black, 20%);
+          border: 1px solid rgba(var(--black), 20%);
           border-radius: 50%;
           height: 128px;
           width: 128px;
@@ -62,8 +62,8 @@ section.edit-profile {
       }
 
       &>p.text-avatar-image {
-        color: @title-color;
-        font-size: @label;
+        color: var(--title-color);
+        font-size: var(--label);
         text-align: center;
         margin: 8px 0;
         margin-bottom: 24px;
@@ -74,16 +74,16 @@ section.edit-profile {
         margin: 0;
 
         &>span {
-          color: @title-color;
-          font-size: @text;
+          color: var(--title-color);
+          font-size: var(--text);
           margin-bottom: 6px;
         }
 
         &>input[type="text"],
         &>input[type="email"] {
-          border: 1px solid rgba(@primary-color, 50%);
-          color: rgba(@black, 60%);
-          padding: @size-16px;
+          border: 1px solid rgba(var(--primary-color), 50%);
+          color: rgba(var(--black), 60%);
+          padding: var(--size-16px);
         }
       }
 
@@ -104,7 +104,7 @@ section.edit-profile {
       }
 
       &>section.delete-image-popup {
-        background-color: rgba(@black, 25%);
+        background-color: rgba(var(--black), 25%);
         display: none;
         position: fixed;
         align-items: center;
@@ -115,15 +115,15 @@ section.edit-profile {
         width: 100vw;
 
         &>section.card-delete-image {
-          background-color: @light;
-          box-shadow: 0px 4px 37px rgba(@black, 25%);
-          margin-left: @sidebar-width-collapsed;
+          background-color: var(--light);
+          box-shadow: 0px 4px 37px rgba(var(--black), 25%);
+          margin-left: var--(sidebar-width-collapsed);
           padding: 40px 52px;
           text-align: center;
 
           &>p.confirm-text {
-            color: @title-color;
-            font-size: @text-medium;
+            color: var(--title-color);
+            font-size: var(--text-medium);
             font-weight: @semibold-weight;
             margin-bottom: 16px;
           }

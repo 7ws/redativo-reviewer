@@ -6,20 +6,22 @@ div.logo {
 
   &> a img {
     width: var(--logo-normal-size);
+    padding: 6px;
+    z-index: 1;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   div.logo {
     &> a img {
       width: var(--logo-small-size);
     }
   }
 }
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   div.logo {
     &> a img {
-      width: var(--logo-small-size);
+      width: var(--logo-extra-small-size);
     }
   }
 }

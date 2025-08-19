@@ -53,7 +53,7 @@ section#signup-form {
   section {
     background: @background-login-form;
     border-radius: 10px;
-    padding: @size-56px;
+    padding: var(--size-56px);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
     width: @login-form-width;
     display: flex;
@@ -65,7 +65,7 @@ section#signup-form {
     }
 
     &>p.welcome-text {
-      font-size: @text-big;
+      font-size: var(--text-color);
       font-weight: @semibold-weight;
       line-height: 32px;
       margin-bottom: 24px;
@@ -79,7 +79,7 @@ section#signup-form {
       position: relative;
 
       &>button[type="submit"] {
-        margin-top: @size-24px;
+        margin-top: var(--size-24px);
         width: 100%;
       }
 
@@ -92,13 +92,13 @@ section#signup-form {
 
         &>input {
           border: none;
-          margin-bottom: @size-16px;
-          padding: @size-16px;
+          margin-bottom: var(--size-16px);
+          padding: var(--size-16px);
         }
       }
 
       &>.helptext-card {
-        background-color: @white;
+        background-color: var(--white);
         display: none;
         padding: 16px;
         border-radius: 8px;
@@ -108,7 +108,7 @@ section#signup-form {
 
         &>p {
           display: inline-block;
-          color: rgba(@black, 70%);
+          color: rgba(var(--black), 70%);
           margin-bottom: 4px;
           text-indent: 4px;
           list-style-type: '-';
@@ -117,9 +117,9 @@ section#signup-form {
 
 
         &> ul li {
-          color: rgba(@black, 70%);
+          color: rgba(var(--black), 70%);
           display: block;
-          font-size: @label;
+          font-size: var(--label);
           margin-bottom: 8px;
         }
 
@@ -137,7 +137,7 @@ section#signup-form {
 
         position: absolute;
 
-        border-right: 10px solid @white;
+        border-right: 10px solid var(--white);
         border-top: 10px solid transparent;
         border-bottom: 10px solid transparent;
 
@@ -167,7 +167,7 @@ section#signup-form {
 
       &>.helptext {
         display: inline-block;
-        font-size: @label;
+        font-size: var(--label);
       }
 
       &>.show {
@@ -181,9 +181,9 @@ section#signup-form {
         justify-content: flex-end;
 
         &>span {
-          font-size: @text-small;
+          font-size: var(--text-small);
           margin: 0;
-          font-weight: @medium-weight;
+          font-weight: var(--medium-weight);
         }
 
         &>input {
@@ -196,13 +196,13 @@ section#signup-form {
     }
 
     &>.access-account {
-      font-size: @text-small;
+      font-size: var(--text-small);
       margin-top: 24px;
       text-align: center;
 
       strong {
-        color: @white;
-        font-size: @text;
+        color: var(--white);
+        font-size: var(--text);
       }
     }
   }

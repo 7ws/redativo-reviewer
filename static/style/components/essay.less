@@ -1,7 +1,7 @@
 @import "../variables.less";
 
 section.paper-sheet {
-  background-color: @white;
+  background-color: var(--white);
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
   min-height: 200px;
   height: autofill;
@@ -10,7 +10,7 @@ section.paper-sheet {
   margin-top: 8px;
 
   .title {
-    color: rgba(@black, 75%);
+    color: rgba(var(--black), 75%);
     font-size: 12px;
     font-weight: @bold-weight;
     text-align: center;
@@ -18,18 +18,18 @@ section.paper-sheet {
   }
 
   .text {
-    color: rgba(@black, 90%);
+    color: rgba(var(--black), 90%);
     font-size: 8px;
     text-align: justify;
     width: 100%;
 
     span.selected-text {
-      background: rgba(@primary-color, 12%);
+      background: rgba(var(--primary-color), 12%);
       cursor: pointer;
     }
 
     span.current-selected-text {
-      background: rgba(@primary-color, 41%);
+      background: rgba(var(--primary-color), 41%);
     }
   }
 }

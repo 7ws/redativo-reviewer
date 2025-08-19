@@ -14,17 +14,17 @@ section.review-edit {
   &>section.header-essay-detail {
     display: flex;
     justify-content: space-between;
-    width: @main-content-width;
+    width: var(--main-content-width);
 
     &>section.essay-theme {
       h2.theme-title {
-        color: @primary-color;
-        font-weight: @medium-weight;
+        color: var(--primary-color);
+        font-weight: var(--medium-weight);
         margin-bottom: 8px;
       }
 
       h2.theme-text {
-        color: rgba(@black, 75%);
+        color: rgba(var(--black), 75%);
         font-weight: @semibold-weight;
       }
     }
@@ -34,15 +34,15 @@ section.review-edit {
 
     &>section.handle-status {
       margin-top: 72px;
-      width: @main-content-width;
+      width: var(--main-content-width);
 
       &>section.current-status-content {
 
         &>a,
         &>p {
-          border-bottom: 1px solid rgba(@primary-color, 80%);
-          color: rgba(@primary-color, 80%);
-          font-size: @label;
+          border-bottom: 1px solid rgba(var(--primary-color), 80%);
+          color: rgba(var(--primary-color), 80%);
+          font-size: var(--label);
           font-weight: @bold-weight;
           display: inline-block;
           justify-self: flex-end;
@@ -54,12 +54,12 @@ section.review-edit {
           align-items: center;
 
           &>p.score {
-            font-size: @text-big;
-            font-weight: @medium-weight;
+            font-size: var(--text-color);
+            font-weight: var(--medium-weight);
           }
 
           &>div.progress-bar-score {
-            border: 1px solid @primary-color;
+            border: 1px solid var(--primary-color);
             border-radius: 12px;
             margin-top: 6px;
             height: 8px;
@@ -68,7 +68,7 @@ section.review-edit {
             &>div.progress {
               content: '';
               display: block;
-              background-color: @primary-color;
+              background-color: var(--primary-color);
               border-radius: 12px;
               width: 0;
               height: 100%;
@@ -86,26 +86,26 @@ section.review-edit {
               display: flex;
               align-items: center;
               justify-content: center;
-              background-color: @white;
+              background-color: var(--white);
               border-radius: 12px;
-              box-shadow: 0px 2px 4px rgba(@black, 16%);
-              color: @title-color;
+              box-shadow: 0px 2px 4px rgba(var(--black), 16%);
+              color: var(--title-color);
               cursor: pointer;
-              font-weight: @medium-weight;
+              font-weight: var(--medium-weight);
               height: 60px;
               width: 176px;
               text-align: center;
             }
 
             a.current-skill-tab {
-              background-color: @primary-color;
-              color: @white;
+              background-color: var(--primary-color);
+              color: var(--white);
               font-weight: @bold-weight;
               position: relative;
 
               &::before {
                 content: '';
-                border-left: 1px dotted @primary-color;
+                border-left: 1px dotted var(--primary-color);
                 position: absolute;
                 top: 100%;
                 height: 32px;
@@ -113,7 +113,7 @@ section.review-edit {
 
               &::after {
                 content: '';
-                background-color: @primary-color;
+                background-color: var(--primary-color);
                 border-radius: 50%;
                 position: absolute;
                 top: calc(100% + 28px);
@@ -139,10 +139,10 @@ section.review-edit {
 
             h3.skill-title {
               border-top: 2px solid @gray-color;
-              color: @primary-color;
+              color: var(--primary-color);
               display: block;
               font-weight: @bold-weight;
-              font-size: @text-big;
+              font-size: var(--text-color);
               margin-top: 32px;
               padding-top: 32px;
               text-align: justify;
@@ -159,22 +159,22 @@ section.review-edit {
               p.skill-score {
                 margin: 0;
                 flex: 1;
-                background-color: @primary-color;
-                background-color: @primary-color;
+                background-color: var(--primary-color);
+                background-color: var(--primary-color);
                 border-radius: 0 12px 12px 0;
-                color: @white;
+                color: var(--white);
                 display: inline-block;
                 font-weight: @bold-weight;
-                font-size: @text-big;
+                font-size: var(--text-color);
                 padding: 8px 16px;
               }
 
               p.skill-text {
                 margin: 0;
                 flex: 3;
-                color: @black;
-                font-weight: @medium-weight;
-                font-size: @text;
+                color: var(--black);
+                font-weight: var(--medium-weight);
+                font-size: var(--text);
                 margin-bottom: 15px;
               }
             }
@@ -189,7 +189,7 @@ section.review-edit {
     }
 
     &>section.submit-review {
-      background-color: rgba(@black, 25%);
+      background-color: rgba(var(--black), 25%);
       display: none;
       // display: flex;
       position: fixed;
@@ -201,17 +201,17 @@ section.review-edit {
       width: 100vw;
 
       &>section.card-submit-review {
-        background-color: @light;
-        box-shadow: 0px 4px 37px rgba(@black, 25%);
+        background-color: var(--light);
+        box-shadow: 0px 4px 37px rgba(var(--black), 25%);
         padding: 40px 52px;
         text-align: center;
 
         &>p.confirm-text {
-          color: @title-color;
+          color: var(--title-color);
         }
 
         &>p.warning-text {
-          font-size: @text-medium;
+          font-size: var(--text-medium);
           font-weight: @semibold-weight;
           margin-bottom: 12px;
           color: @secondary-color;
@@ -228,8 +228,8 @@ section.review-edit {
           justify-content: space-around;
 
           &>button {
-            font-size: @text-small;
-            line-height: @text-small;
+            font-size: var(--text-small);
+            line-height: var(--text-small);
             height: @size-32px;
             width: 40%;
           }
@@ -246,35 +246,35 @@ section.review-edit {
       margin: 32px 0;
 
       &>section.paper-sheet {
-        background-color: @white;
+        background-color: var(--white);
         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
         height: @paper-sheet-height;
         width: @paper-sheet-width;
         padding: 56px 80px;
 
         .title {
-          color: rgba(@black, 75%);
-          font-size: @text-medium;
+          color: rgba(var(--black), 75%);
+          font-size: var(--text-medium);
           font-weight: @bold-weight;
           text-align: center;
           margin-bottom: 40px;
-          width: calc(@main-content-width - 160px);
+          width: calc(var(--main-content-width) - 160px);
         }
 
         .text {
-          color: rgba(@black, 90%);
+          color: rgba(var(--black), 90%);
           height: 90%;
           resize: none;
           overflow: unset;
-          width: calc(@main-content-width - 160px);
+          width: calc(var(--main-content-width) - 160px);
 
           span.selected-text {
-            background: rgba(@primary-color, 12%);
+            background: rgba(var(--primary-color), 12%);
             cursor: pointer;
           }
 
           span.current-selected-text {
-            background: rgba(@primary-color, 41%);
+            background: rgba(var(--primary-color), 41%);
           }
         }
       }
@@ -288,10 +288,10 @@ section.review-edit {
 
           &>section.sticky-note {
             align-items: center;
-            background-color: @primary-color;
+            background-color: var(--primary-color);
             border-radius: 4px;
             clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%);
-            color: @white;
+            color: var(--white);
             cursor: pointer;
             display: flex;
             font-weight: @bold-weight;
@@ -309,10 +309,10 @@ section.review-edit {
           }
 
           &>div.comment-card {
-            background-color: @white;
+            background-color: var(--white);
             border-width: 0px;
             border-radius: 6px;
-            box-shadow: 0px 4px 4px rgba(@black, 25%);
+            box-shadow: 0px 4px 4px rgba(var(--black), 25%);
             overflow: hidden;
             max-height: 0;
             transition: all 0.3s ease;
@@ -326,14 +326,14 @@ section.review-edit {
 
                 span.comment-id {
                   display: inline-block;
-                  color: @primary-color;
+                  color: var(--primary-color);
                   font-style: italic;
                   font-weight: @semibold-weight;
                   margin-bottom: 4px;
                 }
 
                 p.comment-text {
-                  font-weight: @medium-weight;
+                  font-weight: var(--medium-weight);
                 }
               }
             }
@@ -351,7 +351,7 @@ section.review-edit {
 
                 &:disabled {
                   border: none;
-                  background-color: @white;
+                  background-color: var(--white);
                   text-align: right;
                 }
               }
@@ -379,7 +379,7 @@ section.review-edit {
 
           &>div.current-comment-card {
             max-height: 1000px;
-            border-top: 25px solid @primary-color;
+            border-top: 25px solid var(--primary-color);
           }
         }
       }

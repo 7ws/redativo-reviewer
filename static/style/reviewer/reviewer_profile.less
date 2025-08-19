@@ -38,15 +38,15 @@ section.profile {
   }
 
   &>.title-page {
-    color: @primary-color;
+    color: var(--primary-color);
     margin: 40px auto;
     width: @profile-card-width;
   }
 
   &>.card-profile {
-    background-color: @white;
+    background-color: var(--white);
     border-radius: 10px;
-    padding: @size-40px;
+    padding: var(--size-40px);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
     height: @profile-card-height;
     display: flex;
@@ -57,9 +57,9 @@ section.profile {
 
     &>ul {
       &>li {
-        border-bottom: 1px solid rgba(@primary-color, 40%);
+        border-bottom: 1px solid rgba(var(--primary-color), 40%);
         padding: 16px;
-        color: rgba(@black, 70%);
+        color: rgba(var(--black), 70%);
 
         &:first-of-type {
           padding-top: 0;
@@ -68,7 +68,7 @@ section.profile {
 
         &>section.avatar-image {
           position: relative;
-          border: 1px solid rgba(@black, 20%);
+          border: 1px solid rgba(var(--black), 20%);
           border-radius: 50%;
           margin-left: auto;
           margin-right: auto;
@@ -102,7 +102,7 @@ section.profile {
 
       &>button {
         width: 128px;
-        color: @white;
+        color: var(--white);
       }
     }
   }
