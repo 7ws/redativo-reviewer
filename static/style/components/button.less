@@ -1,35 +1,39 @@
-@import '../variables.less';
+@import "../variables.less";
 // buttons
-button, .button {
+button,
+.button {
   border: none;
   border-radius: 8px;
-  font-size: @text;
+  font-size: var(--text);
   padding: 8px;
-  font-family: @secondary-font;
-  font-weight: @semibold-weight;
+  font-family: var(--secondary-font);
+  font-weight: var(--semibold-weight);
   height: 48px;
 }
 
-.primary-button, .primary-button-small {
-  color: @white;
-  background-color: @primary-color;
+.primary-button,
+.primary-button-small {
+  color: var(--white);
+  background-color: var(--primary-color);
 }
 
-.secondary-button, .secondary-button-small {
-  background-color: @white;
-  color: @primary-color;
-  border: 1px solid @primary-color;
+.secondary-button,
+.secondary-button-small {
+  background-color: var(--white);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
 }
 
-.primary-button-small, .secondary-button-small {
-  height: @size-32px;
-  font-size: @label;
-  line-height: @label;
+.primary-button-small,
+.secondary-button-small {
+  height: var(--size-32px);
+  font-size: var(--label);
+  line-height: var(--label);
   width: 140px;
 }
 
 .round-button {
-  background-color: @primary-color;
+  background-color: var(--primary-color);
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 50%;
@@ -41,14 +45,14 @@ button, .button {
 .primary-button:disabled,
 .secondary-button:disabled,
 .primary-button-small:disabled {
-  background-color: @gray-color;
-  border-color: @gray-color;
-  color: @white;
+  background-color: var(--gray-color);
+  border-color: var(--gray-color);
+  color: var(--white);
   cursor: default;
 }
 
 .upload-image-button {
-  &>label {
+  & > label {
     .button();
     .primary-button-small();
 
@@ -59,34 +63,34 @@ button, .button {
     width: 140px;
   }
 
-  &>input {
+  & > input {
     display: none;
   }
 }
 
 .delete-image-button {
-  &>label {
+  & > label {
     .button();
     .secondary-button-small();
     position: relative;
 
     cursor: pointer;
-    background-color: @white;
+    background-color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
     width: 140px;
   }
 
-  &>label::before {
+  & > label::before {
     content: "";
-    background-image: url('../../img/icons/delete.svg');
+    background-image: url("../../img/icons/delete.svg");
     margin-right: 8px;
     height: 16px;
     width: 16px;
   }
 
-  &>input {
+  & > input {
     display: none;
   }
 }

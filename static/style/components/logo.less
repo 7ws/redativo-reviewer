@@ -5,6 +5,21 @@ div.logo {
   height: 50px;
 
   &> a img {
-    width: @logo-normal-size;
+    width: var(--logo-normal-size);
+  }
+}
+
+@media (max-width: 768px) {
+  div.logo {
+    &> a img {
+      width: var(--logo-small-size);
+    }
+  }
+}
+@media (max-width: 480px) {
+  div.logo {
+    &> a img {
+      width: var(--logo-small-size);
+    }
   }
 }

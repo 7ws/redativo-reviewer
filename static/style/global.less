@@ -1,5 +1,5 @@
 // imports
-@import 'variables.less';
+@import "variables.less";
 
 // reset
 * {
@@ -10,19 +10,19 @@
 
 // common
 body {
-  background-color: @light;
-  font-family: @primary-font;
+  background-color: var(--light);
+  font-family: var(--primary-font);
   display: flex;
   flex-direction: column;
   height: 100vh;
 
-  &> main {
-    margin-left: @sidebar-width-collapsed;
-    margin-top: @header-height;
+  & > main {
+    margin-left: var(--sidebar-width-collapsed);
+    margin-top: var(--header-height);
   }
 
-  &> footer {
-    margin-left: @sidebar-width-collapsed;
+  & > footer {
+    margin-left: var(--sidebar-width-collapsed);
     margin-top: auto;
   }
 
@@ -34,7 +34,8 @@ body {
     list-style: none;
   }
 
-  button, a {
+  button,
+  a {
     cursor: pointer;
   }
 
@@ -43,17 +44,18 @@ body {
   }
 
   .container {
-    width: @width;
+    width: var(--width);
     margin: 0 auto;
     padding-top: 16px;
 
     .theme-name {
-      color: @primary-color;
+      color: var(--primary-color);
     }
 
-    .theme-card, .essay-card{
-      background-color: @white;
-      box-shadow: 0 0 6px @gray-border;
+    .theme-card,
+    .essay-card {
+      background-color: var(--white);
+      box-shadow: 0 0 6px var(--gray-border);
       margin-bottom: 16px;
       padding: 8px;
       display: flex;
@@ -76,8 +78,9 @@ body {
       margin-top: 16px;
     }
 
-    h3, p {
-      font-family: @secondary-font;
+    h3,
+    p {
+      font-family: var(--secondary-font);
     }
 
     h3 {
@@ -94,8 +97,8 @@ body {
 form {
   label.form-field {
     display: block;
-    font-size: @text;
-    font-weight: @semibold-weight;
+    font-size: var(--text);
+    font-weight: var(--semibold-weight);
     margin: 1em 0;
 
     .label {
@@ -106,7 +109,7 @@ form {
     input[type="text"],
     input[type="password"] {
       border-radius: 8px;
-      height: @size-40px;
+      height: var(--size-40px);
     }
 
     input[type="email"],
@@ -117,14 +120,14 @@ form {
     }
 
     input::placeholder {
-      font-size: @text-small;
-      font-weight: @semibold-weight;
+      font-size: var(--text-small);
+      font-weight: var(--semibold-weight);
     }
 
     input:focus {
-      box-shadow: 0 1px 2px rgba(@black, 60%);
+      box-shadow: 0 1px 2px rgba(var(--black), 60%);
       outline: groove;
-      outline-color: rgba(@primary-color, 60%);
+      outline-color: rgba(var(--primary-color), 60%);
       outline-width: 2px;
     }
   }
