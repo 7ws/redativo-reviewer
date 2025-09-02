@@ -1,27 +1,32 @@
 {% load static %}
 {% block head %}
-  <link rel="stylesheet/less" type="text/css" href="{% static 'style/components/header.less' %}">
+<link rel="stylesheet/less" type="text/css" href="{% static 'style/components/header.less' %}">
 {% endblock head %}
 <header id="main-header" class="principal-header">
   {% include "components/logo.html" %}
 
   {% if user.is_authenticated %}
-    <section class="dropdown-menu">
-      <a onclick="handleDropdown()" class="dropdown-username down-arrow">
-        Olá, {{ user.name }}
-      </a>
-      <ul class="dropdown">
-        <li><a href="{% url 'profile_url' %}">Meu Perfil</a></li>
-        <li><a href="{% url 'logout' %}">Sair</a></li>
-      </ul>
-    </section>
+  <section class="dropdown-menu">
+    <a onclick="handleDropdown()" class="dropdown-username down-arrow">
+      Olá, {{ user.name }}
+    </a>
+    <ul class="dropdown">
+      <li><a href="{% url 'profile_url' %}">Meu Perfil</a></li>
+      <li>
+        <form method="post" action="{% url 'logout' %}" id="logout-form">
+          {% csrf_token %}
+          <a href="#" onclick="document.getElementById('logout-form').submit();">Sair</a>
+        </form>
+      </li>
+    </ul>
+  </section>
   {% else %}
-    <section class="login-signup">
-      <ul>
-        <li><a href="{% url 'login' %}">Acessar</a></li>
-        <li><a href="{% url 'signup' %}">Registrar</a></li>
-      </ul>
-    </section>
+  <section class="login-signup">
+    <ul>
+      <li><a href="{% url 'login' %}">Acessar</a></li>
+      <li><a href="{% url 'signup' %}">Registrar</a></li>
+    </ul>
+  </section>
   {% endif %}
 </header>
 <script>
