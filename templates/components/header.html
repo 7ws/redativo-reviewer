@@ -11,13 +11,35 @@
       Olá, {{ user.name }}
     </a>
     <ul class="dropdown">
-      <li><a href="{% url 'profile_url' %}">Meu Perfil</a></li>
+      {% if request.user.is_authenticated %}
+      <li class="user">
+        {% if request.user.avatar_image %}
+        <div class="user-avatar">
+          <img src="{{ request.user.avatar_image.url }}" alt="">
+        </div>
+        {% else %}
+        <div class="user-avatar">
+          <img src="{% static 'img/default-avatar.svg' %}" alt="">
+        </div>
+        {% endif %}
+        <span class="username"><a href="{% url 'profile_url' %}">
+            Olá, {{ request.user.short_name }}
+          </a></span>
+      </li>
+      <li class="menu-item themes"><a href="{% url 'theme:history' %}">Temas</a></li>
+      {% if user_type == 'writer' %}
+      <li class="menu-item essays"><a href="{% url 'writer:essays' user_id=user.id %}">Redações</a></li>
+      {% elif user_type == 'reviewer' %}
+      <li class="menu-item reviewable"><a href="{% url 'reviewer:reviewable_essays' user_id=user.id %}">Corrigir</a></li>
+      <li class="menu-item reviews"><a href="{% url 'reviewer:reviews' user_id=user.id %}">Corrigidas</a></li>
+      {% endif %}
       <li>
         <form method="post" action="{% url 'logout' %}" id="logout-form">
           {% csrf_token %}
           <a href="#" onclick="document.getElementById('logout-form').submit();">Sair</a>
         </form>
       </li>
+      {% endif %}
     </ul>
   </section>
   {% else %}
@@ -35,12 +57,12 @@
   }
 
   window.onclick = (event) => {
-    if (!event.target.matches('.dropdown-username')){
+    if (!event.target.matches('.dropdown-username')) {
       let dropdowns = document.getElementsByClassName('principal-header');
       let i;
-      for(i = 0; i < dropdowns.length; i++){
+      for (i = 0; i < dropdowns.length; i++) {
         let openDropdown = dropdowns[i];
-        if(openDropdown.classList.contains('open-dropdown')) {
+        if (openDropdown.classList.contains('open-dropdown')) {
           openDropdown.classList.remove('open-dropdown');
         }
       }
