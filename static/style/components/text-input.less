@@ -1,0 +1,29 @@
+@import '../global.less';
+
+.form-field {
+  margin: 0;
+
+  &>.label {
+    margin-bottom: 4px;
+  }
+
+  &>input {
+    border: none;
+    margin-bottom: var(--size-16px);
+    padding: var(--size-16px);
+  }
+}
+
+// Tablet breakpoint (768px and below)
+@media (max-width: @breakpoint-tablet) {
+  .form-field {
+    &>.label {
+      margin-bottom: 2px;
+    }
+
+    &>input {
+      margin-bottom: var(--size-16px);
+      padding: var(--size-16px);
+    }
+  }
+}

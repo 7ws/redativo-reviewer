@@ -1,3 +1,7 @@
+{% load static %}
+{% block head %}
+<link rel="stylesheet/less" type="text/css" href="{% static 'style/components/text-input.less' %}">
+{% endblock head %}
 <label class="form-field">
   <span class="label">{{ field.label }}</span>
   {{ field }}
