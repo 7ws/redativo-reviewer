@@ -1,9 +1,0 @@
-{% load static %}
-{% block head %}
-  <link rel="stylesheet/less" type="text/css" href="{% static 'style/components/essay.less' %}">
-{% endblock head %}
-
-<section class="paper-sheet">
-  <p class="title">{{ essay.title }}</p>
-  <p class="text">{{ essay.text|linebreaksbr }}</p>
-</section>
