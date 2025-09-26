@@ -31,7 +31,7 @@ export default function LoginPage() {
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
 
-      router.replace("/dashboard");
+      router.replace("/home");
     } catch (err) {
       setError("Something went wrong." + err);
     }
