@@ -34,7 +34,7 @@ export async function fetchWithAuth(
     headers: {
       ...options.headers,
       Authorization: `Bearer ${access}`,
-      "Content-Type": "application/json",
+      // "Content-Type": "application/json",
     },
   });
 

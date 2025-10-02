@@ -155,7 +155,7 @@ export default function HomePage() {
                             }}
                             className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                           >
-                            View Essay
+                            Ver Redação
                           </button>
                         ) : (
                           <button
@@ -165,7 +165,7 @@ export default function HomePage() {
                             }}
                             className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
                           >
-                            Write Essay
+                            Escrever Redação
                           </button>
                         )}
                       </div>
@@ -178,7 +178,10 @@ export default function HomePage() {
         ) : (
           <>
             {essays.map((essay) => (
-              <Card className="overflow-hidden">
+              <Card
+                className="overflow-hidden cursor-pointer"
+                onClick={() => router.push(`/essays/${essay.id}`)}
+              >
                 <CardContent className="p-0">
                   <div className="flex">
                     <div className="w-32 h-24 bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center relative">

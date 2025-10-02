@@ -8,42 +8,27 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
+import { fetchWithAuth } from "@/lib/api";
 
 export default function ThemePage() {
   const { id } = useParams<{ id: string }>();
-  const [showEssaySubmission, setShowEssaySubmission] = useState(false);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState({});
+  const [essays, setEssays] = useState([{}]);
   const [isActive, setIsActive] = useState(false);
   const [remainingTime, setRemainingTime] = useState("00:00:00");
-  const [submissionMode, setSubmissionMode] = useState<
-    "digital" | "manuscrito"
-  >("digital");
   const router = useRouter();
 
   const handleBackClick = () => {
-    if (showEssaySubmission) {
-      setShowEssaySubmission(false);
-    }
     router.back();
-  };
-
-  const handleWriteEssay = () => {
-    setShowEssaySubmission(true);
   };
 
   useEffect(() => {
     async function fetchTheme() {
       try {
         const res = await fetch(`http://localhost:8000/api/v1/themes/${id}/`);
-
-        if (res.status === 401) {
-          localStorage.removeItem("access");
-          router.push("/login");
-          return;
-        }
 
         const data = await res.json();
         setTheme(data);
@@ -55,8 +40,25 @@ export default function ThemePage() {
         setLoading(false);
       }
     }
+
+    async function fetchEssays() {
+      const access = localStorage.getItem("access");
+      if (!access) return;
+
+      setLoading(true);
+      try {
+        const res = await fetchWithAuth(`/api/v1/themes/${id}/essays/`, router);
+        setEssays(await res.json());
+      } catch (err) {
+        console.error("Error fetching active essay:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchTheme();
-  }, [router]);
+    fetchEssays();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -113,13 +115,35 @@ export default function ThemePage() {
         <p className="text-gray-600 text-sm leading-relaxed mb-8">
           {theme.description}
         </p>
+        {(() => {
+          // find the essay for this theme (if any)
+          const essay = essays.find((e) => e.theme === theme.id);
 
-        <Button
-          onClick={handleWriteEssay}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium"
-        >
-          Escrever redação
-        </Button>
+          if (isActive) {
+            if (!essay) {
+              // theme active but no essay yet
+              return (
+                <Button onClick={() => router.push(`/essays/new?theme=${id}`)}>
+                  Escrever redação
+                </Button>
+              );
+            }
+          }
+
+          if (essay) {
+            return (
+              <Button onClick={() => router.push(`/essays/${essay.id}`)}>
+                Ver redação
+              </Button>
+            );
+          }
+
+          return (
+            <p className="text-red-500">
+              Tema encerrado em {theme.available_until}.
+            </p>
+          );
+        })()}
       </div>
     </div>
   );
