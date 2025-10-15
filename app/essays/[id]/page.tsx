@@ -63,7 +63,7 @@ export default function EssayPage() {
         {/* Essay Image Section with Teacher Annotations */}
         <div className="relative bg-white rounded-lg overflow-hidden shadow-sm">
           <img
-            src={essay.text}
+            src={essay.text_image}
             alt="Redação corrigida com marcações do professor"
             className="w-full h-auto"
           />
