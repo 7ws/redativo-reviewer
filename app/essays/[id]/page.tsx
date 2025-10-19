@@ -35,25 +35,12 @@ export default function EssayPage() {
   );
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
 
-  const getScoreColor = (score: number) => {
-    if (score <= 80)
-      return {
-        bg: "bg-red-500",
-        border: "border-red-500",
-        text: "text-red-500",
-      };
-    if (score <= 140)
-      return {
-        bg: "bg-orange-500",
-        border: "border-orange-500",
-        text: "text-orange-500",
-      };
-    return {
-      bg: "bg-blue-500",
-      border: "border-blue-500",
-      text: "text-blue-500",
-    };
-  };
+  const selectedHighlightData = selectedHighlight
+    ? highlights.find((h) => h.id === selectedHighlight)
+    : null;
+  const splitPosition = selectedHighlightData
+    ? selectedHighlightData.y + selectedHighlightData.height
+    : null;
 
   const handleCompetencyClick = (competencyId: number) => {
     setSelectedCompetency(
@@ -93,6 +80,8 @@ export default function EssayPage() {
   ];
 
   const handleBackClick = () => {
+    setSelectedCompetency(null);
+    setSelectedHighlight(null);
     router.back();
   };
 
@@ -181,43 +170,130 @@ export default function EssayPage() {
         </div>
 
         {/* Essay Image Section with Teacher Annotations */}
-        <div className="relative bg-white rounded-lg overflow-hidden shadow-sm">
-          <img
-            src={essay.text_image}
-            alt="Redação corrigida com marcações do professor"
-            className="w-full h-auto"
-          />
-
-          {/* Interactive annotation markers can be added here in the future */}
-          {highlights.map((highlight) => (
-            <button
-              key={highlight.id}
-              onClick={() =>
-                handleHighlightClick(highlight.id, highlight.competencyId)
-              }
-              className={`absolute cursor-pointer transition-all ${
-                selectedHighlight === highlight.id
-                  ? "ring-2 ring-offset-2 ring-blue-600"
-                  : ""
-              }`}
+        <div className="space-y-4">
+          {/* Top section - shows image from top to split position */}
+          <div className="relative bg-white rounded-lg overflow-hidden shadow-sm">
+            <div
+              className="relative w-full overflow-hidden"
               style={{
-                left: `${highlight.x}%`,
-                top: `${highlight.y}%`,
-                width: `${highlight.width}%`,
-                height: `${highlight.height}%`,
-                backgroundColor:
-                  selectedHighlight === highlight.id
-                    ? "#0065FF80"
-                    : "#0065FF40",
-                border:
-                  selectedHighlight === highlight.id
-                    ? "2px solid #0065FF"
-                    : "1px solid #0065FF",
+                maxHeight: splitPosition ? `${splitPosition}vh` : "none",
               }}
-            />
-          ))}
-        </div>
+            >
+              <img
+                src={essay.text_image}
+                alt="Redação corrigida com marcações do professor"
+                className="w-full h-auto block"
+              />
+              {/* Highlights overlay */}
+              <div className="absolute inset-0">
+                {highlights.map((highlight) => {
+                  if (splitPosition && highlight.y >= splitPosition)
+                    return null;
 
+                  return (
+                    <button
+                      key={highlight.id}
+                      onClick={() =>
+                        handleHighlightClick(
+                          highlight.id,
+                          highlight.competencyId,
+                        )
+                      }
+                      className={`absolute cursor-pointer transition-all`}
+                      style={{
+                        left: `${highlight.x}%`,
+                        top: `${highlight.y}vh`,
+                        width: `${highlight.width}%`,
+                        height: `${highlight.height}vh`,
+                        backgroundColor:
+                          selectedHighlight === highlight.id
+                            ? "#0065FF80"
+                            : "#0065FF40",
+                        border:
+                          selectedHighlight === highlight.id
+                            ? "2px solid #0065FF"
+                            : "1px solid #0065FF",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Comment box - appears right after the selected highlight */}
+          {selectedHighlight && (
+            <div
+              className="rounded-2xl p-4 border-2 animate-in fade-in slide-in-from-top-2 duration-300"
+              style={{
+                backgroundColor: "#3B82F650",
+                borderColor: "#3B82F6",
+              }}
+            >
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit
+                amet lacus nec turpis fringilla lacinia nec rhoncus urna.
+                Suspendisse vitae tincidunt dolor, ac feugiat nisl. Maecenas nec
+                quam lorem. Vestibulum bibendum, felis et ultrices lobortis,
+                dolor nulla pulvinar est, sed posuere ligula risus eleifend
+                justo.
+              </p>
+            </div>
+          )}
+
+          {/* Bottom section - shows image from split position to end */}
+          {splitPosition && (
+            <div className="relative bg-white rounded-lg overflow-hidden shadow-sm">
+              <div className="relative w-full overflow-hidden">
+                <img
+                  src={essay.text_image}
+                  alt="Redação corrigida com marcações do professor - parte inferior"
+                  className="w-full h-auto block"
+                  style={{
+                    marginTop: `-${splitPosition}vh`,
+                  }}
+                />
+                {/* Highlights overlay */}
+                <div
+                  className="absolute inset-0"
+                  style={{ marginTop: `-${splitPosition}vh` }}
+                >
+                  {highlights.map((highlight) => {
+                    if (highlight.y + highlight.height <= splitPosition)
+                      return null;
+
+                    return (
+                      <button
+                        key={highlight.id}
+                        onClick={() =>
+                          handleHighlightClick(
+                            highlight.id,
+                            highlight.competencyId,
+                          )
+                        }
+                        className={`absolute cursor-pointer transition-all`}
+                        style={{
+                          left: `${highlight.x}%`,
+                          top: `${highlight.y}vh`,
+                          width: `${highlight.width}%`,
+                          height: `${highlight.height}vh`,
+                          backgroundColor:
+                            selectedHighlight === highlight.id
+                              ? "#0065FF80"
+                              : "#0065FF40",
+                          border:
+                            selectedHighlight === highlight.id
+                              ? "2px solid #0065FF"
+                              : "1px solid #0065FF",
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         {/* Competency Buttons */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-700 mb-3">
@@ -226,7 +302,6 @@ export default function EssayPage() {
 
           <div className="flex flex-wrap items-center flex-row justify-center gap-4">
             {competencies.map((comp) => {
-              const colors = getScoreColor(comp.score);
               return (
                 <button
                   key={comp.id}
