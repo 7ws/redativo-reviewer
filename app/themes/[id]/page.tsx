@@ -28,7 +28,9 @@ export default function ThemePage() {
   useEffect(() => {
     async function fetchTheme() {
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/themes/${id}/`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/themes/${id}/`,
+        );
 
         const data = await res.json();
         setTheme(data);

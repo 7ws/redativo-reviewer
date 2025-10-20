@@ -2,13 +2,16 @@ async function refreshAccessToken() {
   const refresh = localStorage.getItem("refresh");
   if (!refresh) return null;
 
-  const res = await fetch("http://localhost:8000/api/v1/token/refresh/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/token/refresh/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refresh }),
     },
-    body: JSON.stringify({ refresh }),
-  });
+  );
 
   if (!res.ok) {
     // refresh expired → force logout
@@ -29,7 +32,7 @@ export async function fetchWithAuth(
 ) {
   let access = localStorage.getItem("access");
 
-  const res = await fetch(`http://localhost:8000${url}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
     ...options,
     headers: {
       ...options.headers,
@@ -47,7 +50,7 @@ export async function fetchWithAuth(
     }
 
     // retry request with new token
-    return fetch(`http://localhost:8000${url}`, {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       ...options,
       headers: {
         ...options.headers,
