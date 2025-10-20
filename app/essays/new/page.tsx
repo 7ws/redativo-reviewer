@@ -1,12 +1,11 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
 import { Menu, ArrowLeft } from "lucide-react";
-
 import { fetchWithAuth } from "@/lib/api";
 
-export default function EssayUploadPage() {
+function EssayUploadContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const themeId = searchParams.get("theme");
@@ -16,9 +15,7 @@ export default function EssayUploadPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleBackClick = () => {
-    router.back();
-  };
+  const handleBackClick = () => router.back();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -137,5 +134,13 @@ export default function EssayUploadPage() {
         {loading ? "Enviando..." : "Enviar Redação"}
       </button>
     </div>
+  );
+}
+
+export default function EssayUploadPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <EssayUploadContent />
+    </Suspense>
   );
 }
