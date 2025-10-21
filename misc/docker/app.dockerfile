@@ -11,7 +11,7 @@ COPY . .
 
 # Make sure build-time env vars are available
 ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_API_URL=https://redativo-dev.herokuapp.com
 
 # Build the app with env vars injected
 RUN npm run build
