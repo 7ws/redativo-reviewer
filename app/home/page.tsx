@@ -28,9 +28,9 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchThemes() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/home/`,
-        );
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/home/`;
+        console.log("Fetching themes from URL:", url);
+        const res = await fetch(url);
         const data = await res.json();
 
         setActiveThemes(data);
