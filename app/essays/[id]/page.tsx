@@ -49,8 +49,11 @@ export default function EssayPage() {
     setSelectedHighlight(null);
   };
 
-  const handleHighlightClick = (highlightId: number, competencyId: number) => {
-    setSelectedHighlight(highlightId);
+  const handleHighlightClick = (highlightId: number) => {
+    setSelectedHighlight(
+      highlightId === selectedHighlight ? null : highlightId,
+    );
+    setSelectedCompetency(null);
   };
 
   const nextTip = () => {
@@ -193,12 +196,7 @@ export default function EssayPage() {
                   return (
                     <button
                       key={highlight.id}
-                      onClick={() =>
-                        handleHighlightClick(
-                          highlight.id,
-                          highlight.competencyId,
-                        )
-                      }
+                      onClick={() => handleHighlightClick(highlight.id)}
                       className={`absolute cursor-pointer transition-all`}
                       style={{
                         left: `${highlight.x}%`,
@@ -214,6 +212,7 @@ export default function EssayPage() {
                             ? "2px solid #0065FF"
                             : "1px solid #0065FF",
                       }}
+                      aria-label={`Marcação ${highlight.id}`}
                     />
                   );
                 })}
@@ -265,12 +264,7 @@ export default function EssayPage() {
                     return (
                       <button
                         key={highlight.id}
-                        onClick={() =>
-                          handleHighlightClick(
-                            highlight.id,
-                            highlight.competencyId,
-                          )
-                        }
+                        onClick={() => handleHighlightClick(highlight.id)}
                         className={`absolute cursor-pointer transition-all`}
                         style={{
                           left: `${highlight.x}%`,
@@ -286,6 +280,7 @@ export default function EssayPage() {
                               ? "2px solid #0065FF"
                               : "1px solid #0065FF",
                         }}
+                        aria-label={`Marcação ${highlight.id}`}
                       />
                     );
                   })}
@@ -294,6 +289,7 @@ export default function EssayPage() {
             </div>
           )}
         </div>
+
         {/* Competency Buttons */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-700 mb-3">
