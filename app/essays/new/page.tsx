@@ -39,7 +39,7 @@ function EssayUploadContent() {
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("text", file);
+    formData.append("text_image", file);
 
     setLoading(true);
     const res = await fetchWithAuth(
