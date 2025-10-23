@@ -35,18 +35,19 @@ export default function LoginPage() {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        credentials: "include",
+        body: JSON.stringify({ username, password }),
       },
     );
 
-    setIsLoading(false);
+    const data = await res.json();
 
     if (res.ok) {
-      router.push("/home");
+      setIsLoading(false);
+      if (data.access && data.refresh) {
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("refresh", data.refresh);
+        router.replace("/home");
+      }
     } else {
       const data = await res.json();
       alert("Error: " + JSON.stringify(data));
