@@ -1,45 +1,47 @@
 "use client";
 
 import type React from "react";
+
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleSignup = async () => {
     setIsLoading(true);
 
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/accounts/google/login/?process=login`;
 
-    // Simulate loading
     setTimeout(() => {
       setIsLoading(false);
       alert("Unable to login with Google.");
     }, 1000);
   };
 
-  async function handleLogin(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     const form = e.target as HTMLFormElement;
-    const username = (form[0] as HTMLInputElement).value;
-    const password = (form[1] as HTMLInputElement).value;
+    const full_name = (form[0] as HTMLInputElement).value;
+    const username = (form[1] as HTMLInputElement).value;
+    const password = (form[2] as HTMLInputElement).value;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login/`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/registration/`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          full_name: full_name,
           username: username,
-          password: password,
+          password1: password,
+          password2: password,
         }),
-        credentials: "include",
       },
     );
 
@@ -51,7 +53,7 @@ export default function LoginPage() {
       const data = await res.json();
       alert("Error: " + JSON.stringify(data));
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -59,14 +61,14 @@ export default function LoginPage() {
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome Back
+              Create Account
             </h1>
-            <p className="text-gray-600">Sign in to continue to your account</p>
+            <p className="text-gray-600">Sign up to get started</p>
           </div>
 
           <div className="space-y-4">
             <Button
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleSignup}
               disabled={isLoading}
               className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 flex items-center justify-center gap-3 h-11"
             >
@@ -88,7 +90,7 @@ export default function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              {isLoading ? "Signing in..." : "Continue with Google"}
+              {isLoading ? "Signing up..." : "Continue with Google"}
             </Button>
 
             <div className="relative">
@@ -100,34 +102,42 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input
+                type="text"
+                placeholder="Full name"
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
               <input
                 type="text"
                 placeholder="Username"
+                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="password"
                 placeholder="Password"
+                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Button
                 type="submit"
                 className="w-full bg-[#3B82F6] hover:bg-blue-600"
               >
-                Sign In
+                Create Account
               </Button>
             </form>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                href="/signup"
+                href="/login"
                 className="text-[#3B82F6] hover:underline font-medium"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>
