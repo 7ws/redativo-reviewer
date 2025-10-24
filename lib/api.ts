@@ -81,21 +81,6 @@ async function makeAuthRequest(
   return res;
 }
 
-export async function apiPostWithAuth(
-  url: string,
-  router: any,
-  body?: FormData,
-) {
-  let res = await makeAuthRequest(url, "POST", router, {
-    headers: {
-      // body: body,
-      "Content-Type": "application/json",
-    },
-  });
-
-  return res;
-}
-
 export async function apiGetWithAuth(url: string, router: any) {
   let res = await makeAuthRequest(url, "GET", router, {
     headers: {
@@ -117,17 +102,37 @@ export async function apiGetWithoutAuth(url: string, router: any) {
   return res;
 }
 
+export async function apiPostWithAuth(
+  url: string,
+  router: any,
+  body?: FormData,
+) {
+  let res = await makeAuthRequest(url, "POST", router, {
+    body: body,
+    headers: {},
+  });
+
+  return res;
+}
+
+export async function apiPatchWithAuth(
+  url: string,
+  router: any,
+  body?: FormData,
+) {
+  let res = await makeAuthRequest(url, "PATCH", router, {
+    body: body,
+    headers: {},
+  });
+
+  return res;
+}
+
 export async function sendEssay(themeId: string, router: any, body: FormData) {
-  let res = await makeAuthRequest(
+  let res = await apiPostWithAuth(
     `/api/v1/themes/${themeId}/essays/`,
-    "POST",
     router,
-    {
-      body: body,
-      headers: {
-        "Content-Tye": "multipart/form-data",
-      },
-    },
+    body,
   );
   return res;
 }

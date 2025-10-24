@@ -41,7 +41,7 @@ export default function HomePage() {
   };
 
   const handleProfile = () => {
-    router.push("/profile");
+    router.push(`/profile/${user.id}`);
   };
 
   const handleLogout = () => {
@@ -159,26 +159,12 @@ export default function HomePage() {
       <header className="flex items-center justify-between p-4 bg-white border-b">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="p-2 rounded hover:bg-gray-100">
-              <Menu className="w-6 h-6 text-gray-600" />
-            </button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={handlShowAllThemes}>
-              {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
             <button className="focus:outline-none">
               <Avatar className="w-10 h-10 bg-blue-300 cursor-pointer">
                 {user?.avatar_image && (
                   <AvatarImage
                     src={user.avatar_image || "/placeholder.svg"}
-                    alt={user.name}
+                    alt={user.full_name}
                   />
                 )}
                 <AvatarFallback className="bg-blue-300">
@@ -205,6 +191,20 @@ export default function HomePage() {
                 </DropdownMenuItem>
               </>
             )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2 rounded hover:bg-gray-100">
+              <Menu className="w-6 h-6 text-gray-600" />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={handlShowAllThemes}>
+              {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </header>

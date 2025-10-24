@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchWithAuth } from "@/lib/api";
+import { apiGetWithAuth } from "@/lib/api";
 
 export default function EssayPage() {
   const { id } = useParams();
@@ -75,7 +75,7 @@ export default function EssayPage() {
     async function fetchEssays() {
       setLoading(true);
       try {
-        const res = await fetchWithAuth(`/api/v1/essays/${id}/`, router);
+        const res = await apiGetWithAuth(`/api/v1/essays/${id}/`, router);
         const essayData = await res.json();
         setEssay(essayData);
 

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams, useRouter } from "next/navigation";
 
-import { fetchWithAuth } from "@/lib/api";
+import { apiGetWithAuth } from "@/lib/api";
 
 export default function ThemePage() {
   const { id } = useParams<{ id: string }>();
@@ -49,7 +49,10 @@ export default function ThemePage() {
 
       setLoading(true);
       try {
-        const res = await fetchWithAuth(`/api/v1/themes/${id}/essays/`, router);
+        const res = await apiGetWithAuth(
+          `/api/v1/themes/${id}/essays/`,
+          router,
+        );
         setEssays(await res.json());
       } catch (err) {
         console.error("Error fetching active essay:", err);

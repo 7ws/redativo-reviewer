@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
-import { fetchWithAuth, sendEssay } from "@/lib/api";
+import { apiGetWithAuth, sendEssay } from "@/lib/api";
 
 function EssayUploadContent() {
   const searchParams = useSearchParams();
