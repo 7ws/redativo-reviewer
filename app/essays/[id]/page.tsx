@@ -23,7 +23,6 @@ export default function EssayPage() {
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
 
   const imageRef = useRef(null);
-  const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
   const [renderSize, setRenderSize] = useState({ width: 0, height: 0 });
 
   const tips = [
@@ -193,12 +192,10 @@ export default function EssayPage() {
     });
   };
 
-  // When the image loads or rawHighlights change and naturalSize is known, normalize them
   const handleImageLoad = (e) => {
     const img = e.target;
     const natW = img.naturalWidth || 0;
     const natH = img.naturalHeight || 0;
-    setNaturalSize({ width: natW, height: natH });
     // update render size now as well
     updateRenderSize();
 

@@ -140,12 +140,10 @@ export default function HomePage() {
   }, [router, isAuthenticated]);
 
   const statusTexts: Record<string, string> = {
-    in_progress: "Em andamento",
-    expired: "Expirada",
-    submitted: "Enviada",
-    ready_for_review: "Pronta para revisão",
-    under_review: "Em revisão",
-    reviewed: "Revisada",
+    SUBMITTED: "Enviada",
+    READY_FOR_REVIEW: "Pronta para revisão",
+    UNDER_REVIEW: "Em revisão",
+    REVIEWED: "Revisada",
   };
 
   const getEssayByTheme = (theme: Theme) =>
@@ -231,7 +229,7 @@ export default function HomePage() {
                 : "text-gray-500 font-medium"
             }`}
           >
-            Minhas Redações {isAuthenticated}
+            Minhas Redações
           </button>
         )}
       </div>
@@ -266,9 +264,26 @@ export default function HomePage() {
                     {/* Content */}
                     <div className="flex-1 p-4">
                       <h3 className="font-bold text-sm mb-2">{theme.title}</h3>
-                      <p className="text-xs text-gray-500">
-                        {theme.short_description}
+                      <p className="text-xs text-gray-500 mb-2">
+                        {theme.description}
                       </p>
+
+                      {/* Available until */}
+                      {theme.available_until && (
+                        <p className="text-xs text-gray-600 mb-2">
+                          Disponível até{" "}
+                          {new Date(theme.available_until).toLocaleDateString(
+                            "pt-BR",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            },
+                          )}
+                        </p>
+                      )}
+
+                      {/* Authenticated actions */}
                       {isAuthenticated && (
                         <>
                           {essay ? (
@@ -306,29 +321,59 @@ export default function HomePage() {
           })}
 
         {activeTab === "redacoes" &&
-          essays.map((essay: Essay) => (
-            <Card
-              key={essay.id}
-              className="overflow-hidden cursor-pointer"
-              onClick={() => router.push(`/essays/${essay.id}`)}
-            >
-              <CardContent className="p-0">
-                <div className="flex">
-                  <div className="w-32 h-24 bg-linear-to-br from-orange-400 to-yellow-400 flex items-center justify-center relative">
-                    <Badge className="absolute top-2 left-2 bg-orange-600 text-white text-xs px-2 py-1">
-                      {statusTexts[essay.status]}
-                    </Badge>
+          essays.map((essay: Essay) => {
+            const theme = essay.theme;
+            const themeImage =
+              theme?.background_image || "/placeholder-theme.jpg";
+            const themeTitle = theme?.title || "Tema desconhecido";
+
+            // Optional: color-code statuses for better UX
+            const statusColors: Record<string, string> = {
+              SUBMITTED: "bg-blue-500",
+              READY_FOR_REVIEW: "bg-indigo-500",
+              UNDER_REVIEW: "bg-purple-500",
+              REVIEWED: "bg-green-600",
+            };
+
+            const statusColor = statusColors[essay.status] || "bg-gray-400";
+
+            return (
+              <Card
+                key={essay.id}
+                className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => router.push(`/essays/${essay.id}`)}
+              >
+                <CardContent className="p-0">
+                  <div className="flex">
+                    {/* Left image section */}
+                    <div className="w-32 h-24 relative">
+                      <img
+                        src={themeImage}
+                        alt={themeTitle}
+                        className="w-full h-full object-cover"
+                      />
+                      <span
+                        className={`absolute top-2 left-2 ${statusColor} text-white text-xs px-2 py-1 rounded`}
+                      >
+                        {statusTexts[essay.status]}
+                      </span>
+                    </div>
+
+                    {/* Right content section */}
+                    <div className="flex-1 p-4">
+                      <h3 className="font-bold text-sm mb-1">{essay.title}</h3>
+                      <p className="text-xs text-gray-600 italic mb-1">
+                        {themeTitle}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Status: {statusTexts[essay.status]}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 p-4">
-                    <h3 className="font-bold text-sm mb-2">{essay.title}</h3>
-                    <p className="text-xs text-gray-500">
-                      {statusTexts[essay.status]}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );
