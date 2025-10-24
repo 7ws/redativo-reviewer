@@ -37,23 +37,23 @@ async function refreshAccessToken() {
   }
 }
 
-export async function fetchWithAuth(
+async function makeAuthRequest(
   url: string,
+  method: string,
   router: any,
   options: RequestInit = {},
 ) {
   let access = localStorage.getItem("access");
 
   if (!access) {
-    // No token at all
     router.push("/login");
     return null;
   }
 
   let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    method,
     ...options,
     headers: {
-      // "Content-Type": "application/json",
       Authorization: `Bearer ${access}`,
       ...(options.headers || {}),
     },
@@ -64,20 +64,70 @@ export async function fetchWithAuth(
     access = await refreshAccessToken();
 
     if (!access) {
-      router.push("/login");
+      router.replace("/login");
       return null;
     }
 
     // Retry request with new token
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-      ...options,
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+      method,
       headers: {
-        // "Content-Type": "application/json",
         Authorization: `Bearer ${access}`,
         ...(options.headers || {}),
       },
     });
   }
 
+  return res;
+}
+
+export async function apiPostWithAuth(
+  url: string,
+  router: any,
+  body?: FormData,
+) {
+  let res = await makeAuthRequest(url, "POST", router, {
+    headers: {
+      // body: body,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res;
+}
+
+export async function apiGetWithAuth(url: string, router: any) {
+  let res = await makeAuthRequest(url, "GET", router, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res;
+}
+
+export async function apiGetWithoutAuth(url: string, router: any) {
+  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res;
+}
+
+export async function sendEssay(themeId: string, router: any, body: FormData) {
+  let res = await makeAuthRequest(
+    `/api/v1/themes/${themeId}/essays/`,
+    "POST",
+    router,
+    {
+      body: body,
+      headers: {
+        "Content-Tye": "multipart/form-data",
+      },
+    },
+  );
   return res;
 }

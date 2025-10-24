@@ -1,50 +1,107 @@
 "use client";
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+
 import { useEffect, useState } from "react";
 import { Menu, User } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { fetchWithAuth } from "@/lib/api";
+import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
 import Essay from "@/types/essay";
+import UserProfile from "@/types/user_profile";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes">("temas");
-  const [activeThemes, setActiveThemes] = useState<Theme[]>([]);
+  const [themes, setThemes] = useState<Theme[]>([]);
   const [essays, setEssays] = useState<Essay[]>([]);
+  const [user, setUser] = useState<UserProfile>();
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [showAllThemes, setShowAllThemes] = useState(false);
   const router = useRouter();
 
-  // --- Persist active tab in session storage ---
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
+  const handleSignUp = () => {
+    router.push("/signup");
+  };
+
+  const handleProfile = () => {
+    router.push("/profile");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    setIsAuthenticated(false);
+    setUser(null);
+
+    router.replace("/home");
+  };
+
+  const handlShowAllThemes = () => {
+    localStorage.setItem("showAllThemes", JSON.stringify(!showAllThemes));
+    setShowAllThemes(!showAllThemes);
+  };
+
+  // --- Check if there are tokens on the URL (after social login) ---
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const access = params.get("access");
+    const refresh = params.get("refresh");
+
+    if (access && refresh) {
+      localStorage.setItem("access", access);
+      localStorage.setItem("refresh", refresh);
+      router.push("/home");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    // --- Persist active tab in session storage ---
     const savedTab = sessionStorage.getItem("activeTab");
     if (savedTab === "redacoes") setActiveTab("redacoes");
+
+    // --- Auth check ---
+    const access = localStorage.getItem("access");
+    setIsAuthenticated(!!access);
+
+    // --- Load showAllThemes from session storage ---
+    const stored = sessionStorage.getItem("showAllThemes");
+    if (stored !== null) {
+      setShowAllThemes(JSON.parse(stored));
+    }
   }, []);
 
   useEffect(() => {
     sessionStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
 
-  // --- Auth check ---
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-    setIsAuthenticated(!!access);
-  }, []);
-
-  // --- Fetch data ---
+  // --- Fetch themes information ---
   useEffect(() => {
     async function fetchThemes() {
+      const url = showAllThemes
+        ? `/api/v1/themes/`
+        : `/api/v1/themes/?active=true`;
+
       try {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/home/`;
-        const res = await fetch(url);
+        const res = await apiGetWithoutAuth(url, router);
         const data = await res.json();
-        setActiveThemes(data);
+        setThemes(data);
       } catch (err) {
         console.error("Error fetching active themes:", err);
       } finally {
@@ -52,12 +109,15 @@ export default function HomePage() {
       }
     }
 
-    async function fetchEssays() {
-      const access = localStorage.getItem("access");
-      if (!access) return;
+    fetchThemes();
+  }, [router, showAllThemes]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    async function fetchEssays() {
       try {
-        const res = await fetchWithAuth(`/api/v1/essays/`, router);
+        const res = await apiGetWithAuth(`/api/v1/essays/`, router);
         const data = await res.json();
         setEssays(data);
       } catch (err) {
@@ -65,9 +125,19 @@ export default function HomePage() {
       }
     }
 
-    fetchThemes();
+    async function fetchUser() {
+      try {
+        const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    }
+
     fetchEssays();
-  }, [router]);
+    fetchUser();
+  }, [router, isAuthenticated]);
 
   const statusTexts: Record<string, string> = {
     in_progress: "Em andamento",
@@ -79,7 +149,7 @@ export default function HomePage() {
   };
 
   const getEssayByTheme = (theme: Theme) =>
-    essays?.find((essay) => essay.theme === theme.id);
+    essays?.find((essay: Essay) => essay.theme.id === theme.id);
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
@@ -87,12 +157,56 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="flex items-center justify-between p-4 bg-white border-b">
-        <Menu className="w-6 h-6 text-gray-600" />
-        <Avatar className="w-10 h-10 bg-blue-300">
-          <AvatarFallback>
-            <User className="w-5 h-5 text-white" />
-          </AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2 rounded hover:bg-gray-100">
+              <Menu className="w-6 h-6 text-gray-600" />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={handlShowAllThemes}>
+              {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="focus:outline-none">
+              <Avatar className="w-10 h-10 bg-blue-300 cursor-pointer">
+                {user?.avatar_image && (
+                  <AvatarImage
+                    src={user.avatar_image || "/placeholder.svg"}
+                    alt={user.name}
+                  />
+                )}
+                <AvatarFallback className="bg-blue-300">
+                  <User className="w-5 h-5 text-white" />
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            {user ? (
+              <>
+                <DropdownMenuItem onClick={handleProfile}>
+                  Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <DropdownMenuItem onClick={handleLogin}>
+                  Entrar
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignUp}>
+                  Cadastrar
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       {/* Tabs */}
@@ -117,7 +231,7 @@ export default function HomePage() {
                 : "text-gray-500 font-medium"
             }`}
           >
-            Minhas Redações
+            Minhas Redações {isAuthenticated}
           </button>
         )}
       </div>
@@ -125,8 +239,8 @@ export default function HomePage() {
       {/* Content */}
       <div className="p-4 space-y-4">
         {activeTab === "temas" &&
-          activeThemes.map((theme) => {
-            const essay = getEssayByTheme(theme);
+          themes.map((theme: Theme) => {
+            const essay: Essay = getEssayByTheme(theme);
             return (
               <Card
                 key={theme.id}
@@ -145,7 +259,7 @@ export default function HomePage() {
                           className="object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-teal-300 to-blue-300" />
+                        <div className="w-full h-full bg-linear-to-br from-teal-300 to-blue-300" />
                       )}
                     </div>
 
@@ -167,7 +281,7 @@ export default function HomePage() {
                             >
                               Ver Redação
                             </button>
-                          ) : (
+                          ) : theme.is_active ? (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -177,6 +291,10 @@ export default function HomePage() {
                             >
                               Escrever Redação
                             </button>
+                          ) : (
+                            <span className="mt-2 inline-block px-3 py-1 bg-gray-400 text-white text-xs rounded">
+                              Tema Inativo
+                            </span>
                           )}
                         </>
                       )}
@@ -188,7 +306,7 @@ export default function HomePage() {
           })}
 
         {activeTab === "redacoes" &&
-          essays.map((essay) => (
+          essays.map((essay: Essay) => (
             <Card
               key={essay.id}
               className="overflow-hidden cursor-pointer"
@@ -196,7 +314,7 @@ export default function HomePage() {
             >
               <CardContent className="p-0">
                 <div className="flex">
-                  <div className="w-32 h-24 bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center relative">
+                  <div className="w-32 h-24 bg-linear-to-br from-orange-400 to-yellow-400 flex items-center justify-center relative">
                     <Badge className="absolute top-2 left-2 bg-orange-600 text-white text-xs px-2 py-1">
                       {statusTexts[essay.status]}
                     </Badge>

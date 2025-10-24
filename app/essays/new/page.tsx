@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
-import { fetchWithAuth } from "@/lib/api";
+import { fetchWithAuth, sendEssay } from "@/lib/api";
 
 function EssayUploadContent() {
   const searchParams = useSearchParams();
@@ -42,14 +42,7 @@ function EssayUploadContent() {
     formData.append("text_image", file);
 
     setLoading(true);
-    const res = await fetchWithAuth(
-      `/api/v1/themes/${themeId}/essays/`,
-      router,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    const res = await sendEssay(themeId, router, formData);
 
     if (res.ok) {
       alert("Redação enviada com sucesso!");

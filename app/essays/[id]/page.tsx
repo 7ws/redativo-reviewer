@@ -73,9 +73,6 @@ export default function EssayPage() {
   // Fetch essay and keep backend highlight numbers untouched in rawHighlights
   useEffect(() => {
     async function fetchEssays() {
-      const access = localStorage.getItem("access");
-      if (!access) return;
-
       setLoading(true);
       try {
         const res = await fetchWithAuth(`/api/v1/essays/${id}/`, router);
@@ -122,7 +119,7 @@ export default function EssayPage() {
               y: t.start_text_selection_y,
               width: t.text_selection_width,
               height: t.text_selection_height,
-              comment: t.comment || "Sem comentário disponível.",
+              comment: t.comments?.[0].content ?? "Sem comentário disponível.",
             })),
           );
         }
