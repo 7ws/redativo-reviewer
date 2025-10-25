@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
 import { apiGetWithAuth, sendEssay } from "@/lib/api";
@@ -16,6 +16,29 @@ function EssayUploadContent() {
   const [loading, setLoading] = useState(false);
 
   const handleBackClick = () => router.back();
+
+  useEffect(() => {
+    async function checkEssayAlreadySubmitted() {
+      if (themeId) {
+        const res = await apiGetWithAuth(
+          `/api/v1/themes/${themeId}/essays/`,
+          router,
+        );
+        if (res.ok) {
+          const essays = await res.json();
+          if (essays.length > 0) {
+            alert("Você já enviou uma redação para este tema.");
+            router.push(`/themes/${themeId}`);
+          }
+        }
+      } else {
+        alert("Tema não especificado.");
+        router.push("/home");
+      }
+    }
+
+    checkEssayAlreadySubmitted();
+  }, [themeId, router]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
