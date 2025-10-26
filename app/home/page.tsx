@@ -300,7 +300,7 @@ export default function HomePage() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/essays/new?theme=${theme.id}`);
+                                router.push(`/themes/${theme.id}/new-essay`);
                               }}
                               className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded"
                             >

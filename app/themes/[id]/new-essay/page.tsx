@@ -1,14 +1,13 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
 import { apiGetWithAuth, sendEssay } from "@/lib/api";
 
 function EssayUploadContent() {
-  const searchParams = useSearchParams();
+  const { id } = useParams();
   const router = useRouter();
-  const themeId = searchParams.get("theme");
 
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -19,26 +18,26 @@ function EssayUploadContent() {
 
   useEffect(() => {
     async function checkEssayAlreadySubmitted() {
-      if (themeId) {
+      if (id) {
         const res = await apiGetWithAuth(
-          `/api/v1/themes/${themeId}/essays/`,
+          `/api/v1/themes/${id}/essays/`,
           router,
         );
         if (res.ok) {
           const essays = await res.json();
           if (essays.length > 0) {
             alert("Você já enviou uma redação para este tema.");
-            router.push(`/themes/${themeId}`);
+            router.replace(`/home`);
           }
         }
       } else {
         alert("Tema não especificado.");
-        router.push("/home");
+        router.replace("/home");
       }
     }
 
     checkEssayAlreadySubmitted();
-  }, [themeId, router]);
+  }, [id, router]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -55,7 +54,7 @@ function EssayUploadContent() {
       alert("Digite um título para a redação.");
       return;
     }
-    if (!file || !themeId) {
+    if (!file || !id) {
       alert("Selecione uma imagem antes de enviar.");
       return;
     }
@@ -65,11 +64,11 @@ function EssayUploadContent() {
     formData.append("text_image", file);
 
     setLoading(true);
-    const res = await sendEssay(themeId, router, formData);
+    const res = await sendEssay(id, router, formData);
 
     if (res.ok) {
       alert("Redação enviada com sucesso!");
-      router.push(`/themes/${themeId}`);
+      router.push(`/themes/${id}`);
     } else {
       alert("Erro ao enviar a redação.");
       setLoading(false);

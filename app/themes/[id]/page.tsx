@@ -147,7 +147,7 @@ export default function ThemePage() {
                   </button>
                 ) : theme.is_active ? (
                   <button
-                    onClick={() => router.push(`/essays/new?theme=${theme.id}`)}
+                    onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
                     className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded"
                   >
                     Escrever Redação
