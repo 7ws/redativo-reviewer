@@ -108,7 +108,7 @@ export default function Profile() {
     if (!user || !editedName.trim()) return;
 
     const formData = new FormData();
-    formData.append("name", editedName);
+    formData.append("full_name", editedName);
 
     try {
       const res = await apiPatchWithAuth(
