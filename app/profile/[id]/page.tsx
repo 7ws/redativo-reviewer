@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Menu, Home, Edit2, Camera } from "lucide-react";
+import { Edit2, Camera } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
 import UserProfile from "@/types/user_profile";
 import { useParams, useRouter } from "next/navigation";
 import { apiGetWithAuth, apiPatchWithAuth } from "@/lib/api";
+import Header from "@/components/header";
 
 export default function Profile() {
   const { id } = useParams();
@@ -145,21 +146,13 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-white">
-        <button onClick={handleGoHome} className="focus:outline-none">
-          <Home className="w-6 h-6 text-gray-600" />
-        </button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="focus:outline-none">
-              <Menu className="w-6 h-6 text-gray-600" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </header>
+      <Header
+        showProfileButton={false}
+        showOptionsButton={false}
+        showLogoutButton={true}
+        showHomeButton={true}
+        user={user}
+      />
 
       {/* Profile Content */}
       <div className="p-6 space-y-6">
