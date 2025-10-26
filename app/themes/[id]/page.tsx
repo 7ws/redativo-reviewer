@@ -41,11 +41,7 @@ export default function ThemePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ✅ Reuse your header */}
-      <Header
-        showBackButton={true}
-        showHomeButton={true}
-        showProfileButton={true}
-      />
+      <Header showBackButton={true} showHomeButton={true} />
 
       {/* Image */}
       {theme.background_image ? (

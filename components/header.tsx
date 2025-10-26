@@ -79,12 +79,27 @@ export default function Header({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem
-                onClick={() => router.push(`/profile/${user.id}`)}
-              >
-                Perfil
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
+              {user ? (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/profile/${user.id}`)}
+                  >
+                    Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Sair
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onClick={() => router.push("/login")}>
+                    Entrar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/signup")}>
+                    Cadastrar
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
