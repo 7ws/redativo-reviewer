@@ -10,8 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useEffect, useState } from "react";
-import { Menu, User } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Menu } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -21,6 +20,7 @@ import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
 import Essay from "@/types/essay";
 import UserProfile from "@/types/user_profile";
+import Header from "@/components/header";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes">("temas");
@@ -31,27 +31,6 @@ export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAllThemes, setShowAllThemes] = useState(false);
   const router = useRouter();
-
-  const handleLogin = () => {
-    router.push("/login");
-  };
-
-  const handleSignUp = () => {
-    router.push("/signup");
-  };
-
-  const handleProfile = () => {
-    router.push(`/profile/${user.id}`);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    setIsAuthenticated(false);
-    setUser(null);
-
-    router.replace("/home");
-  };
 
   const handlShowAllThemes = () => {
     localStorage.setItem("showAllThemes", JSON.stringify(!showAllThemes));
@@ -154,58 +133,26 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-white border-b">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="focus:outline-none">
-              <Avatar className="w-10 h-10 bg-blue-300 cursor-pointer">
-                {user?.avatar_image && (
-                  <AvatarImage
-                    src={user.avatar_image || "/placeholder.svg"}
-                    alt={user.full_name}
-                  />
-                )}
-                <AvatarFallback className="bg-blue-300">
-                  <User className="w-5 h-5 text-white" />
-                </AvatarFallback>
-              </Avatar>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            {user ? (
-              <>
-                <DropdownMenuItem onClick={handleProfile}>
-                  Perfil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
-              </>
-            ) : (
-              <>
-                <DropdownMenuItem onClick={handleLogin}>
-                  Entrar
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignUp}>
-                  Cadastrar
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <Header
+        showProfileButton={true}
+        showOptionsButton={true}
+        optionsSlot={
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-2 rounded hover:bg-gray-100">
+                <Menu className="w-6 h-6 text-gray-600" />
+              </button>
+            </DropdownMenuTrigger>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-2 rounded hover:bg-gray-100">
-              <Menu className="w-6 h-6 text-gray-600" />
-            </button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={handlShowAllThemes}>
-              {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </header>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={handlShowAllThemes}>
+                {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        }
+        user={user}
+      />
 
       {/* Tabs */}
       <div className="flex px-4 py-2 bg-white border-b">

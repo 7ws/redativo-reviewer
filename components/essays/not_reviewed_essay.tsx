@@ -12,8 +12,12 @@ export default function EssayNotReviewed({ essay }: { essay: Essay }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ✅ Use the component correctly */}
-      <Header showOptionsButton={false} />
+      <Header
+        showLogoutButton={true}
+        showProfileButton={false}
+        showHomeButton={true}
+        showBackButton={true}
+      />
 
       <div className="p-4 space-y-6">
         <div className="bg-blue-500 text-white p-4 rounded-2xl flex items-center justify-between">

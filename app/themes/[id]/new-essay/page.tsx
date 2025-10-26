@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
 import { apiGetWithAuth, sendEssay } from "@/lib/api";
+import Header from "@/components/header";
 
 function EssayUploadContent() {
   const { id } = useParams();
@@ -13,8 +14,6 @@ function EssayUploadContent() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const handleBackClick = () => router.back();
 
   useEffect(() => {
     async function checkEssayAlreadySubmitted() {
@@ -78,12 +77,7 @@ function EssayUploadContent() {
   return (
     <div className="p-6 space-y-4">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-white border-b">
-        <button onClick={handleBackClick}>
-          <ArrowLeft className="w-6 h-6 text-black" />
-        </button>
-        <Menu className="w-6 h-6 text-black" />
-      </header>
+      <Header showBackButton={true} showHomeButton={true} />
 
       {/* Tips Section */}
       <div className="mb-6">
@@ -143,8 +137,12 @@ function EssayUploadContent() {
       {/* Submit button */}
       <button
         onClick={handleSubmit}
-        disabled={loading}
-        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
+        disabled={loading || !title.trim() || !file}
+        className={`w-full text-white py-2 rounded transition-colors ${
+          loading || !title.trim() || !file
+            ? "bg-green-600/50 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700"
+        }`}
       >
         {loading ? "Enviando..." : "Enviar Redação"}
       </button>

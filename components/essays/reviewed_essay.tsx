@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Menu, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { apiGetWithAuth } from "@/lib/api";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
+import Header from "../header";
 
 export default function EssayReviewed({ essay }: { essay: Essay }) {
   const { id } = useParams();
@@ -37,12 +38,6 @@ export default function EssayReviewed({ essay }: { essay: Essay }) {
       content: "Fortaleça seus argumentos...",
     },
   ];
-
-  const handleBackClick = () => {
-    setSelectedCompetency(null);
-    setSelectedHighlight(null);
-    router.back();
-  };
 
   const handleCompetencyClick = (id: string) => {
     setSelectedCompetency(selectedCompetency === id ? null : id);
@@ -253,12 +248,12 @@ export default function EssayReviewed({ essay }: { essay: Essay }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="flex items-center justify-between p-4 bg-white">
-        <button onClick={handleBackClick}>
-          <ArrowLeft className="w-6 h-6 text-black" />
-        </button>
-        <Menu className="w-6 h-6 text-gray-600" />
-      </header>
+      <Header
+        showLogoutButton={true}
+        showProfileButton={false}
+        showHomeButton={true}
+        showBackButton={true}
+      />
 
       <div className="p-4 space-y-4">
         {/* Overall score */}
