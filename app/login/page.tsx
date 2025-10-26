@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,16 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function checkAuthenticated() {
+      const access = localStorage.getItem("access");
+      if (access) {
+        router.replace("/home");
+      }
+    }
+    checkAuthenticated();
+  }, [router]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
