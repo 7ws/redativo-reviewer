@@ -96,7 +96,7 @@ export default function HomePage() {
 
     async function fetchEssays() {
       try {
-        const res = await apiGetWithAuth(`/api/v1/essays/`, router);
+        const res = await apiGetWithAuth(`/api/v1/essays/all/`, router);
         const data = await res.json();
         setEssays(data);
       } catch (err) {

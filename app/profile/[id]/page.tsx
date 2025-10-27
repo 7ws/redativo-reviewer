@@ -45,19 +45,6 @@ export default function Profile() {
     if (id) fetchUser();
   }, [id, router]);
 
-  // 🚪 Logout
-  const handleLogout = () => {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    setUser(null);
-    router.replace("/home");
-  };
-
-  // 🏠 Go home
-  const handleGoHome = () => {
-    router.push("/home");
-  };
-
   // 📸 Handle avatar file change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -98,14 +85,13 @@ export default function Profile() {
 
   // ✏️ Start editing name
   const handleNameEdit = () => {
-    if (!user) return;
     setEditedName(user.full_name);
     setIsEditingName(true);
   };
 
   // 💾 Save name
   const handleNameSave = async () => {
-    if (!user || !editedName.trim()) return;
+    if (!editedName.trim()) return;
 
     const formData = new FormData();
     formData.append("full_name", editedName);
@@ -136,11 +122,7 @@ export default function Profile() {
 
   // ⏳ Loading
   if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-gray-500">
-        Carregando perfil...
-      </div>
-    );
+    router.replace("/login");
   }
 
   return (

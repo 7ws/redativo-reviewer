@@ -68,7 +68,7 @@ export default function ThemePage() {
         {/* ✏️ Button to write essay */}
         <div className="pt-4">
           <button
-            onClick={() => router.push(`/themes/${theme.id}/essay-upload`)}
+            onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
             className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
           >
             Escrever Redação
