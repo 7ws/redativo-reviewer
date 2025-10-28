@@ -21,29 +21,39 @@ export default function Profile() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile>();
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 🧠 Fetch user data
   useEffect(() => {
+    const access = localStorage.getItem("access");
+
+    if (!access) {
+      router.push("/login");
+      return;
+    }
+    setLoading(true);
+
     async function fetchUser() {
       try {
         const res = await apiGetWithAuth(`/api/v1/users/${id}/`, router);
-        if (!res) return;
         const data = await res.json();
         setUser(data);
       } catch (err) {
         console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
-    if (id) fetchUser();
-  }, [id, router]);
+    fetchUser();
+  }, [id]);
 
   // 📸 Handle avatar file change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,10 +130,7 @@ export default function Profile() {
     setEditedName("");
   };
 
-  // ⏳ Loading
-  if (!user) {
-    router.replace("/login");
-  }
+  if (loading) return <div className="p-8">Carregando...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
