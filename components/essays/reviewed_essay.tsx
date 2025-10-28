@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { apiGetWithAuth } from "@/lib/api";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
 import Header from "../header";
@@ -67,62 +66,53 @@ export default function EssayReviewed({ essay }: { essay: Essay }) {
 
   // Fetch essay and keep backend highlight numbers untouched in rawHighlights
   useEffect(() => {
-    async function fetchEssays() {
-      setLoading(true);
-      try {
-        const res = await apiGetWithAuth(`/api/v1/essays/${id}/`, router);
-        const essayData = await res.json();
+    function setupEssayData() {
+      const firstReview = essay.reviews[0];
+      setReview(firstReview);
+      setCompetencies([
+        {
+          id: 1,
+          score: firstReview.skill_1_score,
+          text: firstReview.skill_1_text,
+        },
+        {
+          id: 2,
+          score: firstReview.skill_2_score,
+          text: firstReview.skill_2_text,
+        },
+        {
+          id: 3,
+          score: firstReview.skill_3_score,
+          text: firstReview.skill_3_text,
+        },
+        {
+          id: 4,
+          score: firstReview.skill_4_score,
+          text: firstReview.skill_4_text,
+        },
+        {
+          id: 5,
+          score: firstReview.skill_5_score,
+          text: firstReview.skill_5_text,
+        },
+      ]);
 
-        const firstReview = essayData.reviews[0];
-        setReview(firstReview);
-        setCompetencies([
-          {
-            id: 1,
-            score: firstReview.skill_1_score,
-            text: firstReview.skill_1_text,
-          },
-          {
-            id: 2,
-            score: firstReview.skill_2_score,
-            text: firstReview.skill_2_text,
-          },
-          {
-            id: 3,
-            score: firstReview.skill_3_score,
-            text: firstReview.skill_3_text,
-          },
-          {
-            id: 4,
-            score: firstReview.skill_4_score,
-            text: firstReview.skill_4_text,
-          },
-          {
-            id: 5,
-            score: firstReview.skill_5_score,
-            text: firstReview.skill_5_text,
-          },
-        ]);
-
-        const threads = firstReview.review_comment_threads || [];
-        // map backend threads in raw form
-        setRawHighlights(
-          threads.map((t, i) => ({
-            id: i + 1,
-            x: t.start_text_selection_x,
-            y: t.start_text_selection_y,
-            width: t.text_selection_width,
-            height: t.text_selection_height,
-            comment: t.comments?.[0].content ?? "Sem comentário disponível.",
-          })),
-        );
-      } catch (err) {
-        console.error("Error fetching essay:", err);
-      } finally {
-        setLoading(false);
-      }
+      const threads = firstReview.review_comment_threads || [];
+      // map backend threads in raw form
+      setRawHighlights(
+        threads.map((t, i) => ({
+          id: i + 1,
+          x: t.start_text_selection_x,
+          y: t.start_text_selection_y,
+          width: t.text_selection_width,
+          height: t.text_selection_height,
+          comment: t.comments?.[0].content ?? "Sem comentário disponível.",
+        })),
+      );
+      setLoading(false);
     }
 
-    fetchEssays();
+    setupEssayData();
   }, [id, router]);
 
   // Normalize rawHighlights to percent-of-image after image natural size is known
