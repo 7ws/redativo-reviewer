@@ -2,15 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
 import Header from "../header";
 
 export default function EssayReviewed({ essay }: { essay: Essay }) {
-  const { id } = useParams();
-  const router = useRouter();
-
   const [review, setReview] = useState<Review>();
   const [competencies, setCompetencies] = useState([]);
   // rawHighlights: exactly as returned from backend
@@ -113,7 +109,7 @@ export default function EssayReviewed({ essay }: { essay: Essay }) {
     }
 
     setupEssayData();
-  }, [id, router]);
+  }, [essay]);
 
   // Normalize rawHighlights to percent-of-image after image natural size is known
   const normalizeHighlightsToPercent = (raw, natW, natH) => {

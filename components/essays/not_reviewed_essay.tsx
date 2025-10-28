@@ -1,9 +1,7 @@
-import { useRouter } from "next/navigation";
 import Essay from "@/types/essay";
 import Header from "../header";
 
 export default function EssayNotReviewed({ essay }: { essay: Essay }) {
-  const router = useRouter();
   const statusTexts: Record<string, string> = {
     SUBMITTED: "Enviada",
     READY_FOR_REVIEW: "Pronta para revisão",

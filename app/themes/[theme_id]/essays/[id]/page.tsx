@@ -32,7 +32,7 @@ export default function EssayPage() {
     }
 
     fetchEssay();
-  }, [id, router]);
+  }, [id, theme_id, router]);
 
   if (loading) return <div className="p-8">Carregando...</div>;
   if (!essay)
