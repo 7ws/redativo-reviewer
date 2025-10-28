@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/header";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
 import Essay from "@/types/essay";
 
@@ -12,12 +12,17 @@ export default function ThemePage() {
   const router = useRouter();
   const [theme, setTheme] = useState<Theme>();
   const [essays, setEssays] = useState<Essay[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     async function fetchTheme() {
+      setLoading(true);
       try {
-        const res = await apiGetWithAuth(`/api/v1/themes/${theme_id}/`, router);
+        const res = await apiGetWithoutAuth(
+          `/api/v1/themes/${theme_id}/`,
+          router,
+        );
         if (res.ok) {
           const data = await res.json();
           setTheme(data);
@@ -28,12 +33,12 @@ export default function ThemePage() {
         setLoading(false);
       }
     }
-
-    if (!theme_id) return;
+    fetchTheme();
 
     // --- Auth check ---
     const access = localStorage.getItem("access");
     if (!access) return;
+    setIsAuthenticated(true);
 
     async function fetchEssays() {
       try {
@@ -47,11 +52,8 @@ export default function ThemePage() {
         console.error("Error fetching essays:", err);
       }
     }
-    fetchTheme();
     fetchEssays();
   }, [theme_id, router]);
-
-  useEffect(() => {}, [router]);
 
   if (loading) {
     return <div className="p-8 text-gray-600">Carregando tema...</div>;
@@ -64,7 +66,11 @@ export default function ThemePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ✅ Reuse your header */}
-      <Header showBackButton={true} showHomeButton={true} />
+      <Header
+        showBackButton={true}
+        showHomeButton={true}
+        showProfileButton={true}
+      />
 
       {/* Image */}
       {theme.background_image ? (
@@ -99,12 +105,20 @@ export default function ThemePage() {
               Ver Redação
             </button>
           ) : theme.is_active ? (
-            <button
-              onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
-              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
-            >
-              Escrever Redação
-            </button>
+            isAuthenticated ? (
+              <button
+                onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+              >
+                Escrever Redação
+              </button>
+            ) : (
+              <div className="text-gray-600 italic">
+                Faça login para escrever uma redação sobre este tema. Tema
+                disponível até{" "}
+                {new Date(theme.available_until).toLocaleDateString()}.
+              </div>
+            )
           ) : (
             <div className="text-gray-600 italic">
               Este tema não está ativo para redações no momento.

@@ -21,6 +21,7 @@ import Theme from "@/types/theme";
 import Essay from "@/types/essay";
 import UserProfile from "@/types/user_profile";
 import Header from "@/components/header";
+import UnauthHomePage from "@/components/home/unauthed";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes">("temas");
@@ -129,6 +130,10 @@ export default function HomePage() {
     essays?.find((essay: Essay) => essay.theme.id === theme.id);
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
+
+  if (!isAuthenticated) {
+    return <UnauthHomePage themes={themes} showAllThemes={showAllThemes} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
