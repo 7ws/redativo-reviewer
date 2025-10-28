@@ -5,28 +5,22 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
-import Essay from "@/types/essay";
 import UserProfile from "@/types/user_profile";
 import Header from "@/components/header";
 import UnauthHomePage from "@/components/home/unauthed";
+import ForWriterHomePage from "@/components/home/forWriter";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes">("temas");
   const [themes, setThemes] = useState<Theme[]>([]);
-  const [essays, setEssays] = useState<Essay[]>([]);
   const [user, setUser] = useState<UserProfile>();
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,7 +41,6 @@ export default function HomePage() {
     if (access && refresh) {
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
-      router.push("/home");
     }
   }, [router]);
 
@@ -74,12 +67,8 @@ export default function HomePage() {
   // --- Fetch themes information ---
   useEffect(() => {
     async function fetchThemes() {
-      const url = showAllThemes
-        ? `/api/v1/themes/`
-        : `/api/v1/themes/?active=true`;
-
       try {
-        const res = await apiGetWithoutAuth(url, router);
+        const res = await apiGetWithoutAuth(`/api/v1/themes/`, router);
         const data = await res.json();
         setThemes(data);
       } catch (err) {
@@ -95,16 +84,6 @@ export default function HomePage() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    async function fetchEssays() {
-      try {
-        const res = await apiGetWithAuth(`/api/v1/essays/all/`, router);
-        const data = await res.json();
-        setEssays(data);
-      } catch (err) {
-        console.error("Error fetching essays:", err);
-      }
-    }
-
     async function fetchUser() {
       try {
         const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
@@ -115,64 +94,59 @@ export default function HomePage() {
       }
     }
 
-    fetchEssays();
     fetchUser();
   }, [router, isAuthenticated]);
 
-  const statusTexts: Record<string, string> = {
-    SUBMITTED: "Enviada",
-    READY_FOR_REVIEW: "Pronta para revisão",
-    UNDER_REVIEW: "Em revisão",
-    REVIEWED: "Revisada",
-  };
+  const getHeader = () => (
+    <Header
+      showProfileButton={true}
+      showOptionsButton={true}
+      optionsSlot={
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2 rounded hover:bg-gray-100">
+              <Menu className="w-6 h-6 text-gray-600" />
+            </button>
+          </DropdownMenuTrigger>
 
-  const getEssayByTheme = (theme: Theme) =>
-    essays?.find((essay: Essay) => essay.theme.id === theme.id);
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={handlShowAllThemes}>
+              {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      }
+      user={user}
+    />
+  );
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
   if (!isAuthenticated) {
-    return <UnauthHomePage themes={themes} showAllThemes={showAllThemes} />;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {getHeader()}
+        <UnauthHomePage themes={themes} showAll={showAllThemes} />
+      </div>
+    );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header
-        showProfileButton={true}
-        showOptionsButton={true}
-        optionsSlot={
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-2 rounded hover:bg-gray-100">
-                <Menu className="w-6 h-6 text-gray-600" />
-              </button>
-            </DropdownMenuTrigger>
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {getHeader()}
+        <div className="flex px-4 py-2 bg-white border-b">
+          <button
+            onClick={() => setActiveTab("temas")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "temas"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Temas
+          </button>
 
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={handlShowAllThemes}>
-                {showAllThemes ? "Mostrar ativos" : "Mostrar todos"}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        }
-        user={user}
-      />
-
-      {/* Tabs */}
-      <div className="flex px-4 py-2 bg-white border-b">
-        <button
-          onClick={() => setActiveTab("temas")}
-          className={`px-4 py-2 font-bold ${
-            activeTab === "temas"
-              ? "text-black border-b-2 border-black"
-              : "text-gray-500 font-medium"
-          }`}
-        >
-          Temas
-        </button>
-
-        {isAuthenticated && (
           <button
             onClick={() => setActiveTab("redacoes")}
             className={`px-4 py-2 font-bold ${
@@ -183,154 +157,16 @@ export default function HomePage() {
           >
             Minhas Redações
           </button>
+        </div>
+
+        {user.is_writer && (
+          <ForWriterHomePage
+            themes={themes}
+            activeTab={activeTab}
+            showAll={showAllThemes}
+          />
         )}
       </div>
-
-      {/* Content */}
-      <div className="p-4 space-y-4">
-        {activeTab === "temas" &&
-          themes.map((theme: Theme) => {
-            const essay: Essay = getEssayByTheme(theme);
-            return (
-              <Card
-                key={theme.id}
-                className="overflow-hidden cursor-pointer"
-                onClick={() => router.push(`/themes/${theme.id}`)}
-              >
-                <CardContent className="p-0">
-                  <div className="flex">
-                    {/* Thumbnail */}
-                    <div className="w-32 h-24 flex items-center justify-center relative">
-                      {theme.background_image ? (
-                        <Image
-                          src={theme.background_image}
-                          alt={theme.title}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-linear-to-br from-teal-300 to-blue-300" />
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 p-4">
-                      <h3 className="font-bold text-sm mb-2">{theme.title}</h3>
-                      <p className="text-xs text-gray-500 mb-2">
-                        {theme.description}
-                      </p>
-
-                      {/* Available until */}
-                      {theme.available_until && (
-                        <p className="text-xs text-gray-600 mb-2">
-                          Disponível até{" "}
-                          {new Date(theme.available_until).toLocaleDateString(
-                            "pt-BR",
-                            {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            },
-                          )}
-                        </p>
-                      )}
-
-                      {/* Authenticated actions */}
-                      {isAuthenticated && (
-                        <>
-                          {essay ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(
-                                  `/themes/${theme.id}/essays/${essay.id}`,
-                                );
-                              }}
-                              className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded"
-                            >
-                              Ver Redação
-                            </button>
-                          ) : theme.is_active ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/themes/${theme.id}/new-essay`);
-                              }}
-                              className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded"
-                            >
-                              Escrever Redação
-                            </button>
-                          ) : (
-                            <span className="mt-2 inline-block px-3 py-1 bg-gray-400 text-white text-xs rounded">
-                              Tema Inativo
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-
-        {activeTab === "redacoes" &&
-          essays.map((essay: Essay) => {
-            const theme = essay.theme;
-            const themeImage =
-              theme?.background_image || "/placeholder-theme.jpg";
-            const themeTitle = theme?.title || "Tema desconhecido";
-
-            // Optional: color-code statuses for better UX
-            const statusColors: Record<string, string> = {
-              SUBMITTED: "bg-blue-500",
-              READY_FOR_REVIEW: "bg-indigo-500",
-              UNDER_REVIEW: "bg-purple-500",
-              REVIEWED: "bg-green-600",
-            };
-
-            const statusColor = statusColors[essay.status] || "bg-gray-400";
-
-            return (
-              <Card
-                key={essay.id}
-                className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() =>
-                  router.push(`/themes/${theme.id}/essays/${essay.id}`)
-                }
-              >
-                <CardContent className="p-0">
-                  <div className="flex">
-                    {/* Left image section */}
-                    <div className="w-32 h-24 relative">
-                      <img
-                        src={themeImage}
-                        alt={themeTitle}
-                        className="w-full h-full object-cover"
-                      />
-                      <span
-                        className={`absolute top-2 left-2 ${statusColor} text-white text-xs px-2 py-1 rounded`}
-                      >
-                        {statusTexts[essay.status]}
-                      </span>
-                    </div>
-
-                    {/* Right content section */}
-                    <div className="flex-1 p-4">
-                      <h3 className="font-bold text-sm mb-1">{essay.title}</h3>
-                      <p className="text-xs text-gray-600 italic mb-1">
-                        {themeTitle}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Status: {statusTexts[essay.status]}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-      </div>
-    </div>
-  );
+    );
+  }
 }
