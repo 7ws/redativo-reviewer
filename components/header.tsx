@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import UserProfile from "@/types/user_profile";
+import { apiPostWithAuth } from "@/lib/api";
 
 export default function Header({
   user,
@@ -31,9 +32,9 @@ export default function Header({
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    router.push("/login");
+    apiPostWithAuth(`/api/v1/auth/logout`, router);
+    localStorage.clear();
+    router.replace("/home");
   };
 
   return (
