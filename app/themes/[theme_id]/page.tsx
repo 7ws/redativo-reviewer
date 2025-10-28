@@ -5,17 +5,19 @@ import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/header";
 import { apiGetWithAuth } from "@/lib/api";
 import Theme from "@/types/theme";
+import Essay from "@/types/essay";
 
 export default function ThemePage() {
-  const { id } = useParams();
+  const { theme_id } = useParams();
   const router = useRouter();
   const [theme, setTheme] = useState<Theme>();
+  const [essays, setEssays] = useState<Essay[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTheme() {
       try {
-        const res = await apiGetWithAuth(`/api/v1/themes/${id}/`, router);
+        const res = await apiGetWithAuth(`/api/v1/themes/${theme_id}/`, router);
         if (res.ok) {
           const data = await res.json();
           setTheme(data);
@@ -27,8 +29,29 @@ export default function ThemePage() {
       }
     }
 
-    if (id) fetchTheme();
-  }, [id, router]);
+    if (!theme_id) return;
+
+    // --- Auth check ---
+    const access = localStorage.getItem("access");
+    if (!access) return;
+
+    async function fetchEssays() {
+      try {
+        const res = await apiGetWithAuth(
+          `/api/v1/themes/${theme_id}/essays/`,
+          router,
+        );
+        const data = await res.json();
+        setEssays(data);
+      } catch (err) {
+        console.error("Error fetching essays:", err);
+      }
+    }
+    fetchTheme();
+    fetchEssays();
+  }, [theme_id, router]);
+
+  useEffect(() => {}, [router]);
 
   if (loading) {
     return <div className="p-8 text-gray-600">Carregando tema...</div>;
@@ -65,14 +88,28 @@ export default function ThemePage() {
           {theme.description}
         </p>
 
-        {/* ✏️ Button to write essay */}
         <div className="pt-4">
-          <button
-            onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
-            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
-          >
-            Escrever Redação
-          </button>
+          {essays?.length > 0 ? (
+            <button
+              onClick={() =>
+                router.push(`/themes/${theme.id}/essays/${essays[0].id}`)
+              }
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+            >
+              Ver Redação
+            </button>
+          ) : theme.is_active ? (
+            <button
+              onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+            >
+              Escrever Redação
+            </button>
+          ) : (
+            <div className="text-gray-600 italic">
+              Este tema não está ativo para redações no momento.
+            </div>
+          )}
         </div>
       </div>
     </div>

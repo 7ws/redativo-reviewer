@@ -237,7 +237,9 @@ export default function HomePage() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/essays/${essay.id}`);
+                                router.push(
+                                  `/themes/${theme.id}/essays/${essay.id}`,
+                                );
                               }}
                               className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded"
                             >
@@ -288,7 +290,9 @@ export default function HomePage() {
               <Card
                 key={essay.id}
                 className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => router.push(`/essays/${essay.id}`)}
+                onClick={() =>
+                  router.push(`/themes/${theme.id}/essays/${essay.id}`)
+                }
               >
                 <CardContent className="p-0">
                   <div className="flex">

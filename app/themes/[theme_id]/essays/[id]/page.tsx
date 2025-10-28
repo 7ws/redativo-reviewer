@@ -8,6 +8,7 @@ import EssayReviewed from "@/components/essays/reviewed_essay";
 import EssayNotReviewed from "@/components/essays/not_reviewed_essay";
 
 export default function EssayPage() {
+  const { theme_id } = useParams();
   const { id } = useParams();
   const router = useRouter();
   const [essay, setEssay] = useState<Essay | null>(null);
@@ -17,7 +18,10 @@ export default function EssayPage() {
     async function fetchEssay() {
       setLoading(true);
       try {
-        const res = await apiGetWithAuth(`/api/v1/essays/${id}/`, router);
+        const res = await apiGetWithAuth(
+          `/api/v1/themes/${theme_id}/essays/${id}/`,
+          router,
+        );
         const data = await res.json();
         setEssay(data);
       } catch (err) {
