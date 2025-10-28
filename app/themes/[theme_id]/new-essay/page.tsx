@@ -7,7 +7,7 @@ import { apiGetWithAuth, sendEssay } from "@/lib/api";
 import Header from "@/components/header";
 
 function EssayUploadContent() {
-  const { id } = useParams();
+  const { theme_id } = useParams();
   const router = useRouter();
 
   const [title, setTitle] = useState("");
@@ -17,9 +17,9 @@ function EssayUploadContent() {
 
   useEffect(() => {
     async function checkEssayAlreadySubmitted() {
-      if (id) {
+      if (theme_id) {
         const res = await apiGetWithAuth(
-          `/api/v1/themes/${id}/essays/`,
+          `/api/v1/themes/${theme_id}/essays/`,
           router,
         );
         if (res.ok) {
@@ -36,7 +36,7 @@ function EssayUploadContent() {
     }
 
     checkEssayAlreadySubmitted();
-  }, [id, router]);
+  }, [theme_id, router]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -53,7 +53,7 @@ function EssayUploadContent() {
       alert("Digite um título para a redação.");
       return;
     }
-    if (!file || !id) {
+    if (!file || !theme_id) {
       alert("Selecione uma imagem antes de enviar.");
       return;
     }
@@ -63,11 +63,11 @@ function EssayUploadContent() {
     formData.append("text_image", file);
 
     setLoading(true);
-    const res = await sendEssay(id, router, formData);
+    const res = await sendEssay(theme_id, router, formData);
 
     if (res.ok) {
       alert("Redação enviada com sucesso!");
-      router.push(`/themes/${id}`);
+      router.push(`/themes/${theme_id}`);
     } else {
       alert("Erro ao enviar a redação.");
       setLoading(false);
