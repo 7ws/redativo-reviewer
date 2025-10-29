@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
 import Essay from "@/types/essay";
+import ThemeForReviewerPage from "@/components/themes/for_reviewer";
 
 export default function ThemePage() {
   const { theme_id } = useParams();
@@ -20,7 +21,7 @@ export default function ThemePage() {
       setLoading(true);
       try {
         const res = await apiGetWithoutAuth(
-          `writing/api/v1/themes/${theme_id}/`,
+          `/api/v1/common/themes/${theme_id}/`,
           router,
         );
         if (res.ok) {
@@ -43,7 +44,7 @@ export default function ThemePage() {
     async function fetchEssays() {
       try {
         const res = await apiGetWithAuth(
-          `writing/api/v1/themes/${theme_id}/essays/`,
+          `/api/v1/writer/themes/${theme_id}/essays/`,
           router,
         );
         const data = await res.json();
@@ -61,6 +62,10 @@ export default function ThemePage() {
 
   if (!theme) {
     return <div className="p-8 text-red-600">Tema não encontrado.</div>;
+  }
+
+  if (isAuthenticated) {
+    return <ThemeForReviewerPage theme_id={theme_id} />;
   }
 
   return (

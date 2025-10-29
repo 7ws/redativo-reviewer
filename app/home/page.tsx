@@ -15,8 +15,8 @@ import { apiGetWithAuth } from "@/lib/api";
 import UserProfile from "@/types/user_profile";
 import Header from "@/components/header";
 import UnauthHomePage from "@/components/home/unauthed";
-import ForWriterHomePage from "@/components/home/forWriter";
-import ForReviewerHomePage from "@/components/home/forReviewer";
+import ForWriterHomePage from "@/components/home/for_writer";
+import ForReviewerHomePage from "@/components/home/for_reviewer";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes" | "revisoes">(
@@ -25,7 +25,7 @@ export default function HomePage() {
   const [user, setUser] = useState<UserProfile>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAllThemes, setShowAllThemes] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handlShowAllThemes = () => {
@@ -66,15 +66,10 @@ export default function HomePage() {
   }, [activeTab]);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-
     async function fetchUser() {
       setLoading(true);
       try {
-        const res = await apiGetWithAuth(
-          `common/api/v1/users/my-user/`,
-          router,
-        );
+        const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -84,6 +79,7 @@ export default function HomePage() {
       }
     }
 
+    if (isAuthenticated && !user) return;
     fetchUser();
   }, [router, isAuthenticated]);
 
@@ -112,7 +108,7 @@ export default function HomePage() {
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
@@ -155,7 +151,7 @@ export default function HomePage() {
           </>
         )}
 
-        {user.is_writer && (
+        {user.is_reviewer && (
           <>
             <div className="flex px-4 py-2 bg-white border-b">
               <button

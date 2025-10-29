@@ -5,19 +5,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import Theme from "@/types/theme";
+import Theme from "@/types/theme_for_reviewer";
 import Essay from "@/types/essay";
 import { statusTexts } from "../essays/status_text";
 import { apiGetWithAuth } from "@/lib/api";
 
-export default function ForWriterHomePage({
+export default function ForReviewerHomePage({
   activeTab,
   showAll,
 }: {
-  activeTab: "temas" | "redacoes";
+  activeTab: "temas" | "revisoes";
   showAll: boolean;
 }) {
-  const [essays, setEssays] = useState<Essay[]>([]);
   const [themes, setThemes] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -25,8 +24,9 @@ export default function ForWriterHomePage({
   // --- Fetch themes information ---
   useEffect(() => {
     async function fetchThemes() {
+      setLoading(true);
       try {
-        const res = await apiGetWithAuth(`writing/api/v1/themes/`, router);
+        const res = await apiGetWithAuth(`/api/v1/reviewer/themes/`, router);
         const data = await res.json();
         setThemes(data);
       } catch (err) {
@@ -39,30 +39,16 @@ export default function ForWriterHomePage({
     fetchThemes();
   }, [router, showAll]);
 
-  useEffect(() => {
-    async function fetchEssays() {
-      try {
-        const res = await apiGetWithAuth(`/api/v1/essays/all/`, router);
-        const data = await res.json();
-        setEssays(data);
-      } catch (err) {
-        console.error("Error fetching essays:", err);
-      }
-    }
+  const filteredThemes = showAll ? themes : themes;
 
-    fetchEssays();
-  }, [router]);
-
-  const filteredThemes = showAll ? themes : themes.filter((t) => t.is_active);
-
-  const getEssayByTheme = (theme: Theme) =>
-    essays?.find((essay: Essay) => essay.theme.id === theme.id);
+  if (loading) {
+    return <div className="p-8 text-gray-600">Carregando temas...</div>;
+  }
 
   return (
     <div className="p-4 space-y-4">
       {activeTab === "temas" &&
         filteredThemes.map((theme: Theme) => {
-          const essay: Essay = getEssayByTheme(theme);
           return (
             <Card
               key={theme.id}
@@ -91,46 +77,19 @@ export default function ForWriterHomePage({
                     <p className="text-xs text-gray-500 mb-2">
                       {theme.description}
                     </p>
-                    {/* Available until */}
-                    {theme.available_until && (
-                      <p className="text-xs text-gray-600 mb-2">
-                        Disponível até{" "}
-                        {new Date(theme.available_until).toLocaleDateString(
-                          "pt-BR",
-                          {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          },
-                        )}
-                      </p>
-                    )}
 
-                    {essay ? (
+                    {theme.essays_pending_review.map((essay_id: string) => (
                       <button
+                        key={essay_id}
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/themes/${theme.id}/essays/${essay.id}`);
+                          router.push(`/themes/${theme.id}/essays/${essay_id}`);
                         }}
                         className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded"
                       >
-                        Ver Redação
+                        Revisar Redação
                       </button>
-                    ) : theme.is_active ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/themes/${theme.id}/new-essay`);
-                        }}
-                        className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded"
-                      >
-                        Escrever Redação
-                      </button>
-                    ) : (
-                      <span className="mt-2 inline-block px-3 py-1 bg-gray-400 text-white text-xs rounded">
-                        Tema Inativo
-                      </span>
-                    )}
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -138,7 +97,7 @@ export default function ForWriterHomePage({
           );
         })}
 
-      {activeTab === "redacoes" &&
+      {activeTab === "revisoes" &&
         essays.map((essay: Essay) => {
           const theme = essay.theme;
           const themeImage =

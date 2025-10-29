@@ -19,7 +19,7 @@ export default function EssayPage() {
       setLoading(true);
       try {
         const res = await apiGetWithAuth(
-          `writing/api/v1/themes/${theme_id}/essays/${id}/`,
+          `/api/v1/writer/themes/${theme_id}/essays/${id}/`,
           router,
         );
         const data = await res.json();

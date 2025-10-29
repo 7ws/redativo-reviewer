@@ -17,7 +17,7 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
   useEffect(() => {
     async function fetchThemes() {
       try {
-        const res = await apiGetWithoutAuth(`common/api/v1/themes/`, router);
+        const res = await apiGetWithoutAuth(`/api/v1/common/themes/`, router);
         const data = await res.json();
         setThemes(data);
       } catch (err) {

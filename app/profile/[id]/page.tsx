@@ -42,7 +42,7 @@ export default function Profile() {
 
     async function fetchUser() {
       try {
-        const res = await apiGetWithAuth(`common/api/v1/users/${id}/`, router);
+        const res = await apiGetWithAuth(`/api/v1/users/${id}/`, router);
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -108,7 +108,7 @@ export default function Profile() {
 
     try {
       const res = await apiPatchWithAuth(
-        `common/api/v1/users/${id}/`,
+        `/api/v1/users/${id}/`,
         router,
         formData,
       );

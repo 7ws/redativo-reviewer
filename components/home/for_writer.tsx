@@ -10,11 +10,11 @@ import Essay from "@/types/essay";
 import { statusTexts } from "../essays/status_text";
 import { apiGetWithAuth } from "@/lib/api";
 
-export default function ForReviewerHomePage({
+export default function ForWriterHomePage({
   activeTab,
   showAll,
 }: {
-  activeTab: "temas" | "revisoes";
+  activeTab: "temas" | "redacoes";
   showAll: boolean;
 }) {
   const [essays, setEssays] = useState<Essay[]>([]);
@@ -25,9 +25,8 @@ export default function ForReviewerHomePage({
   // --- Fetch themes information ---
   useEffect(() => {
     async function fetchThemes() {
-      setLoading(true);
       try {
-        const res = await apiGetWithAuth(`reviewing/api/v1/themes/`, router);
+        const res = await apiGetWithAuth(`/api/v1/writer/themes/`, router);
         const data = await res.json();
         setThemes(data);
       } catch (err) {
@@ -40,16 +39,30 @@ export default function ForReviewerHomePage({
     fetchThemes();
   }, [router, showAll]);
 
-  const filteredThemes = showAll ? themes : themes.filter((t) => !t.is_active);
+  useEffect(() => {
+    async function fetchEssays() {
+      try {
+        const res = await apiGetWithAuth(`/api/v1/essays/all/`, router);
+        const data = await res.json();
+        setEssays(data);
+      } catch (err) {
+        console.error("Error fetching essays:", err);
+      }
+    }
 
-  if (loading) {
-    return <div className="p-8 text-gray-600">Carregando temas...</div>;
-  }
+    fetchEssays();
+  }, [router]);
+
+  const filteredThemes = showAll ? themes : themes.filter((t) => t.is_active);
+
+  const getEssayByTheme = (theme: Theme) =>
+    essays?.find((essay: Essay) => essay.theme.id === theme.id);
 
   return (
     <div className="p-4 space-y-4">
       {activeTab === "temas" &&
         filteredThemes.map((theme: Theme) => {
+          const essay: Essay = getEssayByTheme(theme);
           return (
             <Card
               key={theme.id}
@@ -125,7 +138,7 @@ export default function ForReviewerHomePage({
           );
         })}
 
-      {activeTab === "revisoes" &&
+      {activeTab === "redacoes" &&
         essays.map((essay: Essay) => {
           const theme = essay.theme;
           const themeImage =
