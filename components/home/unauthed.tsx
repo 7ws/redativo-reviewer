@@ -4,17 +4,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { useEffect, useState } from "react";
+import { apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
 
-export default function UnauthHomePage({
-  themes,
-  showAll,
-}: {
-  themes: Theme[];
-  showAll: boolean;
-}) {
+export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
+  const [themes, setThemes] = useState<Theme[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // --- Fetch themes information ---
+  useEffect(() => {
+    async function fetchThemes() {
+      try {
+        const res = await apiGetWithoutAuth(`common/api/v1/themes/`, router);
+        const data = await res.json();
+        setThemes(data);
+      } catch (err) {
+        console.error("Error fetching active themes:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchThemes();
+  }, [router, showAll]);
   const filteredThemes = showAll ? themes : themes.filter((t) => t.is_active);
 
   return (

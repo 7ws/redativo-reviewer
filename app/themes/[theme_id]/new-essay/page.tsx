@@ -19,7 +19,7 @@ function EssayUploadContent() {
     async function checkEssayAlreadySubmitted() {
       if (theme_id) {
         const res = await apiGetWithAuth(
-          `/api/v1/themes/${theme_id}/essays/`,
+          `writing/api/v1/themes/${theme_id}/essays/`,
           router,
         );
         if (res.ok) {

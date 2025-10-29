@@ -11,20 +11,21 @@ import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
-import Theme from "@/types/theme";
+import { apiGetWithAuth } from "@/lib/api";
 import UserProfile from "@/types/user_profile";
 import Header from "@/components/header";
 import UnauthHomePage from "@/components/home/unauthed";
 import ForWriterHomePage from "@/components/home/forWriter";
+import ForReviewerHomePage from "@/components/home/forReviewer";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<"temas" | "redacoes">("temas");
-  const [themes, setThemes] = useState<Theme[]>([]);
+  const [activeTab, setActiveTab] = useState<"temas" | "redacoes" | "revisoes">(
+    "temas",
+  );
   const [user, setUser] = useState<UserProfile>();
-  const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAllThemes, setShowAllThemes] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const handlShowAllThemes = () => {
@@ -64,33 +65,22 @@ export default function HomePage() {
     sessionStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
 
-  // --- Fetch themes information ---
-  useEffect(() => {
-    async function fetchThemes() {
-      try {
-        const res = await apiGetWithoutAuth(`/api/v1/themes/`, router);
-        const data = await res.json();
-        setThemes(data);
-      } catch (err) {
-        console.error("Error fetching active themes:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchThemes();
-  }, [router, showAllThemes]);
-
   useEffect(() => {
     if (!isAuthenticated) return;
 
     async function fetchUser() {
+      setLoading(true);
       try {
-        const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
+        const res = await apiGetWithAuth(
+          `common/api/v1/users/my-user/`,
+          router,
+        );
         const data = await res.json();
         setUser(data);
       } catch (err) {
         console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -126,7 +116,7 @@ export default function HomePage() {
     return (
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
-        <UnauthHomePage themes={themes} showAll={showAllThemes} />
+        <UnauthHomePage showAll={showAllThemes} />
       </div>
     );
   }
@@ -135,36 +125,66 @@ export default function HomePage() {
     return (
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
-        <div className="flex px-4 py-2 bg-white border-b">
-          <button
-            onClick={() => setActiveTab("temas")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "temas"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Temas
-          </button>
-
-          <button
-            onClick={() => setActiveTab("redacoes")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "redacoes"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Minhas Redações
-          </button>
-        </div>
 
         {user.is_writer && (
-          <ForWriterHomePage
-            themes={themes}
-            activeTab={activeTab}
-            showAll={showAllThemes}
-          />
+          <>
+            <div className="flex px-4 py-2 bg-white border-b">
+              <button
+                onClick={() => setActiveTab("temas")}
+                className={`px-4 py-2 font-bold ${
+                  activeTab === "temas"
+                    ? "text-black border-b-2 border-black"
+                    : "text-gray-500 font-medium"
+                }`}
+              >
+                Temas
+              </button>
+
+              <button
+                onClick={() => setActiveTab("redacoes")}
+                className={`px-4 py-2 font-bold ${
+                  activeTab === "redacoes"
+                    ? "text-black border-b-2 border-black"
+                    : "text-gray-500 font-medium"
+                }`}
+              >
+                Minhas Redações
+              </button>
+            </div>
+            <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
+          </>
+        )}
+
+        {user.is_writer && (
+          <>
+            <div className="flex px-4 py-2 bg-white border-b">
+              <button
+                onClick={() => setActiveTab("temas")}
+                className={`px-4 py-2 font-bold ${
+                  activeTab === "temas"
+                    ? "text-black border-b-2 border-black"
+                    : "text-gray-500 font-medium"
+                }`}
+              >
+                Temas
+              </button>
+
+              <button
+                onClick={() => setActiveTab("revisoes")}
+                className={`px-4 py-2 font-bold ${
+                  activeTab === "revisoes"
+                    ? "text-black border-b-2 border-black"
+                    : "text-gray-500 font-medium"
+                }`}
+              >
+                Minhas Revisões
+              </button>
+            </div>
+            <ForReviewerHomePage
+              activeTab={activeTab}
+              showAll={showAllThemes}
+            />
+          </>
         )}
       </div>
     );

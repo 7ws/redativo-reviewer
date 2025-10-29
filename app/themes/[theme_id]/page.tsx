@@ -20,7 +20,7 @@ export default function ThemePage() {
       setLoading(true);
       try {
         const res = await apiGetWithoutAuth(
-          `/api/v1/themes/${theme_id}/`,
+          `writing/api/v1/themes/${theme_id}/`,
           router,
         );
         if (res.ok) {
@@ -43,7 +43,7 @@ export default function ThemePage() {
     async function fetchEssays() {
       try {
         const res = await apiGetWithAuth(
-          `/api/v1/themes/${theme_id}/essays/`,
+          `writing/api/v1/themes/${theme_id}/essays/`,
           router,
         );
         const data = await res.json();

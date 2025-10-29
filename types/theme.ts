@@ -1,3 +1,5 @@
+import Essay from "./essay";
+
 type Theme = {
   id: string;
   title: string;
@@ -8,6 +10,7 @@ type Theme = {
   background_image: string | null;
   is_active: boolean;
   remaining_time: number | null;
+  essays: Essay[] | null;
 };
 
 export default Theme;
