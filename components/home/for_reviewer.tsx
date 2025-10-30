@@ -143,7 +143,9 @@ export default function ForReviewerHomePage({
               key={review.id}
               className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() =>
-                router.push(`/themes/${essay.theme.id}/essays/${review.id}`)
+                router.push(
+                  `/themes/${essay.theme.id}/essays/${essay.id}/reviews/${review.id}/`,
+                )
               }
             >
               <CardContent className="p-0">

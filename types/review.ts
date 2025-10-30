@@ -17,7 +17,7 @@ type Review = {
   skill_4_text: string;
   skill_5_score: string;
   skill_5_text: string;
-  review_comment_threads: Thread;
+  review_comment_threads: Thread[];
 };
 
 export default Review;

@@ -9,7 +9,7 @@ import EssayNotReviewed from "@/components/essays/not_reviewed_essay";
 
 export default function EssayPage() {
   const { theme_id } = useParams();
-  const { id: essay_id } = useParams();
+  const { essay_id } = useParams();
   const router = useRouter();
   const [essay, setEssay] = useState<Essay | null>(null);
   const [loading, setLoading] = useState(true);
