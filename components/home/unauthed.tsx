@@ -73,18 +73,19 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
                       {theme.description}
                     </p>
 
-                    {/* Available until */}
-                    <p className="text-xs text-gray-600 mb-2">
-                      Disponível até{" "}
-                      {new Date(theme.available_until).toLocaleDateString(
-                        "pt-BR",
-                        {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        },
-                      )}
-                    </p>
+                    <div className="pt-4">
+                      theme.is_active ? (
+                      <div className="text-gray-600 italic">
+                        Faça login para escrever uma redação sobre este tema.
+                        Tema disponível até{" "}
+                        {new Date(theme.available_until).toLocaleDateString()}.
+                      </div>
+                      ) : (
+                      <div className="text-gray-600 italic">
+                        Este tema não está mais ativo para de redações.
+                      </div>
+                      )
+                    </div>
                   </div>
                 </div>
               </CardContent>

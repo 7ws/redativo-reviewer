@@ -3,13 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
-import Theme from "@/types/theme_for_reviewer";
+import Theme from "@/types/theme";
 
-export default function ThemeForReviewerPage({
-  theme_id,
-}: {
-  theme_id: string;
-}) {
+export default function ThemeForWriterPage({ theme_id }: { theme_id: string }) {
   const router = useRouter();
   const [theme, setTheme] = useState<Theme>();
   const [loading, setLoading] = useState(false);
@@ -19,7 +15,7 @@ export default function ThemeForReviewerPage({
       setLoading(true);
       try {
         const res = await apiGetWithAuth(
-          `/api/v1/reviewer/themes/${theme_id}/`,
+          `/api/v1/writer/themes/${theme_id}/`,
           router,
         );
         if (res.ok) {
@@ -68,12 +64,27 @@ export default function ThemeForReviewerPage({
         </p>
 
         <div className="pt-4">
-          <button
-            onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
-            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
-          >
-            Revisar Redação
-          </button>
+          {theme.essays?.length > 0 ? (
+            <button
+              onClick={() =>
+                router.push(`/themes/${theme.id}/essays/${theme.essays[0].id}`)
+              }
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+            >
+              Ver Redação
+            </button>
+          ) : theme.is_active ? (
+            <button
+              onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+            >
+              Escrever Redação
+            </button>
+          ) : (
+            <div className="text-gray-600 italic">
+              Este tema não está ativo para redações no momento.
+            </div>
+          )}
         </div>
       </div>
     </div>
