@@ -5,10 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { statusTexts } from "../reviews/status_text";
+import { apiGetWithAuth, apiPostWithAuth } from "@/lib/api";
 import Theme from "@/types/theme_for_reviewer";
 import Essay from "@/types/essay";
-import { statusTexts } from "../essays/status_text";
-import { apiGetWithAuth } from "@/lib/api";
+import Review from "@/types/review";
 
 export default function ForReviewerHomePage({
   activeTab,
@@ -18,6 +19,7 @@ export default function ForReviewerHomePage({
   showAll: boolean;
 }) {
   const [themes, setThemes] = useState<Theme[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -38,6 +40,41 @@ export default function ForReviewerHomePage({
 
     fetchThemes();
   }, [router, showAll]);
+
+  // --- Fetch review information ---
+  useEffect(() => {
+    async function fetchReviews() {
+      setLoading(true);
+      try {
+        const res = await apiGetWithAuth(
+          `/api/v1/reviewer/my-reviews/`,
+          router,
+        );
+        const data = await res.json();
+        setReviews(data);
+      } catch (err) {
+        console.error("Error fetching essays for review:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchReviews();
+  }, [router]);
+
+  async function handleNewReview(theme_id: string, essay_id: string) {
+    try {
+      const res = await apiPostWithAuth(
+        `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/`,
+        router,
+      );
+      const data = await res.json();
+      router.push(
+        `/themes/${data.theme_id}/essays/${essay_id}/reviews/${data.id}`,
+      );
+    } catch (err) {
+      console.error("Error starting new review:", err);
+    }
+  }
 
   const filteredThemes = showAll ? themes : themes;
 
@@ -83,7 +120,7 @@ export default function ForReviewerHomePage({
                         key={essay_id}
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/themes/${theme.id}/essays/${essay_id}`);
+                          handleNewReview(theme.id, essay_id);
                         }}
                         className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded"
                       >
@@ -98,54 +135,41 @@ export default function ForReviewerHomePage({
         })}
 
       {activeTab === "revisoes" &&
-        essays.map((essay: Essay) => {
-          const theme = essay.theme;
-          const themeImage =
-            theme?.background_image || "/placeholder-theme.jpg";
-          const themeTitle = theme?.title || "Tema desconhecido";
-
-          // Optional: color-code statuses for better UX
-          const statusColors: Record<string, string> = {
-            SUBMITTED: "bg-blue-500",
-            READY_FOR_REVIEW: "bg-indigo-500",
-            UNDER_REVIEW: "bg-purple-500",
-            REVIEWED: "bg-green-600",
-          };
-
-          const statusColor = statusColors[essay.status] || "bg-gray-400";
+        reviews.map((review: Review) => {
+          const essay: Essay = review.essay;
 
           return (
             <Card
-              key={essay.id}
+              key={review.id}
               className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() =>
-                router.push(`/themes/${theme.id}/essays/${essay.id}`)
+                router.push(`/themes/${essay.theme.id}/essays/${review.id}`)
               }
             >
               <CardContent className="p-0">
                 <div className="flex">
                   {/* Left image section */}
-                  <div className="w-32 h-24 relative">
-                    <img
-                      src={themeImage}
-                      alt={themeTitle}
-                      className="w-full h-full object-cover"
-                    />
-                    <span
-                      className={`absolute top-2 left-2 ${statusColor} text-white text-xs px-2 py-1 rounded`}
-                    >
-                      {statusTexts[essay.status]}
-                    </span>
+                  <div className="w-32 h-24 flex items-center justify-center relative">
+                    {essay.theme.background_image ? (
+                      <Image
+                        src={essay.theme.background_image}
+                        alt={essay.theme.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-linear-to-br from-teal-300 to-blue-300" />
+                    )}
                   </div>
 
                   {/* Right content section */}
                   <div className="flex-1 p-4">
                     <h3 className="font-bold text-sm mb-1">{essay.title}</h3>
                     <p className="text-xs text-gray-600 italic mb-1">
-                      {themeTitle}
+                      {essay.theme.title}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Status: {statusTexts[essay.status]}
+                      Status: {statusTexts[review.status]}
                     </p>
                   </div>
                 </div>

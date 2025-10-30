@@ -25,7 +25,7 @@ export default function HomePage() {
   const [user, setUser] = useState<UserProfile>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAllThemes, setShowAllThemes] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const handlShowAllThemes = () => {
@@ -53,6 +53,7 @@ export default function HomePage() {
     // --- Auth check ---
     const access = localStorage.getItem("access");
     setIsAuthenticated(!!access);
+    if (!access) setLoading(false);
 
     // --- Load showAllThemes from session storage ---
     const stored = sessionStorage.getItem("showAllThemes");
@@ -79,8 +80,7 @@ export default function HomePage() {
       }
     }
 
-    if (isAuthenticated && !user) return;
-    fetchUser();
+    if (isAuthenticated && !user) fetchUser();
   }, [router, isAuthenticated]);
 
   const getHeader = () => (

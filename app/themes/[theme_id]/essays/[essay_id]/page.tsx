@@ -9,7 +9,7 @@ import EssayNotReviewed from "@/components/essays/not_reviewed_essay";
 
 export default function EssayPage() {
   const { theme_id } = useParams();
-  const { id } = useParams();
+  const { id: essay_id } = useParams();
   const router = useRouter();
   const [essay, setEssay] = useState<Essay | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ export default function EssayPage() {
       setLoading(true);
       try {
         const res = await apiGetWithAuth(
-          `/api/v1/writer/themes/${theme_id}/essays/${id}/`,
+          `/api/v1/writer/themes/${theme_id}/essays/${essay_id}/`,
           router,
         );
         const data = await res.json();
@@ -32,7 +32,7 @@ export default function EssayPage() {
     }
 
     fetchEssay();
-  }, [id, theme_id, router]);
+  }, [essay_id, theme_id, router]);
 
   if (loading) return <div className="p-8">Carregando...</div>;
   if (!essay)

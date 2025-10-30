@@ -1,7 +1,9 @@
+import Essay from "./essay";
 import Thread from "./thread";
 
 type Review = {
   id: string;
+  essay: Essay;
   submitted_at: string;
   status: string;
   final_score: string;
