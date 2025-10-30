@@ -42,7 +42,7 @@ export default function ForWriterHomePage({
   useEffect(() => {
     async function fetchEssays() {
       try {
-        const res = await apiGetWithAuth(`/api/v1/essays/all/`, router);
+        const res = await apiGetWithAuth(`/api/v1/writer/my-essays/`, router);
         const data = await res.json();
         setEssays(data);
       } catch (err) {
