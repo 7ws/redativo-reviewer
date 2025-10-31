@@ -74,17 +74,18 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
                     </p>
 
                     <div className="pt-4">
-                      theme.is_active ? (
-                      <div className="text-gray-600 italic">
-                        Faça login para escrever uma redação sobre este tema.
-                        Tema disponível até{" "}
-                        {new Date(theme.available_until).toLocaleDateString()}.
-                      </div>
+                      {theme.is_active ? (
+                        <div className="text-gray-600 italic">
+                          Faça login para escrever uma redação sobre este tema.
+                          Tema disponível até{" "}
+                          {new Date(theme.available_until).toLocaleDateString()}
+                          .
+                        </div>
                       ) : (
-                      <div className="text-gray-600 italic">
-                        Este tema não está mais ativo para de redações.
-                      </div>
-                      )
+                        <div className="text-gray-600 italic">
+                          Este tema não está mais ativo para de redações.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -130,7 +130,7 @@ export async function apiPatchWithAuth(
 
 export async function sendEssay(themeId: string, router: any, body: FormData) {
   let res = await apiPostWithAuth(
-    `/api/v1/themes/${themeId}/essays/`,
+    `/api/v1/writer/themes/${themeId}/essays/`,
     router,
     body,
   );

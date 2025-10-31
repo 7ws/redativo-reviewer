@@ -17,6 +17,7 @@ import Highlight from "@/types/highlight";
 import { getImageRelativeCoords } from "@/lib/imageCoords";
 import { naturalToRendered } from "@/lib/imageCoords";
 import Thread from "@/types/thread";
+import Header from "../header";
 
 export default function InProgressReview({ review }: { review: Review }) {
   const essay: Essay = review.essay;
@@ -370,6 +371,12 @@ export default function InProgressReview({ review }: { review: Review }) {
 
   return (
     <div className="min-h-screen bg-white">
+      <Header
+        showLogoutButton={true}
+        showProfileButton={false}
+        showHomeButton={true}
+        showBackButton={true}
+      />
       <div className="flex items-center justify-between px-8 py-6 border-b">
         <div>
           <h1 className="text-2xl font-bold text-black mb-1">{essay.title}</h1>

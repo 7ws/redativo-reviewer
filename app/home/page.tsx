@@ -43,17 +43,17 @@ export default function HomePage() {
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
     }
+
+    // --- Auth check ---
+    const _access = localStorage.getItem("access");
+    setIsAuthenticated(!!_access);
+    if (!_access) setLoading(false);
   }, [router]);
 
   useEffect(() => {
     // --- Persist active tab in session storage ---
     const savedTab = sessionStorage.getItem("activeTab");
     if (savedTab === "redacoes") setActiveTab("redacoes");
-
-    // --- Auth check ---
-    const access = localStorage.getItem("access");
-    setIsAuthenticated(!!access);
-    if (!access) setLoading(false);
 
     // --- Load showAllThemes from session storage ---
     const stored = sessionStorage.getItem("showAllThemes");
@@ -67,6 +67,9 @@ export default function HomePage() {
   }, [activeTab]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+    if (user) return;
+
     async function fetchUser() {
       setLoading(true);
       try {
@@ -80,8 +83,8 @@ export default function HomePage() {
       }
     }
 
-    if (isAuthenticated && !user) fetchUser();
-  }, [router, isAuthenticated]);
+    fetchUser();
+  }, [isAuthenticated, user, router]);
 
   const getHeader = () => (
     <Header
@@ -108,81 +111,75 @@ export default function HomePage() {
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        {getHeader()}
-        <UnauthHomePage showAll={showAllThemes} />
-      </div>
-    );
-  }
-
-  if (user) {
+  if (user?.is_writer) {
     return (
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
 
-        {user.is_writer && (
-          <>
-            <div className="flex px-4 py-2 bg-white border-b">
-              <button
-                onClick={() => setActiveTab("temas")}
-                className={`px-4 py-2 font-bold ${
-                  activeTab === "temas"
-                    ? "text-black border-b-2 border-black"
-                    : "text-gray-500 font-medium"
-                }`}
-              >
-                Temas
-              </button>
+        <div className="flex px-4 py-2 bg-white border-b">
+          <button
+            onClick={() => setActiveTab("temas")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "temas"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Temas
+          </button>
 
-              <button
-                onClick={() => setActiveTab("redacoes")}
-                className={`px-4 py-2 font-bold ${
-                  activeTab === "redacoes"
-                    ? "text-black border-b-2 border-black"
-                    : "text-gray-500 font-medium"
-                }`}
-              >
-                Minhas Redações
-              </button>
-            </div>
-            <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
-          </>
-        )}
-
-        {user.is_reviewer && (
-          <>
-            <div className="flex px-4 py-2 bg-white border-b">
-              <button
-                onClick={() => setActiveTab("temas")}
-                className={`px-4 py-2 font-bold ${
-                  activeTab === "temas"
-                    ? "text-black border-b-2 border-black"
-                    : "text-gray-500 font-medium"
-                }`}
-              >
-                Temas
-              </button>
-
-              <button
-                onClick={() => setActiveTab("revisoes")}
-                className={`px-4 py-2 font-bold ${
-                  activeTab === "revisoes"
-                    ? "text-black border-b-2 border-black"
-                    : "text-gray-500 font-medium"
-                }`}
-              >
-                Minhas Revisões
-              </button>
-            </div>
-            <ForReviewerHomePage
-              activeTab={activeTab}
-              showAll={showAllThemes}
-            />
-          </>
-        )}
+          <button
+            onClick={() => setActiveTab("redacoes")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "redacoes"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Minhas Redações
+          </button>
+        </div>
+        <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
       </div>
     );
   }
+
+  if (user?.is_reviewer) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {getHeader()}
+        <div className="flex px-4 py-2 bg-white border-b">
+          <button
+            onClick={() => setActiveTab("temas")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "temas"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Temas
+          </button>
+
+          <button
+            onClick={() => setActiveTab("revisoes")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "revisoes"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Minhas Revisões
+          </button>
+        </div>
+        <ForReviewerHomePage activeTab={activeTab} showAll={showAllThemes} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {getHeader()}
+      <UnauthHomePage showAll={showAllThemes} />
+    </div>
+  );
 }
