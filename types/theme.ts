@@ -11,6 +11,7 @@ type Theme = {
   is_active: boolean;
   remaining_time: number | null;
   essays: Essay[] | null;
+  essays_pending_review: string[] | null;
 };
 
 export default Theme;

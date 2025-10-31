@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { apiGetWithAuth } from "@/lib/api";
 import Review from "@/types/review";
 import FinishedReview from "@/components/reviews/finished_review";
+import InProgressReview from "@/components/reviews/in_progress_review";
 
 export default function ReviewPage() {
   const { theme_id } = useParams();
@@ -42,4 +43,6 @@ export default function ReviewPage() {
   if (review.status === "SUBMITTED") {
     return <FinishedReview review={review} />;
   }
+
+  return <InProgressReview review={review} />;
 }

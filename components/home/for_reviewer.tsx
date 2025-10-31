@@ -68,9 +68,7 @@ export default function ForReviewerHomePage({
         router,
       );
       const data = await res.json();
-      router.push(
-        `/themes/${data.theme_id}/essays/${essay_id}/reviews/${data.id}`,
-      );
+      router.push(`/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`);
     } catch (err) {
       console.error("Error starting new review:", err);
     }
