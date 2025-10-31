@@ -75,7 +75,7 @@ export default function Profile() {
     setLoading(true);
     try {
       const res = await apiPatchWithAuth(
-        `common/api/v1/users/${id}/`,
+        `/api/v1/users/${id}/`,
         router,
         formData,
       );
