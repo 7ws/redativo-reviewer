@@ -192,7 +192,7 @@ export default function InProgressReview({ review }: { review: Review }) {
     });
   };
 
-  const saveComment = () => {
+  const saveComment = async () => {
     if (!activeHighlight) return;
 
     if (tempComment.trim() || tempCompetency.length > 0) {
@@ -203,6 +203,25 @@ export default function InProgressReview({ review }: { review: Review }) {
             : h,
         ),
       );
+
+      const h: Highlight = highlights.find((h) => h.id === activeHighlight);
+      if (!h) return;
+
+      const url = `/api/v1/reviewer/reviews/${review.id}/threads/`;
+      const formData = new FormData();
+      formData.append("comment", tempComment);
+      formData.append("competency", tempCompetency.join(","));
+      formData.append("start_text_selection_x", Math.round(h.x).toString());
+      formData.append("start_text_selection_y", Math.round(h.y).toString());
+      formData.append("text_selection_width", h.width.toString());
+      formData.append("text_selection_height", h.height.toString());
+
+      try {
+        const res = await apiPostWithAuth(url, router, formData);
+        if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
+      } catch (err) {
+        console.error(err);
+      }
     } else {
       // Remove highlight if no content was added
       setHighlights((prev) => prev.filter((h) => h.id !== activeHighlight));
@@ -437,7 +456,7 @@ export default function InProgressReview({ review }: { review: Review }) {
                 className="bg-gray-100 rounded-2xl p-4 space-y-3"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shrink-0">
                     <span className="text-lg font-bold text-gray-700">
                       {comp.id}
                     </span>
@@ -458,7 +477,7 @@ export default function InProgressReview({ review }: { review: Review }) {
                   placeholder="Adicione um comentário"
                   value={comp.comment}
                   onChange={(e) => handleCommentChange(comp.id, e.target.value)}
-                  className="bg-white border-gray-300 placeholder:text-gray-400 min-h-[80px] resize-none"
+                  className="bg-white border-gray-300 placeholder:text-gray-400 min-h-20 resize-none"
                 />
               </div>
             ))}
