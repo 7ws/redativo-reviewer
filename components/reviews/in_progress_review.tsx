@@ -14,6 +14,9 @@ import Essay from "@/types/essay";
 import Review from "@/types/review";
 import Theme from "@/types/theme";
 import Highlight from "@/types/highlight";
+import { getImageRelativeCoords } from "@/lib/imageCoords";
+import { naturalToRendered } from "@/lib/imageCoords";
+import Thread from "@/types/thread";
 
 export default function InProgressReview({ review }: { review: Review }) {
   const essay: Essay = review.essay;
@@ -36,8 +39,84 @@ export default function InProgressReview({ review }: { review: Review }) {
   const [commentBoxPosition, setCommentBoxPosition] = useState({ x: 0, y: 0 });
   const [tempComment, setTempComment] = useState("");
   const [tempCompetency, setTempCompetency] = useState<number[]>([]);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
   const commentBoxRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
+  const [rawThreads, setRawThreads] = useState<Thread[]>([]);
+
+  useEffect(() => {
+    if (review?.review_comment_threads) {
+      setRawThreads(review.review_comment_threads);
+    }
+  }, [review]);
+
+  // restore helper (idempotent guard inside)
+  const restoreHighlightsFromRaw = () => {
+    const img = imageRef.current;
+    if (!img) return;
+    if (!rawThreads || rawThreads.length === 0) return;
+    // already restored?
+    if (naturalSize.w > 0 && highlights.length > 0) {
+      // optional: you might want to check highlights originated from rawThreads
+      // but returning early avoids duplicate work
+      return;
+    }
+
+    // Ensure natural size is set
+    const natW = img.naturalWidth || 0;
+    const natH = img.naturalHeight || 0;
+    if (!natW || !natH) return; // caller should ensure image is ready
+
+    setNaturalSize({ w: natW, h: natH });
+
+    const restored = rawThreads.map((t) => ({
+      id: `${t.id}`, // keep same id type you expect
+      x: Number(t.start_text_selection_x) || 0,
+      y: Number(t.start_text_selection_y) || 0,
+      width: Number(t.text_selection_width) || 0,
+      height: Number(t.text_selection_height) || 0,
+      competency: [], // fill if you have that data
+      comment: t.comments?.[0]?.content || "",
+    }));
+
+    setHighlights(restored);
+  };
+
+  // call on image load (when image actually fires onLoad)
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const natW = img.naturalWidth || 0;
+    const natH = img.naturalHeight || 0;
+    setNaturalSize({ w: natW, h: natH });
+
+    // try restore immediately (rawThreads may or may not already be present)
+    if (rawThreads && rawThreads.length > 0) {
+      restoreHighlightsFromRaw();
+    }
+  };
+
+  // fallback / synchronization effect — runs when rawThreads changes
+  useEffect(() => {
+    if (!rawThreads || rawThreads.length === 0) return;
+    const img = imageRef.current;
+    if (!img) return;
+
+    // if the image is already complete (cached or loaded), restore immediately
+    if (img.complete && img.naturalWidth > 0) {
+      restoreHighlightsFromRaw();
+      return;
+    }
+
+    // otherwise wait for the image load event and restore after it fires
+    const onLoad = () => {
+      restoreHighlightsFromRaw();
+    };
+    img.addEventListener("load", onLoad);
+
+    return () => {
+      img.removeEventListener("load", onLoad);
+    };
+  }, [rawThreads]); // re-run whenever rawThreads changes
 
   const handleScoreChange = (id: number, value: string) => {
     setCompetencies((prev) =>
@@ -56,25 +135,18 @@ export default function InProgressReview({ review }: { review: Review }) {
     return sum + score;
   }, 0);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imageContainerRef.current) return;
-    const rect = imageContainerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+  const handleMouseDown = (e) => {
+    if (!imageRef.current) return;
+    const { x, y } = getImageRelativeCoords(e, imageRef.current);
 
     setIsSelecting(true);
     setSelectionStart({ x, y });
     setSelectionEnd({ x, y });
-    setShowCommentBox(false);
-    setActiveHighlight(null);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isSelecting || !imageContainerRef.current) return;
-    const rect = imageContainerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
+  const handleMouseMove = (e) => {
+    if (!isSelecting || !imageRef.current) return;
+    const { x, y } = getImageRelativeCoords(e, imageRef.current);
     setSelectionEnd({ x, y });
   };
 
@@ -89,39 +161,7 @@ export default function InProgressReview({ review }: { review: Review }) {
       const x = Math.min(selectionStart.x, selectionEnd.x);
       const y = Math.min(selectionStart.y, selectionEnd.y);
 
-      const calculateCommentBoxPosition = () => {
-        if (!imageContainerRef.current)
-          return { x: x + width / 2, y: y + height + 10 };
-
-        const containerRect = imageContainerRef.current.getBoundingClientRect();
-        const commentBoxWidth = 350;
-        const commentBoxHeight = 250; // Approximate height
-
-        let posX = x + width / 2;
-        let posY = y + height + 10;
-
-        if (posX + commentBoxWidth / 2 > containerRect.width) {
-          posX = containerRect.width - commentBoxWidth / 2 - 10;
-        }
-
-        if (posX - commentBoxWidth / 2 < 0) {
-          posX = commentBoxWidth / 2 + 10;
-        }
-
-        if (posY + commentBoxHeight > containerRect.height) {
-          posY = y - commentBoxHeight - 10;
-
-          if (posY < 0) {
-            posY = 10;
-          }
-        }
-
-        return { x: posX, y: posY };
-      };
-
-      const position = calculateCommentBoxPosition();
-      setCommentBoxPosition(position);
-      setShowCommentBox(true);
+      openCommentBox(x, y, width, height);
       setTempComment("");
       setTempCompetency([]);
 
@@ -144,41 +184,51 @@ export default function InProgressReview({ review }: { review: Review }) {
     setActiveHighlight(highlight.id);
     setTempComment(highlight.comment);
     setTempCompetency(highlight.competency);
+    openCommentBox(highlight.x, highlight.y, highlight.width, highlight.height);
+  };
 
-    const calculateCommentBoxPosition = () => {
-      if (!imageContainerRef.current)
-        return {
-          x: highlight.x + highlight.width / 2,
-          y: highlight.y + highlight.height + 10,
-        };
+  const openCommentBox = (
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) => {
+    const imgRect = imageRef.current.getBoundingClientRect();
 
-      const containerRect = imageContainerRef.current.getBoundingClientRect();
-      const commentBoxWidth = 350;
-      const commentBoxHeight = 250;
+    const r = naturalToRendered(
+      {
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+      },
+      naturalSize.w,
+      naturalSize.h,
+      imgRect.width,
+      imgRect.height,
+    );
 
-      let posX = highlight.x + highlight.width / 2;
-      let posY = highlight.y + highlight.height + 10;
+    // Proposed position (rendered px)
+    let posX = r.left + r.width / 2;
+    let posY = r.top + r.height + 10;
 
-      if (posX + commentBoxWidth / 2 > containerRect.width) {
-        posX = containerRect.width - commentBoxWidth / 2 - 10;
-      }
+    // Keep inside image
+    const commentBoxWidth = 350;
+    const commentBoxHeight = 250;
 
-      if (posX - commentBoxWidth / 2 < 0) {
-        posX = commentBoxWidth / 2 + 10;
-      }
+    // Clamp X
+    posX = Math.max(
+      commentBoxWidth / 2,
+      Math.min(posX, imgRect.width - commentBoxWidth / 2),
+    );
 
-      if (posY + commentBoxHeight > containerRect.height) {
-        posY = highlight.y - commentBoxHeight - 10;
-        if (posY < 0) {
-          posY = 10;
-        }
-      }
+    // Clamp Y
+    if (posY + commentBoxHeight > imgRect.height) {
+      posY = r.top - commentBoxHeight - 10;
+      if (posY < 0) posY = 10;
+    }
 
-      return { x: posX, y: posY };
-    };
-
-    const position = calculateCommentBoxPosition();
-    setCommentBoxPosition(position);
+    setCommentBoxPosition({ x: posX, y: posY });
     setShowCommentBox(true);
   };
 
@@ -341,51 +391,81 @@ export default function InProgressReview({ review }: { review: Review }) {
       <div className="flex gap-8 p-8">
         <div className="flex-1">
           <div
-            ref={imageContainerRef}
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden relative cursor-crosshair select-none"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
           >
             <img
+              ref={imageRef}
               src={essay.text_image}
-              alt="Redação manuscrita do aluno"
+              onLoad={handleImageLoad}
               className="w-full h-auto pointer-events-none"
               draggable={false}
             />
 
-            {highlights.map((highlight) => (
-              <div
-                key={highlight.id}
-                className="highlight absolute cursor-pointer transition-all hover:opacity-90"
-                style={{
-                  left: `${highlight.x}px`,
-                  top: `${highlight.y}px`,
-                  width: `${highlight.width}px`,
-                  height: `${highlight.height}px`,
-                  backgroundColor:
-                    activeHighlight === highlight.id
-                      ? "rgba(0, 101, 255, 0.25)"
-                      : "rgba(199, 220, 249, 0.3)",
-                  border: "2px solid rgba(0, 101, 255, 0.6)",
-                }}
-                onClick={(e) => handleHighlightClick(highlight, e)}
-              />
-            ))}
+            {highlights.map((h) => {
+              const imgRect = imageRef.current.getBoundingClientRect();
 
-            {isSelecting && (
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${getSelectionRect().x}px`,
-                  top: `${getSelectionRect().y}px`,
-                  width: `${getSelectionRect().width}px`,
-                  height: `${getSelectionRect().height}px`,
-                  backgroundColor: "transparent",
-                  border: "2px dashed #0065FF",
-                }}
-              />
-            )}
+              const rendered = naturalToRendered(
+                { x: h.x, y: h.y, width: h.width, height: h.height },
+                naturalSize.w,
+                naturalSize.h,
+                imgRect.width,
+                imgRect.height,
+              );
+
+              return (
+                <div
+                  key={h.id}
+                  className="highlight absolute cursor-pointer"
+                  style={{
+                    left: `${rendered.left}px`,
+                    top: `${rendered.top}px`,
+                    width: `${rendered.width}px`,
+                    height: `${rendered.height}px`,
+                    backgroundColor:
+                      activeHighlight === h.id
+                        ? "rgba(0, 101, 255, 0.25)"
+                        : "rgba(199, 220, 249, 0.3)",
+                    border: "2px solid rgba(0, 101, 255, 0.6)",
+                  }}
+                  onClick={(e) => handleHighlightClick(h, e)}
+                />
+              );
+            })}
+
+            {isSelecting &&
+              naturalSize.w > 0 &&
+              imageRef.current &&
+              (() => {
+                const imgRect = imageRef.current.getBoundingClientRect();
+
+                const x = Math.min(selectionStart.x, selectionEnd.x);
+                const y = Math.min(selectionStart.y, selectionEnd.y);
+                const width = Math.abs(selectionEnd.x - selectionStart.x);
+                const height = Math.abs(selectionEnd.y - selectionStart.y);
+
+                const rendered = naturalToRendered(
+                  { x, y, width, height },
+                  naturalSize.w,
+                  naturalSize.h,
+                  imgRect.width,
+                  imgRect.height,
+                );
+
+                return (
+                  <div
+                    className="absolute pointer-events-none border-2 border-blue-600 border-dashed"
+                    style={{
+                      left: `${rendered.left}px`,
+                      top: `${rendered.top}px`,
+                      width: `${rendered.width}px`,
+                      height: `${rendered.height}px`,
+                    }}
+                  />
+                );
+              })()}
 
             {showCommentBox && (
               <div

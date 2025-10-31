@@ -109,84 +109,26 @@ export default function FinishedReview({ review }: { review: Review }) {
     setupEssayData();
   }, [essay]);
 
-  // Normalize rawHighlights to percent-of-image after image natural size is known
-  const normalizeHighlightsToPercent = (raw, natW, natH) => {
-    // heuristic helper to decide input unit:
-    // - fraction: values in [0,1] (e.g. 0.12)
-    // - percent: values in (1..100]
-    // - pixels: values > 100 (or <= nat dimension)
-    const decideUnit = (val, natDim) => {
-      if (val === null || val === undefined) return "pixels";
-      if (val <= 1) return "fraction";
-      if (val <= 100) return "percent";
-      // if val bigger than 100 but less than natural dimension, it's probably pixels too
-      return "pixels";
-    };
-
-    return raw.map((h) => {
-      const unitX = decideUnit(h.x, natW);
-      const unitW = decideUnit(h.width, natW);
-      const unitY = decideUnit(h.y, natH);
-      const unitH = decideUnit(h.height, natH);
-
-      // convert each to percent (0-100)
-      const toPctX = (() => {
-        if (unitX === "fraction") return h.x * 100;
-        if (unitX === "percent") return h.x;
-        // pixels
-        return (h.x / natW) * 100;
-      })();
-
-      const toPctW = (() => {
-        if (unitW === "fraction") return h.width * 100;
-        if (unitW === "percent") return h.width;
-        return (h.width / natW) * 100;
-      })();
-
-      const toPctY = (() => {
-        if (unitY === "fraction") return h.y * 100;
-        if (unitY === "percent") return h.y;
-        return (h.y / natH) * 100;
-      })();
-
-      const toPctH = (() => {
-        if (unitH === "fraction") return h.height * 100;
-        if (unitH === "percent") return h.height;
-        return (h.height / natH) * 100;
-      })();
-
-      // sanitize: clamp 0..100 to avoid crazy values
-      const clamp = (v) => Math.max(0, Math.min(100, v || 0));
-
-      return {
-        id: h.id,
-        xPct: clamp(toPctX),
-        yPct: clamp(toPctY),
-        wPct: clamp(toPctW),
-        hPct: clamp(toPctH),
-        comment: h.comment,
-      };
-    });
+  const normalizeHighlights = (raw, natW, natH) => {
+    return raw.map((h) => ({
+      id: h.id,
+      xPct: (Number(h.x) / natW) * 100,
+      yPct: (Number(h.y) / natH) * 100,
+      wPct: (Number(h.width) / natW) * 100,
+      hPct: (Number(h.height) / natH) * 100,
+      comment: h.comment,
+    }));
   };
 
   const handleImageLoad = (e) => {
     const img = e.target;
-    const natW = img.naturalWidth || 0;
-    const natH = img.naturalHeight || 0;
-    // update render size now as well
+    const natW = img.naturalWidth;
+    const natH = img.naturalHeight;
+
     updateRenderSize();
 
-    if (rawHighlights && rawHighlights.length > 0 && natW && natH) {
-      const normalized = normalizeHighlightsToPercent(
-        rawHighlights,
-        natW,
-        natH,
-      );
-      setHighlights(normalized);
-      // debugging (remove if you want)
-      console.log("natural size:", natW, natH);
-      console.log("raw highlights:", rawHighlights);
-      console.log("normalized highlights (%):", normalized);
+    if (rawHighlights.length > 0) {
+      setHighlights(normalizeHighlights(rawHighlights, natW, natH));
     }
   };
 

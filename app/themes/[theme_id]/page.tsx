@@ -31,46 +31,50 @@ export default function ThemePage() {
     />
   );
 
-  async function fetchUser() {
-    setLoading(true);
-    try {
-      const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
-      const data = await res.json();
-      setUser(data);
-    } catch (err) {
-      console.error("Error fetching user:", err);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (user) return;
+
+    async function fetchUser() {
+      setLoading(true);
+      try {
+        const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
+
+    fetchUser();
+  }, [isAuthenticated, user, router]);
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
-  if (isAuthenticated) {
-    fetchUser();
-    if (user.is_reviewer) {
-      return (
-        <div className="min-h-screen bg-gray-50">
-          {getHeader()}
-          <ThemeForReviewerPage theme_id={theme_id} />;
-        </div>
-      );
-    }
-
-    if (user.is_writer) {
-      return (
-        <div className="min-h-screen bg-gray-50">
-          {getHeader()}
-          <ThemeForWriterPage theme_id={theme_id} />;
-        </div>
-      );
-    }
-
+  if (user?.is_reviewer) {
     return (
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
-        <UnauthThemePage theme_id={theme_id} />;
+        <ThemeForReviewerPage theme_id={theme_id.toString()} />;
       </div>
     );
   }
+
+  if (user?.is_writer) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {getHeader()}
+        <ThemeForWriterPage theme_id={theme_id.toString()} />;
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {getHeader()}
+      <UnauthThemePage theme_id={theme_id.toString()} />;
+    </div>
+  );
 }
