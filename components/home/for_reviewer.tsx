@@ -110,7 +110,7 @@ export default function ForReviewerHomePage({
                   <div className="flex-1 p-4">
                     <h3 className="font-bold text-sm mb-2">{theme.title}</h3>
                     <p className="text-xs text-gray-500 mb-2">
-                      {theme.description}
+                      {theme.short_description}
                     </p>
 
                     {theme.essays_pending_review.map((essay_id: string) => (
