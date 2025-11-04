@@ -56,6 +56,11 @@ export default function SignupPage() {
     setIsLoading(false);
 
     if (res.ok) {
+      const data = await res.json();
+
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+
       router.push("/home");
     } else {
       const data = await res.json();
