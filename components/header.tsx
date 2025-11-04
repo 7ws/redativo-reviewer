@@ -8,9 +8,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
 import UserProfile from "@/types/user_profile";
-import { apiPostWithAuth } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function Header({
   user,
@@ -32,9 +31,7 @@ export default function Header({
   const router = useRouter();
 
   const handleLogout = () => {
-    apiPostWithAuth(`/api/v1/auth/logout`, router);
-    localStorage.clear();
-    router.replace("/home");
+    router.replace("/logout");
   };
 
   return (
