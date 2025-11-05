@@ -14,6 +14,7 @@ function EssayUploadContent() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     async function checkEssayAlreadySubmitted() {
@@ -107,19 +108,36 @@ function EssayUploadContent() {
       />
 
       {/* File input */}
+      {/* Hidden input – CAMERA */}
       <input
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
+        capture="environment"
+        onChange={(e) => {
+          setShowPicker(false);
+          handleFileChange(e);
+        }}
         className="hidden"
-        id="essay-upload"
+        id="camera-input"
       />
-      <label
-        htmlFor="essay-upload"
+
+      {/* Hidden input – GALLERY */}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          setShowPicker(false);
+          handleFileChange(e);
+        }}
+        className="hidden"
+        id="gallery-input"
+      />
+      <button
+        onClick={() => setShowPicker(true)}
         className="block w-full text-center bg-blue-600 text-white py-2 rounded cursor-pointer hover:bg-blue-700"
       >
         Selecionar ou Tirar Foto
-      </label>
+      </button>
 
       {/* Preview */}
       {preview && (
@@ -145,6 +163,37 @@ function EssayUploadContent() {
       >
         {loading ? "Enviando..." : "Enviar Redação"}
       </button>
+
+      {showPicker && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-80 space-y-4 shadow-xl">
+            <h3 className="text-lg font-semibold text-center">
+              Selecionar imagem
+            </h3>
+
+            <button
+              onClick={() => document.getElementById("camera-input")!.click()}
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2"
+            >
+              📷 Tirar Foto
+            </button>
+
+            <button
+              onClick={() => document.getElementById("gallery-input")!.click()}
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded-md hover:bg-gray-300 flex items-center justify-center gap-2"
+            >
+              🖼️ Escolher da Galeria
+            </button>
+
+            <button
+              onClick={() => setShowPicker(false)}
+              className="w-full text-red-500 font-semibold py-2"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
