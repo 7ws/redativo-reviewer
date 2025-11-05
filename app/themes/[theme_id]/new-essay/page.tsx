@@ -110,7 +110,6 @@ function EssayUploadContent() {
       <input
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={handleFileChange}
         className="hidden"
         id="essay-upload"
