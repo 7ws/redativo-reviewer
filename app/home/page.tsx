@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { apiGetWithAuth } from "@/lib/api";
 import UserProfile from "@/types/user_profile";
 import Header from "@/components/header";
+import WhatsAppButton from "@/components/whatsapp_button";
 import UnauthHomePage from "@/components/home/unauthed";
 import ForWriterHomePage from "@/components/home/for_writer";
 import ForReviewerHomePage from "@/components/home/for_reviewer";
@@ -113,73 +114,82 @@ export default function HomePage() {
 
   if (user?.is_writer) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        {getHeader()}
+      <>
+        <div className="min-h-screen bg-gray-50">
+          {getHeader()}
 
-        <div className="flex px-4 py-2 bg-white border-b">
-          <button
-            onClick={() => setActiveTab("temas")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "temas"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Temas
-          </button>
+          <div className="flex px-4 py-2 bg-white border-b">
+            <button
+              onClick={() => setActiveTab("temas")}
+              className={`px-4 py-2 font-bold ${
+                activeTab === "temas"
+                  ? "text-black border-b-2 border-black"
+                  : "text-gray-500 font-medium"
+              }`}
+            >
+              Temas
+            </button>
 
-          <button
-            onClick={() => setActiveTab("redacoes")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "redacoes"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Minhas Redações
-          </button>
+            <button
+              onClick={() => setActiveTab("redacoes")}
+              className={`px-4 py-2 font-bold ${
+                activeTab === "redacoes"
+                  ? "text-black border-b-2 border-black"
+                  : "text-gray-500 font-medium"
+              }`}
+            >
+              Minhas Redações
+            </button>
+          </div>
+          <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
         </div>
-        <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
-      </div>
+        <WhatsAppButton />
+      </>
     );
   }
 
   if (user?.is_reviewer) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        {getHeader()}
-        <div className="flex px-4 py-2 bg-white border-b">
-          <button
-            onClick={() => setActiveTab("temas")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "temas"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Temas
-          </button>
+      <>
+        <div className="min-h-screen bg-gray-50">
+          {getHeader()}
+          <div className="flex px-4 py-2 bg-white border-b">
+            <button
+              onClick={() => setActiveTab("temas")}
+              className={`px-4 py-2 font-bold ${
+                activeTab === "temas"
+                  ? "text-black border-b-2 border-black"
+                  : "text-gray-500 font-medium"
+              }`}
+            >
+              Temas
+            </button>
 
-          <button
-            onClick={() => setActiveTab("revisoes")}
-            className={`px-4 py-2 font-bold ${
-              activeTab === "revisoes"
-                ? "text-black border-b-2 border-black"
-                : "text-gray-500 font-medium"
-            }`}
-          >
-            Minhas Revisões
-          </button>
+            <button
+              onClick={() => setActiveTab("revisoes")}
+              className={`px-4 py-2 font-bold ${
+                activeTab === "revisoes"
+                  ? "text-black border-b-2 border-black"
+                  : "text-gray-500 font-medium"
+              }`}
+            >
+              Minhas Revisões
+            </button>
+          </div>
+          <ForReviewerHomePage activeTab={activeTab} showAll={showAllThemes} />
         </div>
-        <ForReviewerHomePage activeTab={activeTab} showAll={showAllThemes} />
-      </div>
+        <WhatsAppButton />
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {getHeader()}
-      <UnauthHomePage showAll={showAllThemes} />
-    </div>
+    <>
+      <div className="min-h-screen bg-gray-50">
+        {getHeader()}
+        <UnauthHomePage showAll={showAllThemes} />
+      </div>
+      <WhatsAppButton />
+    </>
   );
 }
