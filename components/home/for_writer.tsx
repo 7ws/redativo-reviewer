@@ -55,14 +55,11 @@ export default function ForWriterHomePage({
 
   const filteredThemes = showAll ? themes : themes.filter((t) => t.is_active);
 
-  const getEssayByTheme = (theme: Theme) =>
-    essays?.find((essay: Essay) => essay.theme.id === theme.id);
-
   return (
     <div className="p-4 space-y-4">
       {activeTab === "temas" &&
         filteredThemes.map((theme: Theme) => {
-          const essay: Essay = getEssayByTheme(theme);
+          const essay: Essay = theme.essays[0];
           return (
             <Card
               key={theme.id}
