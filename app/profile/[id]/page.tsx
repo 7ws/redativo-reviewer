@@ -241,6 +241,12 @@ export default function Profile() {
               </p>
             </div>
             <div>
+              <p className="text-sm text-gray-500">Telefone</p>
+              <p className="text-base font-medium text-black">
+                {user.phone_number}
+              </p>
+            </div>
+            <div>
               <p className="text-sm text-gray-500">Membro desde</p>
               <p className="text-base font-medium text-black">
                 {new Date(user.created_at).toLocaleDateString("pt-BR", {
