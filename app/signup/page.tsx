@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import InputMask from "react-input-mask";
 import { useRouter } from "next/navigation";
+import WhatsAppButton from "@/components/whatsapp_button";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -171,6 +172,7 @@ export default function SignupPage() {
             </p>
           </div>
         </div>
+        <WhatsAppButton />
       </div>
     </div>
   );
