@@ -46,13 +46,6 @@ export default function UnauthThemePage({ theme_id }: { theme_id: string }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ✅ Reuse your header */}
-      <Header
-        showBackButton={true}
-        showHomeButton={true}
-        showProfileButton={true}
-      />
-
       {/* Image */}
       {theme.background_image ? (
         <div className="w-full h-64 md:h-80 lg:h-96 overflow-hidden">
