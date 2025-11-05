@@ -55,6 +55,24 @@ export default function Profile() {
     fetchUser();
   }, [id]);
 
+  function formatPhoneNumber(phone: string | null | undefined) {
+    if (!phone) return "Não informado";
+
+    const cleaned = phone.replace(/\D/g, "");
+
+    // Mobile: 11 digits → (XX) 9XXXX-XXXX
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    }
+
+    // Landline fallback: 10 digits → (XX) XXXX-XXXX
+    if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    }
+
+    return phone; // fallback if something unexpected
+  }
+
   // 📸 Handle avatar file change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -243,7 +261,7 @@ export default function Profile() {
             <div>
               <p className="text-sm text-gray-500">Telefone</p>
               <p className="text-base font-medium text-black">
-                {user.phone_number}
+                {formatPhoneNumber(user.phone_number)}
               </p>
             </div>
             <div>

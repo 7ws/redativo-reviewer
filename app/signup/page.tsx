@@ -137,7 +137,7 @@ export default function SignupPage() {
                   <input
                     {...inputProps}
                     type="tel"
-                    placeholder="Número de telefone (XX) XXXXX-XXXX"
+                    placeholder="Número de telefone (XX) 9XXXX-XXXX"
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
