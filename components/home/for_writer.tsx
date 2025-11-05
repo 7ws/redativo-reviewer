@@ -116,20 +116,12 @@ export default function ForWriterHomePage({
                       >
                         Ver Redação
                       </button>
-                    ) : theme.is_active ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/themes/${theme.id}/new-essay`);
-                        }}
-                        className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded"
-                      >
-                        Escrever Redação
-                      </button>
                     ) : (
-                      <span className="mt-2 inline-block px-3 py-1 bg-gray-400 text-white text-xs rounded">
-                        Tema Inativo
-                      </span>
+                      !theme.is_active && (
+                        <span className="mt-2 inline-block px-3 py-1 bg-gray-400 text-white text-xs rounded">
+                          Tema Inativo
+                        </span>
+                      )
                     )}
                   </div>
                 </div>

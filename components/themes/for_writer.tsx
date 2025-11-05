@@ -73,12 +73,17 @@ export default function ThemeForWriterPage({ theme_id }: { theme_id: string }) {
             >
               Ver Redação
             </button>
+          ) : theme.is_active ? (
+            <button
+              onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
+            >
+              Enviar Redação
+            </button>
           ) : (
-            !theme.is_active && (
-              <div className="text-gray-600 italic">
-                Este tema não está ativo para redações no momento.
-              </div>
-            )
+            <div className="text-gray-600 italic">
+              Este tema não está ativo para redações no momento.
+            </div>
           )}
         </div>
       </div>
