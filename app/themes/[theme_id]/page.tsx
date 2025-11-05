@@ -28,6 +28,7 @@ export default function ThemePage() {
       showBackButton={true}
       showHomeButton={true}
       showProfileButton={true}
+      user={user}
     />
   );
 
