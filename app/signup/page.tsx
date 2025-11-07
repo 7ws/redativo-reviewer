@@ -89,7 +89,7 @@ export default function SignupPage() {
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Criar Conta
+              Cadastre-se para participar
             </h1>
           </div>
 
@@ -155,7 +155,7 @@ export default function SignupPage() {
                 type="submit"
                 className="w-full bg-[#3B82F6] hover:bg-blue-600"
               >
-                Criar Conta
+                Cadastrar-se
               </Button>
             </form>
           </div>

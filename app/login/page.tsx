@@ -137,7 +137,7 @@ export default function LoginPage() {
                 href="/signup"
                 className="text-[#3B82F6] hover:underline font-medium"
               >
-                Criar conta
+                Cadastre-se para participar
               </Link>
             </p>
           </div>
