@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
 import Header from "../header";
@@ -17,22 +16,9 @@ export default function FinishedReview({ review }: { review: Review }) {
 
   const [selectedHighlight, setSelectedHighlight] = useState(null);
   const [selectedCompetency, setSelectedCompetency] = useState(null);
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
 
   const imageRef = useRef(null);
   const [renderSize, setRenderSize] = useState({ width: 0, height: 0 });
-
-  const tips = [
-    { title: "Use conectores", content: "Lorem ipsum..." },
-    {
-      title: "Estruture bem os parágrafos",
-      content: "Organize suas ideias...",
-    },
-    {
-      title: "Use dados e estatísticas",
-      content: "Fortaleça seus argumentos...",
-    },
-  ];
 
   const handleCompetencyClick = (id: string) => {
     setSelectedCompetency(selectedCompetency === id ? null : id);
@@ -161,11 +147,6 @@ export default function FinishedReview({ review }: { review: Review }) {
       height: Math.round(height),
     };
   };
-
-  // tips navigation
-  const nextTip = () => setCurrentTipIndex((p) => (p + 1) % tips.length);
-  const prevTip = () =>
-    setCurrentTipIndex((p) => (p - 1 + tips.length) % tips.length);
 
   // small loading guard
   if (loading) {
@@ -345,47 +326,6 @@ export default function FinishedReview({ review }: { review: Review }) {
               </div>
             );
           })()}
-
-        {/* Personalized Tips */}
-        <div className="space-y-3">
-          <h3 className="font-medium text-gray-700">Mais dicas para você:</h3>
-          <div className="relative">
-            <div className="border-2 border-blue-500 rounded-lg p-4 bg-blue-50">
-              <h4 className="font-bold text-blue-600 mb-2">
-                {tips[currentTipIndex].title}
-              </h4>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {tips[currentTipIndex].content}
-              </p>
-            </div>
-
-            {/* Carousel Navigation */}
-            <div className="flex justify-between items-center mt-2">
-              <button
-                onClick={prevTip}
-                className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              <div className="flex gap-1">
-                {tips.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full ${index === currentTipIndex ? "bg-blue-500" : "bg-gray-300"}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={nextTip}
-                className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
