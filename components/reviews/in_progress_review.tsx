@@ -1,4 +1,11 @@
 "use client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import type React from "react";
 
@@ -24,11 +31,11 @@ export default function InProgressReview({ review }: { review: Review }) {
   const theme: Theme = essay.theme;
   const router = useRouter();
   const [competencies, setCompetencies] = useState([
-    { id: 1, score: "", comment: "" },
-    { id: 2, score: "", comment: "" },
-    { id: 3, score: "", comment: "" },
-    { id: 4, score: "", comment: "" },
-    { id: 5, score: "", comment: "" },
+    { id: 1, score: "0", comment: "" },
+    { id: 2, score: "0", comment: "" },
+    { id: 3, score: "0", comment: "" },
+    { id: 4, score: "0", comment: "" },
+    { id: 5, score: "0", comment: "" },
   ]);
 
   const [highlights, setHighlights] = useState<Highlight[]>([]);
@@ -44,6 +51,7 @@ export default function InProgressReview({ review }: { review: Review }) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
   const [rawThreads, setRawThreads] = useState<Thread[]>([]);
+  const [errors, setErrors] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (review?.review_comment_threads) {
@@ -333,16 +341,31 @@ export default function InProgressReview({ review }: { review: Review }) {
 
   // 🟢 Save button
   const handleSave = async () => {
-    const url = `/api/v1/reviewer/themes/${theme.id}/essays/${essay.id}/reviews/${review.id}/finish/`;
+    const newErrors: Record<number, string> = {};
+    let hasError = false;
 
-    for (const c of competencies) {
-      if (c.comment.trim() === "") {
-        return;
+    competencies.forEach((c) => {
+      const score = Number(c.score);
+      if (isNaN(score) || score < 0 || score > 200 || score % 20 !== 0) {
+        newErrors[c.id] =
+          "A nota deve estar entre 0 e 200 e ser múltiplo de 20.";
+        hasError = true;
+      } else if (c.comment.trim() === "") {
+        newErrors[c.id] = "O comentário é obrigatório.";
+        hasError = true;
       }
-      // if (c.score < 0 || c.score > 200 || c.score % 40 !== 0) {
-      //   return;
-      // }
+    });
+
+    if (hasError) {
+      setErrors(newErrors);
+      return;
     }
+
+    // Clear previous errors if all good
+    setErrors({});
+
+    // Continue your existing submit logic
+    const url = `/api/v1/reviewer/themes/${theme.id}/essays/${essay.id}/reviews/${review.id}/finish/`;
 
     const formData = new FormData();
     competencies.forEach((c) => {
@@ -352,9 +375,7 @@ export default function InProgressReview({ review }: { review: Review }) {
 
     try {
       const res = await apiPostWithAuth(url, router, formData);
-
       if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
-
       router.push(`/home`);
     } catch (err) {
       console.error(err);
@@ -540,7 +561,9 @@ export default function InProgressReview({ review }: { review: Review }) {
             {competencies.map((comp) => (
               <div
                 key={comp.id}
-                className="bg-gray-100 rounded-2xl p-4 space-y-3"
+                className={`bg-gray-100 rounded-2xl p-4 space-y-3 ${
+                  errors[comp.id] ? "border border-red-400" : ""
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shrink-0">
@@ -549,23 +572,40 @@ export default function InProgressReview({ review }: { review: Review }) {
                     </span>
                   </div>
 
-                  <Input
-                    type="number"
-                    min="0"
-                    max="200"
-                    placeholder="Informe nota"
+                  <select
                     value={comp.score}
                     onChange={(e) => handleScoreChange(comp.id, e.target.value)}
-                    className="flex-1 bg-white border-gray-300 placeholder:text-gray-400"
-                  />
+                    className={`flex-1 bg-white border rounded-md px-3 py-2 text-gray-900 text-sm focus:outline-none focus:ring-2 ${
+                      errors[comp.id]
+                        ? "border-red-400 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                    }`}
+                  >
+                    {[...Array(11)].map((_, i) => {
+                      const value = i * 20;
+                      return (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
 
                 <Textarea
                   placeholder="Adicione um comentário"
                   value={comp.comment}
                   onChange={(e) => handleCommentChange(comp.id, e.target.value)}
-                  className="bg-white border-gray-300 placeholder:text-gray-400 min-h-20 resize-none"
+                  className={`bg-white border placeholder:text-gray-400 min-h-20 resize-none ${
+                    errors[comp.id]
+                      ? "border-red-400 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
                 />
+
+                {errors[comp.id] && (
+                  <p className="text-sm text-red-500">{errors[comp.id]}</p>
+                )}
               </div>
             ))}
           </div>
