@@ -128,6 +128,10 @@ export async function apiPatchWithAuth(
   return res;
 }
 
+export async function apiDeleteWithAuth(url: string, router: any) {
+  await makeAuthRequest(url, "DELETE", router);
+}
+
 export async function sendEssay(themeId: string, router: any, body: FormData) {
   let res = await apiPostWithAuth(
     `/api/v1/writer/themes/${themeId}/essays/`,

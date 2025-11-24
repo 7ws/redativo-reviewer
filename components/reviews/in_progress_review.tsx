@@ -11,7 +11,7 @@ import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { apiPostWithAuth } from "@/lib/api";
+import { apiPostWithAuth, apiDeleteWithAuth } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -256,42 +256,58 @@ export default function InProgressReview({ review }: { review: Review }) {
   const saveComment = async () => {
     if (!selectedHighlight) return;
 
-    if (tempComment.trim() || tempCompetency.length > 0) {
-      setHighlights((prev) =>
-        prev.map((h) =>
-          h.id === activeHighlight
-            ? { ...h, comment: tempComment, competency: tempCompetency }
-            : h,
-        ),
-      );
-
-      const h: Highlight = highlights.find((h) => h.id === activeHighlight);
-      if (!h) return;
-
-      const url = `/api/v1/reviewer/reviews/${review.id}/threads/`;
-      const formData = new FormData();
-      formData.append("comment", tempComment);
-      formData.append("competency", tempCompetency.join(","));
-      formData.append("start_text_selection_x", Math.round(h.x).toString());
-      formData.append("start_text_selection_y", Math.round(h.y).toString());
-      formData.append("text_selection_width", h.width.toString());
-      formData.append("text_selection_height", h.height.toString());
-
-      try {
-        const res = await apiPostWithAuth(url, router, formData);
-        if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      // Remove highlight if no content was added
-      setHighlights((prev) => prev.filter((h) => h.id !== activeHighlight));
+    if (selectedHighlight.id !== "") {
+      // Show message saying that highlight needs a comment or explicitly exclude
+      return;
     }
 
-    setShowCommentBox(false);
-    setActiveHighlight(null);
-    setTempComment("");
-    setTempCompetency([]);
+    if (!tempComment.trim()) {
+      // NOTE: This should work IF we link comments to competencies
+      // || tempCompetency.length <= 0) {
+      // NOTE: We should notify the reviewer that there's no comment to save
+      resetCommentBoxDisplay();
+      removeHighlight(selectedHighlight);
+      return;
+    }
+
+    const url = `/api/v1/reviewer/reviews/${review.id}/threads/`;
+    const formData = new FormData();
+    formData.append("comment", tempComment);
+    formData.append("competency", tempCompetency.join(","));
+    formData.append(
+      "start_text_selection_x",
+      Math.round(selectedHighlight.x).toString(),
+    );
+    formData.append(
+      "start_text_selection_y",
+      Math.round(selectedHighlight.y).toString(),
+    );
+    formData.append("text_selection_width", selectedHighlight.width.toString());
+    formData.append(
+      "text_selection_height",
+      selectedHighlight.height.toString(),
+    );
+
+    try {
+      const res = await apiPostWithAuth(url, router, formData);
+      if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setHighlights((prev) =>
+      prev.map((h) =>
+        h === selectedHighlight
+          ? {
+              ...h,
+              id: formData.get("id") as string,
+              comment: tempComment,
+              competency: tempCompetency,
+            }
+          : h,
+      ),
+    );
+    resetCommentBoxDisplay();
   };
 
   function resetCommentBoxDisplay() {
