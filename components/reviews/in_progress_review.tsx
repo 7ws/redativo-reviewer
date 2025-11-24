@@ -42,7 +42,9 @@ export default function InProgressReview({ review }: { review: Review }) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionStart, setSelectionStart] = useState({ x: 0, y: 0 });
   const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
-  const [activeHighlight, setActiveHighlight] = useState<string | null>(null);
+  const [selectedHighlight, setSelectedHighlight] = useState<Highlight | null>(
+    null,
+  );
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [commentBoxPosition, setCommentBoxPosition] = useState({ x: 0, y: 0 });
   const [tempComment, setTempComment] = useState("");
@@ -57,7 +59,7 @@ export default function InProgressReview({ review }: { review: Review }) {
     if (review?.review_comment_threads) {
       setRawThreads(review.review_comment_threads);
     }
-  }, [review]);
+  }, []);
 
   // restore helper (idempotent guard inside)
   const restoreHighlightsFromRaw = () => {
@@ -175,7 +177,7 @@ export default function InProgressReview({ review }: { review: Review }) {
       setTempCompetency([]);
 
       const newHighlight: Highlight = {
-        id: `temp-${Date.now()}`,
+        id: "",
         x,
         y,
         width,
@@ -183,14 +185,14 @@ export default function InProgressReview({ review }: { review: Review }) {
         competency: [],
         comment: "",
       };
-      setActiveHighlight(newHighlight.id);
-      setHighlights((prev) => [...prev, newHighlight]);
+      setSelectedHighlight(newHighlight);
+      addHighlight(newHighlight);
     }
   };
 
   const handleHighlightClick = (highlight: Highlight, e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveHighlight(highlight.id);
+    setSelectedHighlight(highlight);
     setTempComment(highlight.comment);
     setTempCompetency(highlight.competency);
     openCommentBox(highlight.x, highlight.y, highlight.width, highlight.height);
@@ -252,7 +254,7 @@ export default function InProgressReview({ review }: { review: Review }) {
   };
 
   const saveComment = async () => {
-    if (!activeHighlight) return;
+    if (!selectedHighlight) return;
 
     if (tempComment.trim() || tempCompetency.length > 0) {
       setHighlights((prev) =>
@@ -292,52 +294,50 @@ export default function InProgressReview({ review }: { review: Review }) {
     setTempCompetency([]);
   };
 
-  const deleteHighlight = () => {
-    if (!activeHighlight) return;
-    setHighlights((prev) => prev.filter((h) => h.id !== activeHighlight));
+  function resetCommentBoxDisplay() {
     setShowCommentBox(false);
-    setActiveHighlight(null);
+    setSelectedHighlight(null);
     setTempComment("");
     setTempCompetency([]);
+  }
+
+  const deleteHighlight = () => {
+    if (!selectedHighlight) return;
+    if (selectedHighlight.id !== "") {
+      const url = `/api/v1/reviewer/reviews/${review.id}/threads/${selectedHighlight.id}/`;
+      try {
+        apiDeleteWithAuth(url, router);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    removeHighlight(selectedHighlight);
+    resetCommentBoxDisplay();
   };
+
+  function removeHighlight(highlight: Highlight) {
+    setHighlights((prev) => prev.filter((h) => h !== highlight));
+  }
+
+  function addHighlight(highlight: Highlight) {
+    setHighlights((prev) => [...prev, highlight]);
+  }
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (
-        showCommentBox &&
-        !target.closest(".comment-box") &&
-        !target.closest(".highlight")
-      ) {
-        if (tempComment.trim() || tempCompetency.length > 0) {
-          // Save the comment if there's content
-          if (activeHighlight) {
-            setHighlights((prev) =>
-              prev.map((h) =>
-                h.id === activeHighlight
-                  ? { ...h, comment: tempComment, competency: tempCompetency }
-                  : h,
-              ),
-            );
-          }
-        } else {
-          // Remove highlight if no content was added
-          if (activeHighlight) {
-            setHighlights((prev) =>
-              prev.filter((h) => h.id !== activeHighlight),
-            );
-          }
+      if (!target.closest(".comment-box") && !target.closest(".highlight")) {
+        resetCommentBoxDisplay();
+        // Highlights that are NOT saved on the database will have id === ""
+        if (selectedHighlight && selectedHighlight.id === "") {
+          removeHighlight(selectedHighlight);
         }
-        setShowCommentBox(false);
-        setActiveHighlight(null);
-        setTempComment("");
-        setTempCompetency([]);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showCommentBox, activeHighlight, tempComment, tempCompetency]);
+  }, [selectedHighlight]);
 
   // 🟢 Save button
   const handleSave = async () => {
@@ -453,7 +453,7 @@ export default function InProgressReview({ review }: { review: Review }) {
                     width: `${rendered.width}px`,
                     height: `${rendered.height}px`,
                     backgroundColor:
-                      activeHighlight === h.id
+                      selectedHighlight === h
                         ? "rgba(0, 101, 255, 0.25)"
                         : "rgba(199, 220, 249, 0.3)",
                     border: "2px solid rgba(0, 101, 255, 0.6)",
