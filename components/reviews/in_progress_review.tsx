@@ -1,11 +1,4 @@
 "use client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import type React from "react";
 
@@ -14,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { apiPostWithAuth, apiDeleteWithAuth } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Trash2 } from "lucide-react";
 import Essay from "@/types/essay";
@@ -45,89 +37,81 @@ export default function InProgressReview({ review }: { review: Review }) {
   const [selectedHighlight, setSelectedHighlight] = useState<Highlight | null>(
     null,
   );
-  const [showCommentBox, setShowCommentBox] = useState(false);
-  const [commentBoxPosition, setCommentBoxPosition] = useState({ x: 0, y: 0 });
-  const [tempComment, setTempComment] = useState("");
-  const [tempCompetency, setTempCompetency] = useState<number[]>([]);
+
+  const [commentBox, setCommentBox] = useState({
+    show: false,
+    position: { x: 0, y: 0 },
+    comment: "",
+    competencies: [] as number[],
+  });
+
   const commentBoxRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
-  const [rawThreads, setRawThreads] = useState<Thread[]>([]);
   const [errors, setErrors] = useState<Record<number, string>>({});
 
-  useEffect(() => {
-    if (review?.review_comment_threads) {
-      setRawThreads(review.review_comment_threads);
-    }
-  }, []);
-
-  // restore helper (idempotent guard inside)
-  const restoreHighlightsFromRaw = () => {
-    const img = imageRef.current;
-    if (!img) return;
-    if (!rawThreads || rawThreads.length === 0) return;
-    // already restored?
-    if (naturalSize.w > 0 && highlights.length > 0) {
-      // optional: you might want to check highlights originated from rawThreads
-      // but returning early avoids duplicate work
-      return;
-    }
-
-    // Ensure natural size is set
-    const natW = img.naturalWidth || 0;
-    const natH = img.naturalHeight || 0;
-    if (!natW || !natH) return; // caller should ensure image is ready
-
-    setNaturalSize({ w: natW, h: natH });
-
-    const restored = rawThreads.map((t) => ({
-      id: `${t.id}`, // keep same id type you expect
-      x: Number(t.start_text_selection_x) || 0,
-      y: Number(t.start_text_selection_y) || 0,
-      width: Number(t.text_selection_width) || 0,
-      height: Number(t.text_selection_height) || 0,
-      competency: [], // fill if you have that data
-      comment: t.comments?.[0]?.content || "",
-    }));
-
-    setHighlights(restored);
+  // Helper to get rendered coordinates from natural coordinates
+  const getRenderedCoords = (
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) => {
+    if (!imageRef.current) return null;
+    const imgRect = imageRef.current.getBoundingClientRect();
+    return naturalToRendered(
+      { x, y, width, height },
+      naturalSize.w,
+      naturalSize.h,
+      imgRect.width,
+      imgRect.height,
+    );
   };
 
-  // call on image load (when image actually fires onLoad)
+  // Restore highlights from review threads on mount
+  useEffect(() => {
+    if (
+      !review?.review_comment_threads ||
+      review.review_comment_threads.length === 0
+    )
+      return;
+
+    const img = imageRef.current;
+    if (!img) return;
+
+    const loadHighlights = () => {
+      const natW = img.naturalWidth;
+      const natH = img.naturalHeight;
+      if (!natW || !natH) return;
+
+      setNaturalSize({ w: natW, h: natH });
+
+      const restored = review.review_comment_threads.map((t) => ({
+        id: `${t.id}`,
+        x: Number(t.start_text_selection_x) || 0,
+        y: Number(t.start_text_selection_y) || 0,
+        width: Number(t.text_selection_width) || 0,
+        height: Number(t.text_selection_height) || 0,
+        competency: [],
+        comment: t.comments?.[0]?.content || "",
+      }));
+
+      setHighlights(restored);
+    };
+
+    if (img.complete && img.naturalWidth > 0) {
+      loadHighlights();
+    } else {
+      img.addEventListener("load", loadHighlights);
+      return () => img.removeEventListener("load", loadHighlights);
+    }
+  }, [review?.review_comment_threads]);
+
+  // Set natural size when image loads
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
-    const natW = img.naturalWidth || 0;
-    const natH = img.naturalHeight || 0;
-    setNaturalSize({ w: natW, h: natH });
-
-    // try restore immediately (rawThreads may or may not already be present)
-    if (rawThreads && rawThreads.length > 0) {
-      restoreHighlightsFromRaw();
-    }
+    setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
   };
-
-  // fallback / synchronization effect — runs when rawThreads changes
-  useEffect(() => {
-    if (!rawThreads || rawThreads.length === 0) return;
-    const img = imageRef.current;
-    if (!img) return;
-
-    // if the image is already complete (cached or loaded), restore immediately
-    if (img.complete && img.naturalWidth > 0) {
-      restoreHighlightsFromRaw();
-      return;
-    }
-
-    // otherwise wait for the image load event and restore after it fires
-    const onLoad = () => {
-      restoreHighlightsFromRaw();
-    };
-    img.addEventListener("load", onLoad);
-
-    return () => {
-      img.removeEventListener("load", onLoad);
-    };
-  }, [rawThreads]); // re-run whenever rawThreads changes
 
   const handleScoreChange = (id: number, value: string) => {
     setCompetencies((prev) =>
@@ -165,16 +149,13 @@ export default function InProgressReview({ review }: { review: Review }) {
     if (!isSelecting) return;
     setIsSelecting(false);
 
+    const x = Math.min(selectionStart.x, selectionEnd.x);
+    const y = Math.min(selectionStart.y, selectionEnd.y);
     const width = Math.abs(selectionEnd.x - selectionStart.x);
     const height = Math.abs(selectionEnd.y - selectionStart.y);
 
     if (width > 10 && height > 10) {
-      const x = Math.min(selectionStart.x, selectionEnd.x);
-      const y = Math.min(selectionStart.y, selectionEnd.y);
-
       openCommentBox(x, y, width, height);
-      setTempComment("");
-      setTempCompetency([]);
 
       const newHighlight: Highlight = {
         id: "",
@@ -186,15 +167,19 @@ export default function InProgressReview({ review }: { review: Review }) {
         comment: "",
       };
       setSelectedHighlight(newHighlight);
-      addHighlight(newHighlight);
+      setHighlights((prev) => [...prev, newHighlight]);
     }
   };
 
   const handleHighlightClick = (highlight: Highlight, e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedHighlight(highlight);
-    setTempComment(highlight.comment);
-    setTempCompetency(highlight.competency);
+    setCommentBox({
+      show: true,
+      position: commentBox.position,
+      comment: highlight.comment,
+      competencies: highlight.competency,
+    });
     openCommentBox(highlight.x, highlight.y, highlight.width, highlight.height);
   };
 
@@ -207,12 +192,7 @@ export default function InProgressReview({ review }: { review: Review }) {
     const imgRect = imageRef.current.getBoundingClientRect();
 
     const r = naturalToRendered(
-      {
-        x: x,
-        y: y,
-        width: width,
-        height: height,
-      },
+      { x, y, width, height },
       naturalSize.w,
       naturalSize.h,
       imgRect.width,
@@ -239,18 +219,20 @@ export default function InProgressReview({ review }: { review: Review }) {
       if (posY < 0) posY = 10;
     }
 
-    setCommentBoxPosition({ x: posX, y: posY });
-    setShowCommentBox(true);
+    setCommentBox((prev) => ({
+      ...prev,
+      show: true,
+      position: { x: posX, y: posY },
+    }));
   };
 
   const toggleCompetency = (num: number) => {
-    setTempCompetency((prev) => {
-      if (prev.includes(num)) {
-        return prev.filter((c) => c !== num);
-      } else {
-        return [...prev, num].sort();
-      }
-    });
+    setCommentBox((prev) => ({
+      ...prev,
+      competencies: prev.competencies.includes(num)
+        ? prev.competencies.filter((c) => c !== num)
+        : [...prev.competencies, num].sort(),
+    }));
   };
 
   const saveComment = async () => {
@@ -261,19 +243,19 @@ export default function InProgressReview({ review }: { review: Review }) {
       return;
     }
 
-    if (!tempComment.trim()) {
+    if (!commentBox.comment.trim()) {
       // NOTE: This should work IF we link comments to competencies
-      // || tempCompetency.length <= 0) {
+      // || commentBox.competencies.length <= 0) {
       // NOTE: We should notify the reviewer that there's no comment to save
-      resetCommentBoxDisplay();
-      removeHighlight(selectedHighlight);
+      resetCommentBox();
+      setHighlights((prev) => prev.filter((h) => h !== selectedHighlight));
       return;
     }
 
     const url = `/api/v1/reviewer/reviews/${review.id}/threads/`;
     const formData = new FormData();
-    formData.append("comment", tempComment);
-    formData.append("competency", tempCompetency.join(","));
+    formData.append("comment", commentBox.comment);
+    formData.append("competency", commentBox.competencies.join(","));
     formData.append(
       "start_text_selection_x",
       Math.round(selectedHighlight.x).toString(),
@@ -301,21 +283,24 @@ export default function InProgressReview({ review }: { review: Review }) {
           ? {
               ...h,
               id: formData.get("id") as string,
-              comment: tempComment,
-              competency: tempCompetency,
+              comment: commentBox.comment,
+              competency: commentBox.competencies,
             }
           : h,
       ),
     );
-    resetCommentBoxDisplay();
+    resetCommentBox();
   };
 
-  function resetCommentBoxDisplay() {
-    setShowCommentBox(false);
+  const resetCommentBox = () => {
+    setCommentBox({
+      show: false,
+      position: { x: 0, y: 0 },
+      comment: "",
+      competencies: [],
+    });
     setSelectedHighlight(null);
-    setTempComment("");
-    setTempCompetency([]);
-  }
+  };
 
   const deleteHighlight = () => {
     if (!selectedHighlight) return;
@@ -327,27 +312,19 @@ export default function InProgressReview({ review }: { review: Review }) {
         console.error(err);
       }
     }
-    removeHighlight(selectedHighlight);
-    resetCommentBoxDisplay();
+    setHighlights((prev) => prev.filter((h) => h !== selectedHighlight));
+    resetCommentBox();
   };
-
-  function removeHighlight(highlight: Highlight) {
-    setHighlights((prev) => prev.filter((h) => h !== highlight));
-  }
-
-  function addHighlight(highlight: Highlight) {
-    setHighlights((prev) => [...prev, highlight]);
-  }
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target.closest(".comment-box") && !target.closest(".highlight")) {
-        resetCommentBoxDisplay();
         // Highlights that are NOT saved on the database will have id === ""
         if (selectedHighlight && selectedHighlight.id === "") {
-          removeHighlight(selectedHighlight);
+          setHighlights((prev) => prev.filter((h) => h !== selectedHighlight));
         }
+        resetCommentBox();
       }
     };
 
@@ -355,8 +332,8 @@ export default function InProgressReview({ review }: { review: Review }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [selectedHighlight]);
 
-  // 🟢 Save button
-  const handleSave = async () => {
+  // Validation helper
+  const validateCompetencies = () => {
     const newErrors: Record<number, string> = {};
     let hasError = false;
 
@@ -372,15 +349,20 @@ export default function InProgressReview({ review }: { review: Review }) {
       }
     });
 
+    return { errors: newErrors, hasError };
+  };
+
+  // 🟢 Save button
+  const handleSave = async () => {
+    const { errors: newErrors, hasError } = validateCompetencies();
+
     if (hasError) {
       setErrors(newErrors);
       return;
     }
 
-    // Clear previous errors if all good
     setErrors({});
 
-    // Continue your existing submit logic
     const url = `/api/v1/reviewer/themes/${theme.id}/essays/${essay.id}/reviews/${review.id}/finish/`;
 
     const formData = new FormData();
@@ -396,14 +378,6 @@ export default function InProgressReview({ review }: { review: Review }) {
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const getSelectionRect = () => {
-    const x = Math.min(selectionStart.x, selectionEnd.x);
-    const y = Math.min(selectionStart.y, selectionEnd.y);
-    const width = Math.abs(selectionEnd.x - selectionStart.x);
-    const height = Math.abs(selectionEnd.y - selectionStart.y);
-    return { x, y, width, height };
   };
 
   return (
@@ -449,15 +423,8 @@ export default function InProgressReview({ review }: { review: Review }) {
             />
 
             {highlights.map((h) => {
-              const imgRect = imageRef.current.getBoundingClientRect();
-
-              const rendered = naturalToRendered(
-                { x: h.x, y: h.y, width: h.width, height: h.height },
-                naturalSize.w,
-                naturalSize.h,
-                imgRect.width,
-                imgRect.height,
-              );
+              const rendered = getRenderedCoords(h.x, h.y, h.width, h.height);
+              if (!rendered) return null;
 
               return (
                 <div
@@ -481,22 +448,14 @@ export default function InProgressReview({ review }: { review: Review }) {
 
             {isSelecting &&
               naturalSize.w > 0 &&
-              imageRef.current &&
               (() => {
-                const imgRect = imageRef.current.getBoundingClientRect();
-
                 const x = Math.min(selectionStart.x, selectionEnd.x);
                 const y = Math.min(selectionStart.y, selectionEnd.y);
                 const width = Math.abs(selectionEnd.x - selectionStart.x);
                 const height = Math.abs(selectionEnd.y - selectionStart.y);
 
-                const rendered = naturalToRendered(
-                  { x, y, width, height },
-                  naturalSize.w,
-                  naturalSize.h,
-                  imgRect.width,
-                  imgRect.height,
-                );
+                const rendered = getRenderedCoords(x, y, width, height);
+                if (!rendered) return null;
 
                 return (
                   <div
@@ -511,13 +470,13 @@ export default function InProgressReview({ review }: { review: Review }) {
                 );
               })()}
 
-            {showCommentBox && (
+            {commentBox.show && (
               <div
                 ref={commentBoxRef}
                 className="comment-box absolute bg-white rounded-xl shadow-lg border-2 border-blue-600 p-4 z-50"
                 style={{
-                  left: `${commentBoxPosition.x}px`,
-                  top: `${commentBoxPosition.y}px`,
+                  left: `${commentBox.position.x}px`,
+                  top: `${commentBox.position.y}px`,
                   transform: "translateX(-50%)",
                   width: "350px",
                   maxWidth: "90vw",
@@ -532,7 +491,7 @@ export default function InProgressReview({ review }: { review: Review }) {
                         key={num}
                         onClick={() => toggleCompetency(num)}
                         className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-sm font-semibold transition-colors ${
-                          tempCompetency.includes(num)
+                          commentBox.competencies.includes(num)
                             ? "bg-blue-600 text-white border-blue-600"
                             : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"
                         }`}
@@ -551,8 +510,13 @@ export default function InProgressReview({ review }: { review: Review }) {
 
                 <Textarea
                   placeholder="Adicione um comentário"
-                  value={tempComment}
-                  onChange={(e) => setTempComment(e.target.value)}
+                  value={commentBox.comment}
+                  onChange={(e) =>
+                    setCommentBox((prev) => ({
+                      ...prev,
+                      comment: e.target.value,
+                    }))
+                  }
                   className="border-gray-300 placeholder:text-gray-400 min-h-[100px] resize-none"
                   autoFocus
                 />
