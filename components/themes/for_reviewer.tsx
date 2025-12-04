@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiGetWithAuth, apiGetWithoutAuth, apiPostWithAuth } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { apiGetWithAuth, apiPostWithAuth } from "@/lib/api";
 import Theme from "@/types/theme_for_reviewer";
 
 export default function ThemeForReviewerPage({
@@ -11,27 +13,32 @@ export default function ThemeForReviewerPage({
   theme_id: string;
 }) {
   const router = useRouter();
-  const [theme, setTheme] = useState<Theme>();
-  const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTheme = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiGetWithAuth(
+        `/api/v1/reviewer/themes/${theme_id}/`,
+        router,
+      );
+      if (!res?.ok) {
+        throw new Error("Falha ao carregar tema");
+      }
+      const data = await res.json();
+      setTheme(data);
+    } catch (err) {
+      console.error("Erro ao carregar o tema:", err);
+      setError("Não foi possível carregar o tema. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchTheme() {
-      setLoading(true);
-      try {
-        const res = await apiGetWithAuth(
-          `/api/v1/reviewer/themes/${theme_id}/`,
-          router,
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setTheme(data);
-        }
-      } catch (err) {
-        console.error("Erro ao carregar o tema:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchTheme();
   }, [theme_id, router]);
 
@@ -49,22 +56,44 @@ export default function ThemeForReviewerPage({
   }
 
   if (loading) {
-    return <div className="p-8 text-gray-600">Carregando tema...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center py-8 text-gray-600">Carregando tema...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center py-8">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={fetchTheme} variant="outline">
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (!theme) {
-    return <div className="p-8 text-red-600">Tema não encontrado.</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="p-8 text-red-600">Tema não encontrado.</div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Image */}
       {theme.background_image ? (
-        <div className="w-full h-64 md:h-80 lg:h-96 overflow-hidden">
-          <img
+        <div className="w-full h-64 md:h-80 lg:h-96 relative overflow-hidden">
+          <Image
             src={theme.background_image}
             alt={theme.title}
-            className="w-full h-full object-cover object-center"
+            fill
+            className="object-cover object-center"
           />
         </div>
       ) : (

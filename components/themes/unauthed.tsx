@@ -1,58 +1,82 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Header from "@/components/header";
-import { apiGetWithAuth, apiGetWithoutAuth } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { apiGetWithoutAuth } from "@/lib/api";
 import Theme from "@/types/theme";
-import Essay from "@/types/essay";
-import ThemeForReviewerPage from "@/components/themes/for_reviewer";
 
 export default function UnauthThemePage({ theme_id }: { theme_id: string }) {
   const router = useRouter();
-  const [theme, setTheme] = useState<Theme>();
-  const [essays, setEssays] = useState<Essay[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTheme = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiGetWithoutAuth(
+        `/api/v1/common/themes/${theme_id}/`,
+        router,
+      );
+      if (!res?.ok) {
+        throw new Error("Falha ao carregar tema");
+      }
+      const data = await res.json();
+      setTheme(data);
+    } catch (err) {
+      console.error("Erro ao carregar o tema:", err);
+      setError("Não foi possível carregar o tema. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchTheme() {
-      setLoading(true);
-      try {
-        const res = await apiGetWithoutAuth(
-          `/api/v1/common/themes/${theme_id}/`,
-          router,
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setTheme(data);
-        }
-      } catch (err) {
-        console.error("Erro ao carregar o tema:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchTheme();
   }, [theme_id, router]);
 
   if (loading) {
-    return <div className="p-8 text-gray-600">Carregando tema...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center py-8 text-gray-600">Carregando tema...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center py-8">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={fetchTheme} variant="outline">
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (!theme) {
-    return <div className="p-8 text-red-600">Tema não encontrado.</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="p-8 text-red-600">Tema não encontrado.</div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Image */}
       {theme.background_image ? (
-        <div className="w-full h-64 md:h-80 lg:h-96 overflow-hidden">
-          <img
+        <div className="w-full h-64 md:h-80 lg:h-96 relative overflow-hidden">
+          <Image
             src={theme.background_image}
             alt={theme.title}
-            className="w-full h-full object-cover object-center"
+            fill
+            className="object-cover object-center"
           />
         </div>
       ) : (
@@ -69,30 +93,12 @@ export default function UnauthThemePage({ theme_id }: { theme_id: string }) {
         </p>
 
         <div className="pt-4">
-          {essays?.length > 0 ? (
-            <button
-              onClick={() =>
-                router.push(`/themes/${theme.id}/essays/${essays[0].id}`)
-              }
-              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
-            >
-              Ver Redação
-            </button>
-          ) : theme.is_active ? (
-            isAuthenticated ? (
-              <button
-                onClick={() => router.push(`/themes/${theme.id}/new-essay`)}
-                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors"
-              >
-                Escrever Redação
-              </button>
-            ) : (
-              <div className="text-gray-600 italic">
-                Faça login para escrever uma redação sobre este tema. Tema
-                disponível até{" "}
-                {new Date(theme.available_until).toLocaleDateString()}.
-              </div>
-            )
+          {theme.is_active ? (
+            <div className="text-gray-600 italic">
+              Faça login para escrever uma redação sobre este tema. Tema
+              disponível até{" "}
+              {new Date(theme.available_until).toLocaleDateString()}.
+            </div>
           ) : (
             <div className="text-gray-600 italic">
               Este tema não está ativo para redações no momento.
