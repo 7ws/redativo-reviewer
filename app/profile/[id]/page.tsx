@@ -14,46 +14,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import UserProfile from "@/types/user_profile";
 import { useParams, useRouter } from "next/navigation";
-import { apiGetWithAuth, apiPatchWithAuth } from "@/lib/api";
+import { apiPatchWithAuth } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 
 export default function Profile() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [user, setUser] = useState<UserProfile>();
+  const { user: authUser, loading } = useAuth({ requireAuth: true });
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🧠 Fetch user data
   useEffect(() => {
-    const access = localStorage.getItem("access");
-
-    if (!access) {
-      router.push("/login");
-      return;
+    if (authUser) {
+      setUser(authUser);
     }
-    setLoading(true);
-
-    async function fetchUser() {
-      try {
-        const res = await apiGetWithAuth(`/api/v1/users/${id}/`, router);
-        const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUser();
-  }, [id]);
+  }, [authUser]);
 
   function formatPhoneNumber(phone: string | null | undefined) {
     if (!phone) return "Não informado";
@@ -90,7 +72,7 @@ export default function Profile() {
     const formData = new FormData();
     formData.append("avatar_image", file);
 
-    setLoading(true);
+    setUpdating(true);
     try {
       const res = await apiPatchWithAuth(
         `/api/v1/users/${id}/`,
@@ -107,7 +89,7 @@ export default function Profile() {
     } catch (err) {
       console.error("Erro ao enviar imagem:", err);
     } finally {
-      setLoading(false);
+      setUpdating(false);
     }
   };
 
@@ -202,10 +184,10 @@ export default function Profile() {
           {preview && (
             <Button
               onClick={handleAvatarUpload}
-              disabled={loading}
+              disabled={updating}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              {loading ? "Enviando..." : "Salvar Foto"}
+              {updating ? "Enviando..." : "Salvar Foto"}
             </Button>
           )}
 

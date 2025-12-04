@@ -9,10 +9,8 @@ import {
 
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-import { useRouter } from "next/navigation";
 
-import { apiGetWithAuth } from "@/lib/api";
-import UserProfile from "@/types/user_profile";
+import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 import WhatsAppButton from "@/components/whatsapp_button";
 import UnauthHomePage from "@/components/home/unauthed";
@@ -23,11 +21,8 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "redacoes" | "revisoes">(
     "temas",
   );
-  const [user, setUser] = useState<UserProfile>();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAllThemes, setShowAllThemes] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const { user, loading } = useAuth();
 
   const handlShowAllThemes = () => {
     localStorage.setItem("showAllThemes", JSON.stringify(!showAllThemes));
@@ -43,13 +38,9 @@ export default function HomePage() {
     if (access && refresh) {
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
+      window.location.reload();
     }
-
-    // --- Auth check ---
-    const _access = localStorage.getItem("access");
-    setIsAuthenticated(!!_access);
-    if (!_access) setLoading(false);
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     // --- Persist active tab in session storage ---
@@ -66,26 +57,6 @@ export default function HomePage() {
   useEffect(() => {
     sessionStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    if (user) return;
-
-    async function fetchUser() {
-      setLoading(true);
-      try {
-        const res = await apiGetWithAuth(`/api/v1/users/my-user/`, router);
-        const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUser();
-  }, [isAuthenticated, user, router]);
 
   const getHeader = () => (
     <Header

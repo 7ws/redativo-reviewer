@@ -2,6 +2,15 @@ export function getAccessToken(): string | null {
   return typeof window !== "undefined" ? localStorage.getItem("access") : null;
 }
 
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export async function refreshAccessToken() {
   const refresh = localStorage.getItem("refresh");
   if (!refresh) return null;
