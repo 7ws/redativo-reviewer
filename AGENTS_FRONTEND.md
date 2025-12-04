@@ -44,6 +44,7 @@ frontend/
 │   ├── imageCoords.ts    # Image coordinate helpers
 │   └── utils.ts          # General utilities
 ├── hooks/                 # React hooks
+│   ├── use-auth.ts       # Authentication state management
 │   ├── use-mobile.ts     # Mobile detection
 │   └── use-toast.ts      # Toast notifications
 ├── types/                 # TypeScript type definitions
@@ -130,6 +131,12 @@ app/themes/[theme_id]/essays/[essay_id]/page.tsx
 - Automatic token refresh on 401 responses
 - Redirect to `/login` if refresh fails
 
+**Authentication Hook** (`hooks/use-auth.ts`):
+- `useAuth()`: Returns user, loading, and isAuthenticated states
+- `useAuth({ requireAuth: true })`: Automatically redirects to login if unauthenticated
+- Centralizes authentication logic across pages
+- Eliminates code duplication for auth checks
+
 **API Client Functions** (`lib/api.ts`):
 - `apiGetWithAuth(url, router)`: Authenticated GET
 - `apiGetWithoutAuth(url, router)`: Public GET
@@ -181,7 +188,13 @@ async function fetchUser() {
 
 **No Global State Management**: No Redux, Zustand, or Context for app state
 - Data fetched per-page/component as needed
-- Authentication state managed via localStorage + API calls
+- Authentication state centralized via `useAuth` hook
+
+**Authentication State**: Centralized via `useAuth` hook
+- Custom hook (`hooks/use-auth.ts`) manages authentication state
+- Automatically fetches user data when authenticated
+- Supports `requireAuth` option for protected routes
+- Single source of truth for authentication across pages
 
 ## User Interface
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -11,24 +12,31 @@ import Theme from "@/types/theme";
 export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // --- Fetch themes information ---
-  useEffect(() => {
-    async function fetchThemes() {
-      try {
-        const res = await apiGetWithoutAuth(`/api/v1/common/themes/`, router);
-        const data = await res.json();
-        setThemes(data);
-      } catch (err) {
-        console.error("Error fetching active themes:", err);
-      } finally {
-        setLoading(false);
+  const fetchThemes = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiGetWithoutAuth(`/api/v1/common/themes/`, router);
+      if (!res?.ok) {
+        throw new Error("Falha ao carregar temas");
       }
+      const data = await res.json();
+      setThemes(data);
+    } catch (err) {
+      console.error("Error fetching active themes:", err);
+      setError("Não foi possível carregar os temas. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchThemes();
-  }, [router, showAll]);
+  }, [router]);
+
   const filteredThemes = showAll ? themes : themes.filter((t) => t.is_active);
 
   return (
@@ -43,56 +51,76 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
 
       {/* Content */}
       <div className="p-4 space-y-4">
-        {filteredThemes.map((theme: Theme) => {
-          return (
-            <Card
-              key={theme.id}
-              className="overflow-hidden cursor-pointer"
-              onClick={() => router.push(`/themes/${theme.id}`)}
-            >
-              <CardContent className="p-0">
-                <div className="flex">
-                  {/* Thumbnail */}
-                  <div className="w-32 h-24 flex items-center justify-center relative">
-                    {theme.background_image ? (
-                      <Image
-                        src={theme.background_image}
-                        alt={theme.title}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-linear-to-br from-teal-300 to-blue-300" />
-                    )}
-                  </div>
+        {loading && (
+          <div className="text-center py-8 text-gray-600">
+            Carregando temas...
+          </div>
+        )}
 
-                  {/* Content */}
-                  <div className="flex-1 p-4">
-                    <h3 className="font-bold text-sm mb-2">{theme.title}</h3>
-                    <p className="text-xs text-gray-500 mb-2">
-                      {theme.short_description}
-                    </p>
+        {error && (
+          <div className="text-center py-8">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={fetchThemes} variant="outline">
+              Tentar novamente
+            </Button>
+          </div>
+        )}
 
-                    <div className="pt-4">
-                      {theme.is_active ? (
-                        <div className="text-gray-600 italic">
-                          Faça login para escrever uma redação sobre este tema.
-                          Tema disponível até{" "}
-                          {new Date(theme.available_until).toLocaleDateString()}
-                          .
-                        </div>
+        {!loading &&
+          !error &&
+          filteredThemes.map((theme: Theme) => {
+            return (
+              <Card
+                key={theme.id}
+                className="overflow-hidden cursor-pointer"
+                onClick={() => router.push(`/themes/${theme.id}`)}
+              >
+                <CardContent className="p-0">
+                  <div className="flex">
+                    {/* Thumbnail */}
+                    <div className="w-32 h-24 flex items-center justify-center relative">
+                      {theme.background_image ? (
+                        <Image
+                          src={theme.background_image}
+                          alt={theme.title}
+                          fill
+                          className="object-cover"
+                        />
                       ) : (
-                        <div className="text-gray-600 italic">
-                          Este tema não está mais ativo para de redações.
-                        </div>
+                        <div className="w-full h-full bg-linear-to-br from-teal-300 to-blue-300" />
                       )}
                     </div>
+
+                    {/* Content */}
+                    <div className="flex-1 p-4">
+                      <h3 className="font-bold text-sm mb-2">{theme.title}</h3>
+                      <p className="text-xs text-gray-500 mb-2">
+                        {theme.short_description}
+                      </p>
+
+                      <div className="pt-4">
+                        {theme.is_active ? (
+                          <div className="text-gray-600 italic">
+                            Faça login para escrever uma redação sobre este
+                            tema. Tema disponível até{" "}
+                            {new Date(
+                              theme.available_until,
+                            ).toLocaleDateString()}
+                            .
+                          </div>
+                        ) : (
+                          <div className="text-gray-600 italic">
+                            Este tema não está mais ativo para envio de
+                            redações.
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                </CardContent>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );
