@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import UserProfile from "@/types/user_profile";
 
 interface UseAuthOptions {
@@ -33,25 +33,22 @@ export function useAuth(options?: UseAuthOptions): UseAuthReturn {
     }
 
     async function fetchUser() {
-      try {
-        const res = await apiGetWithAuth("/api/v1/users/my-user/", router);
-        if (!res?.ok) {
-          setIsAuthenticated(false);
-          setUser(null);
-          if (options?.requireAuth) {
-            router.replace("/login");
-          }
-          return;
-        }
-        const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
+      const { data, ok } = await apiRequest<UserProfile>(
+        "/api/v1/users/my-user/",
+        { method: "GET", auth: true },
+        router,
+      );
+
+      if (!ok) {
         setIsAuthenticated(false);
         setUser(null);
-      } finally {
-        setLoading(false);
+        if (options?.requireAuth) {
+          router.replace("/login");
+        }
+      } else {
+        setUser(data || null);
       }
+      setLoading(false);
     }
 
     fetchUser();

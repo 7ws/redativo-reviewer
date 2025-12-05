@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
-import { apiGetWithAuth, sendEssay } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 
@@ -29,18 +29,18 @@ function EssayUploadContent() {
 
       if (authLoading) return;
 
-      const res = await apiGetWithAuth(
+      const { data, error } = await apiRequest(
         `/api/v1/writer/themes/${theme_id}/essays/`,
+        { method: "GET" },
         router,
       );
 
-      if (!res?.ok) {
-        setError("Erro ao verificar redações existentes.");
+      if (error) {
+        setError(error);
         return;
       }
 
-      const essays = await res.json();
-      if (essays.length > 0) {
+      if (data && data.length > 0) {
         setError("Você já enviou uma redação para este tema.");
         router.replace(`/home`);
       }
@@ -76,10 +76,14 @@ function EssayUploadContent() {
     setLoading(true);
     setError(null);
 
-    const res = await sendEssay(theme_id, router, formData);
+    const { error } = await apiRequest(
+      `/api/v1/writer/themes/${theme_id}/essays/`,
+      { method: "POST", body: formData },
+      router,
+    );
 
-    if (!res?.ok) {
-      setError("Erro ao enviar a redação.");
+    if (error) {
+      setError(error);
       setLoading(false);
       return;
     }

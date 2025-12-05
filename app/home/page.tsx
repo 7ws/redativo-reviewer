@@ -112,7 +112,10 @@ export default function HomePage() {
               Minhas Redações
             </button>
           </div>
-          <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
+          <ForWriterHomePage
+            activeTab={activeTab as "temas" | "redacoes"}
+            showAll={showAllThemes}
+          />
         </div>
         <WhatsAppButton />
       </>
@@ -147,7 +150,10 @@ export default function HomePage() {
               Minhas Revisões
             </button>
           </div>
-          <ForReviewerHomePage activeTab={activeTab} showAll={showAllThemes} />
+          <ForReviewerHomePage
+            activeTab={activeTab as "temas" | "revisoes"}
+            showAll={showAllThemes}
+          />
         </div>
         <WhatsAppButton />
       </>

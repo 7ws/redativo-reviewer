@@ -1,4 +1,59 @@
-async function refreshAccessToken() {
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+// Type definitions
+export type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
+
+export interface ApiOptions {
+  method: HttpMethod;
+  auth?: boolean;
+  body?: FormData | Record<string, any> | null;
+  headers?: Record<string, string>;
+}
+
+export interface ApiResponse<T = any> {
+  data?: T;
+  error?: string;
+  status: number;
+  ok: boolean;
+}
+
+// Extract error message from backend response
+async function extractErrorMessage(response: Response): Promise<string> {
+  try {
+    const contentType = response.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      return `Erro ${response.status}`;
+    }
+
+    const data = await response.json();
+
+    // Django REST Framework standard error format
+    if (data.detail) {
+      return typeof data.detail === "string"
+        ? data.detail
+        : String(data.detail);
+    }
+
+    // Field errors
+    if (data && typeof data === "object") {
+      const firstError = Object.values(data)[0];
+      if (Array.isArray(firstError) && firstError.length > 0) {
+        return String(firstError[0]);
+      }
+      if (typeof firstError === "string") {
+        return firstError;
+      }
+    }
+
+    // Fallback
+    return `Erro ${response.status}`;
+  } catch {
+    return `Erro ${response.status}`;
+  }
+}
+
+// Refresh access token
+async function refreshAccessToken(): Promise<string | null> {
   const refresh = localStorage.getItem("refresh");
   if (!refresh) return null;
 
@@ -15,7 +70,6 @@ async function refreshAccessToken() {
     );
 
     if (!res.ok) {
-      // refresh expired → force logout
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
       return null;
@@ -26,7 +80,6 @@ async function refreshAccessToken() {
       localStorage.setItem("access", data.access);
     }
     if (data.refresh) {
-      // optional — if your backend rotates refresh tokens
       localStorage.setItem("refresh", data.refresh);
     }
 
@@ -37,107 +90,115 @@ async function refreshAccessToken() {
   }
 }
 
-async function makeAuthRequest(
+// Unified API request function
+export async function apiRequest<T = any>(
   url: string,
-  method: string,
-  router: any,
-  options: RequestInit = {},
-) {
-  let access = localStorage.getItem("access");
+  options: ApiOptions,
+  router: AppRouterInstance,
+): Promise<ApiResponse<T>> {
+  const { method, auth = true, body, headers = {} } = options;
 
-  if (!access) {
-    router.push("/login");
-    return null;
+  // Prepare request headers
+  const requestHeaders: HeadersInit = { ...headers };
+
+  // Add auth header if required
+  if (auth) {
+    const access = localStorage.getItem("access");
+    if (!access) {
+      router.push("/login");
+      return {
+        error: "Autenticação necessária",
+        status: 401,
+        ok: false,
+      };
+    }
+    requestHeaders["Authorization"] = `Bearer ${access}`;
   }
 
-  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-    method,
-    ...options,
-    headers: {
-      Authorization: `Bearer ${access}`,
-      ...(options.headers || {}),
-    },
-  });
+  // Prepare request body
+  let requestBody: BodyInit | undefined;
+  if (body) {
+    if (body instanceof FormData) {
+      requestBody = body;
+      // Don't set Content-Type for FormData, browser will set it with boundary
+    } else {
+      requestBody = JSON.stringify(body);
+      requestHeaders["Content-Type"] = "application/json";
+    }
+  }
 
-  if (res.status === 401) {
-    // Try refresh
-    access = await refreshAccessToken();
+  // Make request
+  try {
+    let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+      method,
+      headers: requestHeaders,
+      body: requestBody,
+    });
 
-    if (!access) {
-      router.replace("/login");
-      return null;
+    // Handle 401 - try token refresh
+    if (response.status === 401 && auth) {
+      const newAccess = await refreshAccessToken();
+
+      if (!newAccess) {
+        router.replace("/login");
+        return {
+          error: "Sessão expirada",
+          status: 401,
+          ok: false,
+        };
+      }
+
+      // Retry request with new token
+      requestHeaders["Authorization"] = `Bearer ${newAccess}`;
+      response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+        method,
+        headers: requestHeaders,
+        body: requestBody,
+      });
     }
 
-    // Retry request with new token
-    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-      method,
-      headers: {
-        Authorization: `Bearer ${access}`,
-        ...(options.headers || {}),
-      },
-    });
+    // Handle successful response
+    if (response.ok) {
+      // Handle no-content responses (204)
+      if (response.status === 204) {
+        return {
+          data: undefined,
+          status: response.status,
+          ok: true,
+        };
+      }
+
+      // Parse JSON response
+      try {
+        const data = await response.json();
+        return {
+          data,
+          status: response.status,
+          ok: true,
+        };
+      } catch {
+        // Response is not JSON
+        return {
+          data: undefined,
+          status: response.status,
+          ok: true,
+        };
+      }
+    }
+
+    // Handle error response
+    const errorMessage = await extractErrorMessage(response);
+    return {
+      error: errorMessage,
+      status: response.status,
+      ok: false,
+    };
+  } catch (err) {
+    console.error("Network error:", err);
+    return {
+      error: "Erro de conexão com o servidor",
+      status: 0,
+      ok: false,
+    };
   }
-
-  return res;
-}
-
-export async function apiGetWithAuth(url: string, router: any) {
-  let res = await makeAuthRequest(url, "GET", router, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  return res;
-}
-
-export async function apiGetWithoutAuth(url: string, router: any) {
-  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  return res;
-}
-
-export async function apiPostWithAuth(
-  url: string,
-  router: any,
-  body?: FormData,
-) {
-  let res = await makeAuthRequest(url, "POST", router, {
-    body: body,
-    headers: {},
-  });
-
-  return res;
-}
-
-export async function apiPatchWithAuth(
-  url: string,
-  router: any,
-  body?: FormData,
-) {
-  let res = await makeAuthRequest(url, "PATCH", router, {
-    body: body,
-    headers: {},
-  });
-
-  return res;
-}
-
-export async function apiDeleteWithAuth(url: string, router: any) {
-  let res = await makeAuthRequest(url, "DELETE", router);
-  return res;
-}
-
-export async function sendEssay(themeId: string, router: any, body: FormData) {
-  let res = await apiPostWithAuth(
-    `/api/v1/writer/themes/${themeId}/essays/`,
-    router,
-    body,
-  );
-  return res;
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import Essay from "@/types/essay";
 import EssayReviewed from "@/components/essays/reviewed_essay";
@@ -24,26 +24,20 @@ export default function EssayPage() {
       setLoading(true);
       setError(null);
 
-      try {
-        const res = await apiGetWithAuth(
-          `/api/v1/writer/themes/${theme_id}/essays/${essay_id}/`,
-          router,
-        );
+      const { data, error } = await apiRequest<Essay>(
+        `/api/v1/writer/themes/${theme_id}/essays/${essay_id}/`,
+        { method: "GET" },
+        router,
+      );
 
-        if (!res?.ok) {
-          setError("Erro ao carregar a redação.");
-          setLoading(false);
-          return;
-        }
-
-        const data = await res.json();
-        setEssay(data);
-      } catch (err) {
-        console.error("Error fetching essay:", err);
-        setError("Erro ao carregar a redação.");
-      } finally {
+      if (error) {
+        setError(error);
         setLoading(false);
+        return;
       }
+
+      setEssay(data || null);
+      setLoading(false);
     }
 
     fetchEssay();

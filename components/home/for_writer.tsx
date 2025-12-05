@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Theme from "@/types/theme";
 import Essay from "@/types/essay";
 import { statusTexts } from "../essays/status_text";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 
 export default function ForWriterHomePage({
   activeTab,
@@ -29,39 +29,33 @@ export default function ForWriterHomePage({
   const fetchThemes = async () => {
     setLoadingThemes(true);
     setThemesError(null);
-    try {
-      const res = await apiGetWithAuth(`/api/v1/writer/themes/`, router);
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar temas");
-      }
-      const data = await res.json();
-      setThemes(data);
-    } catch (err) {
-      console.error("Error fetching active themes:", err);
-      setThemesError("Não foi possível carregar os temas. Tente novamente.");
-    } finally {
-      setLoadingThemes(false);
+    const { data, error } = await apiRequest<Theme[]>(
+      `/api/v1/writer/themes/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (error) {
+      setThemesError(error);
+    } else {
+      setThemes(data || []);
     }
+    setLoadingThemes(false);
   };
 
   const fetchEssays = async () => {
     setLoadingEssays(true);
     setEssaysError(null);
-    try {
-      const res = await apiGetWithAuth(`/api/v1/writer/my-essays/`, router);
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar redações");
-      }
-      const data = await res.json();
-      setEssays(data);
-    } catch (err) {
-      console.error("Error fetching essays:", err);
-      setEssaysError(
-        "Não foi possível carregar suas redações. Tente novamente.",
-      );
-    } finally {
-      setLoadingEssays(false);
+    const { data, error } = await apiRequest<Essay[]>(
+      `/api/v1/writer/my-essays/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (error) {
+      setEssaysError(error);
+    } else {
+      setEssays(data || []);
     }
+    setLoadingEssays(false);
   };
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { statusTexts } from "../reviews/status_text";
-import { apiGetWithAuth, apiPostWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import Theme from "@/types/theme_for_reviewer";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
@@ -30,39 +30,33 @@ export default function ForReviewerHomePage({
   const fetchThemes = async () => {
     setLoadingThemes(true);
     setThemesError(null);
-    try {
-      const res = await apiGetWithAuth(`/api/v1/reviewer/themes/`, router);
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar temas");
-      }
-      const data = await res.json();
-      setThemes(data);
-    } catch (err) {
-      console.error("Error fetching active themes:", err);
-      setThemesError("Não foi possível carregar os temas. Tente novamente.");
-    } finally {
-      setLoadingThemes(false);
+    const { data, error } = await apiRequest<Theme[]>(
+      `/api/v1/reviewer/themes/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (error) {
+      setThemesError(error);
+    } else {
+      setThemes(data || []);
     }
+    setLoadingThemes(false);
   };
 
   const fetchReviews = async () => {
     setLoadingReviews(true);
     setReviewsError(null);
-    try {
-      const res = await apiGetWithAuth(`/api/v1/reviewer/my-reviews/`, router);
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar revisões");
-      }
-      const data = await res.json();
-      setReviews(data);
-    } catch (err) {
-      console.error("Error fetching essays for review:", err);
-      setReviewsError(
-        "Não foi possível carregar suas revisões. Tente novamente.",
-      );
-    } finally {
-      setLoadingReviews(false);
+    const { data, error } = await apiRequest<Review[]>(
+      `/api/v1/reviewer/my-reviews/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (error) {
+      setReviewsError(error);
+    } else {
+      setReviews(data || []);
     }
+    setLoadingReviews(false);
   };
 
   useEffect(() => {
@@ -74,15 +68,13 @@ export default function ForReviewerHomePage({
   }, [router]);
 
   async function handleNewReview(theme_id: string, essay_id: string) {
-    try {
-      const res = await apiPostWithAuth(
-        `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/`,
-        router,
-      );
-      const data = await res.json();
+    const { data } = await apiRequest<{ id: string }>(
+      `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/`,
+      { method: "POST", auth: true },
+      router,
+    );
+    if (data?.id) {
       router.push(`/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`);
-    } catch (err) {
-      console.error("Error starting new review:", err);
     }
   }
 

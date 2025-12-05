@@ -72,27 +72,27 @@ export default function ReviewedEssayViewer({
       setCompetencies([
         {
           id: 1,
-          score: review.skill_1_score,
+          score: Number(review.skill_1_score),
           text: review.skill_1_text,
         },
         {
           id: 2,
-          score: review.skill_2_score,
+          score: Number(review.skill_2_score),
           text: review.skill_2_text,
         },
         {
           id: 3,
-          score: review.skill_3_score,
+          score: Number(review.skill_3_score),
           text: review.skill_3_text,
         },
         {
           id: 4,
-          score: review.skill_4_score,
+          score: Number(review.skill_4_score),
           text: review.skill_4_text,
         },
         {
           id: 5,
-          score: review.skill_5_score,
+          score: Number(review.skill_5_score),
           text: review.skill_5_text,
         },
       ]);
@@ -205,9 +205,7 @@ export default function ReviewedEssayViewer({
                       width: `${r.width}px`,
                       height: `${r.height}px`,
                       backgroundColor:
-                        selectedHighlight === h.id
-                          ? "#0065FF80"
-                          : "#0065FF40",
+                        selectedHighlight === h.id ? "#0065FF80" : "#0065FF40",
                       border:
                         selectedHighlight === h.id
                           ? "2px solid #0065FF"

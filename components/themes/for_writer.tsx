@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import Theme from "@/types/theme";
 
 export default function ThemeForWriterPage({ theme_id }: { theme_id: string }) {
@@ -16,22 +16,17 @@ export default function ThemeForWriterPage({ theme_id }: { theme_id: string }) {
   const fetchTheme = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const res = await apiGetWithAuth(
-        `/api/v1/writer/themes/${theme_id}/`,
-        router,
-      );
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar tema");
-      }
-      const data = await res.json();
-      setTheme(data);
-    } catch (err) {
-      console.error("Erro ao carregar o tema:", err);
-      setError("Não foi possível carregar o tema. Tente novamente.");
-    } finally {
-      setLoading(false);
+    const { data, error: apiError } = await apiRequest<Theme>(
+      `/api/v1/writer/themes/${theme_id}/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (apiError) {
+      setError(apiError);
+    } else {
+      setTheme(data || null);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

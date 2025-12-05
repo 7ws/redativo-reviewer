@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiGetWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import Review from "@/types/review";
 import FinishedReview from "@/components/reviews/finished_review";
 import InProgressReview from "@/components/reviews/in_progress_review";
@@ -18,22 +18,17 @@ export default function ReviewPage() {
   useEffect(() => {
     async function fetchReview() {
       setLoading(true);
-      try {
-        const res = await apiGetWithAuth(
-          `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/${id}/`,
-          router,
-        );
-        const data = await res.json();
-        setReview(data);
-      } catch (err) {
-        console.error("Error fetching review:", err);
-      } finally {
-        setLoading(false);
-      }
+      const { data } = await apiRequest<Review>(
+        `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/${id}/`,
+        { method: "GET", auth: true },
+        router,
+      );
+      setReview(data);
+      setLoading(false);
     }
 
     fetchReview();
-  }, [essay_id, theme_id, router]);
+  }, [essay_id, theme_id, id, router]);
 
   if (loading) return <div className="p-8">Carregando...</div>;
   if (!review)

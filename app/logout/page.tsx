@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { apiPostWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,7 +10,11 @@ export default function LoginPage() {
   useEffect(() => {
     async function handleLogout() {
       sessionStorage.clear();
-      apiPostWithAuth(`/api/v1/auth/logout`, router);
+      await apiRequest(
+        `/api/v1/auth/logout`,
+        { method: "POST", auth: true },
+        router,
+      );
       localStorage.clear();
       router.replace("/home");
     }
