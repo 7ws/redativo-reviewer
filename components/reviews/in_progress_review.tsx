@@ -371,12 +371,25 @@ export default function InProgressReview({ review }: { review: Review }) {
 
     try {
       const res = await apiPostWithAuth(url, router, formData);
-      if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
-      router.push(`/home`);
+
+      if (!res || !res.ok) {
+        setSaveError("Erro ao salvar a avaliação.");
+        return;
+      }
+
+      setSaveSuccess("Avaliação salva com sucesso!");
+      setTimeout(() => {
+        router.push(`/home`);
+      }, 1000);
     } catch (err) {
       console.error(err);
+      setSaveError("Erro ao salvar a avaliação.");
     }
   };
+
+  if (authLoading) {
+    return <div className="min-h-screen p-8">Carregando...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -386,6 +399,23 @@ export default function InProgressReview({ review }: { review: Review }) {
         showHomeButton={true}
         showBackButton={true}
       />
+
+      {/* Error/Success Messages */}
+      {(saveError || saveSuccess) && (
+        <div className="px-8 pt-4">
+          {saveError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {saveError}
+            </div>
+          )}
+          {saveSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+              {saveSuccess}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between px-8 py-6 border-b">
         <div>
           <h1 className="text-2xl font-bold text-black mb-1">{essay.title}</h1>
@@ -410,7 +440,7 @@ export default function InProgressReview({ review }: { review: Review }) {
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden relative cursor-crosshair select-none"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+            onMouseUp={handleSelectionComplete}
           >
             <img
               ref={imageRef}
@@ -447,12 +477,15 @@ export default function InProgressReview({ review }: { review: Review }) {
             {isSelecting &&
               naturalSize.w > 0 &&
               (() => {
-                const x = Math.min(selectionStart.x, selectionEnd.x);
-                const y = Math.min(selectionStart.y, selectionEnd.y);
-                const width = Math.abs(selectionEnd.x - selectionStart.x);
-                const height = Math.abs(selectionEnd.y - selectionStart.y);
+                const selection = getCurrentSelection();
+                if (!selection) return null;
 
-                const rendered = getRenderedCoords(x, y, width, height);
+                const rendered = getRenderedCoords(
+                  selection.x,
+                  selection.y,
+                  selection.width,
+                  selection.height,
+                );
                 if (!rendered) return null;
 
                 return (

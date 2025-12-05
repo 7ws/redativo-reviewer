@@ -96,6 +96,13 @@ function EssayUploadContent() {
       {/* Header */}
       <Header showBackButton={true} showHomeButton={true} />
 
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
       {/* Tips Section */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-black mb-4">
