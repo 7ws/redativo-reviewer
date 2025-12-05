@@ -137,36 +137,127 @@ app/themes/[theme_id]/essays/[essay_id]/page.tsx
 - Centralizes authentication logic across pages
 - Eliminates code duplication for auth checks
 
-**API Client Functions** (`lib/api.ts`):
-- `apiGetWithAuth(url, router)`: Authenticated GET
-- `apiGetWithoutAuth(url, router)`: Public GET
-- `apiPostWithAuth(url, router, body)`: Authenticated POST
-- `apiPatchWithAuth(url, router, body)`: Authenticated PATCH
-- `apiDeleteWithAuth(url, router)`: Authenticated DELETE
-- All functions handle token refresh automatically
+**Unified API Client** (`lib/api.ts`):
 
-**Error Handling**:
-- Check `response.ok` before parsing JSON
-- Handle network errors with try/catch
-- Display user-friendly error messages via toast notifications
-- Log errors to console for debugging
+The `apiRequest` function is the single entry point for all API calls:
 
-**Example**:
 ```typescript
-async function fetchUser() {
-  try {
-    const res = await apiGetWithAuth('/api/v1/users/my-user/', router);
-    if (!res?.ok) {
-      console.error('Failed to fetch user');
-      return;
-    }
-    const data = await res.json();
-    setUser(data);
-  } catch (err) {
-    console.error('Error fetching user:', err);
-  }
+apiRequest<T>(url: string, options: ApiOptions, router: AppRouterInstance): Promise<ApiResponse<T>>
+```
+
+**Type Definitions**:
+```typescript
+type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
+
+interface ApiOptions {
+  method: HttpMethod;
+  auth?: boolean;           // Default: true
+  body?: FormData | Record<string, any> | null;
+  headers?: Record<string, string>;
+}
+
+interface ApiResponse<T = any> {
+  data?: T;                 // Parsed response data
+  error?: string;           // Error message from backend
+  status: number;           // HTTP status code
+  ok: boolean;              // Success indicator
 }
 ```
+
+**Key Features**:
+- **Type-safe responses**: Use generics for typed data: `apiRequest<Essay>(...)`
+- **Backend error extraction**: Automatically parses Django REST Framework error responses
+- **Automatic token refresh**: Handles 401 responses by refreshing tokens
+- **FormData support**: Automatically detects and handles FormData vs JSON bodies
+- **Unified error handling**: Backend is source of truth for error messages
+
+**Error Handling**:
+- Backend errors are automatically extracted and returned in `error` field
+- Django REST Framework formats supported:
+  - `{ detail: "Error message" }`
+  - `{ field_name: ["Error message"] }`
+- Network errors return: `"Erro de conexão com o servidor"`
+- HTTP errors without JSON return: `"Erro {status}"`
+
+**Example Usage**:
+```typescript
+// GET request with type safety
+async function fetchTheme() {
+  const { data, error } = await apiRequest<Theme>(
+    `/api/v1/writer/themes/${themeId}/`,
+    { method: "GET", auth: true },
+    router,
+  );
+  
+  if (error) {
+    setError(error);  // Backend error message
+    return;
+  }
+  
+  setTheme(data);  // TypeScript knows data is Theme | undefined
+}
+
+// POST request with FormData
+async function submitEssay(formData: FormData) {
+  const { error } = await apiRequest(
+    `/api/v1/writer/themes/${themeId}/essays/`,
+    { method: "POST", auth: true, body: formData },
+    router,
+  );
+  
+  if (error) {
+    toast({ variant: "destructive", description: error });
+    return;
+  }
+  
+  router.push(`/themes/${themeId}/essays/${essayId}`);
+}
+
+// POST request with JSON body
+async function saveComment(commentText: string) {
+  const { data, error } = await apiRequest<Comment>(
+    `/api/v1/reviewer/comments/`,
+    {
+      method: "POST",
+      auth: true,
+      body: { text: commentText, thread_id: threadId }
+    },
+    router,
+  );
+  
+  if (error) {
+    toast({ variant: "destructive", description: error });
+    return;
+  }
+  
+  setComments([...comments, data!]);
+}
+
+// Public (unauthenticated) request
+async function fetchPublicThemes() {
+  const { data, error } = await apiRequest<Theme[]>(
+    `/api/v1/common/themes/`,
+    { method: "GET", auth: false },
+    router,
+  );
+  
+  if (error) {
+    setError(error);
+    return;
+  }
+  
+  setThemes(data || []);
+}
+```
+
+**Migration from Old API Functions**:
+Old functions are removed. Use `apiRequest` with appropriate options:
+
+- `apiGetWithAuth(url, router)` → `apiRequest(url, { method: "GET", auth: true }, router)`
+- `apiGetWithoutAuth(url, router)` → `apiRequest(url, { method: "GET", auth: false }, router)`
+- `apiPostWithAuth(url, router, body)` → `apiRequest(url, { method: "POST", auth: true, body }, router)`
+- `apiPatchWithAuth(url, router, body)` → `apiRequest(url, { method: "PATCH", auth: true, body }, router)`
+- `apiDeleteWithAuth(url, router)` → `apiRequest(url, { method: "DELETE", auth: true }, router)`
 
 ## State Management
 
