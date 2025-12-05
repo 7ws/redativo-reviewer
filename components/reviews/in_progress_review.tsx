@@ -502,63 +502,17 @@ export default function InProgressReview({ review }: { review: Review }) {
               })()}
 
             {commentBox.show && (
-              <div
-                ref={commentBoxRef}
-                className="comment-box absolute bg-white rounded-xl shadow-lg border-2 border-blue-600 p-4 z-50"
-                style={{
-                  left: `${commentBox.position.x}px`,
-                  top: `${commentBox.position.y}px`,
-                  transform: "translateX(-50%)",
-                  width: "350px",
-                  maxWidth: "90vw",
-                }}
-                onClick={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <button
-                        key={num}
-                        onClick={() => toggleCompetency(num)}
-                        className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-sm font-semibold transition-colors ${
-                          commentBox.competencies.includes(num)
-                            ? "bg-blue-600 text-white border-blue-600"
-                            : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"
-                        }`}
-                      >
-                        {num}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={deleteHighlight}
-                    className="text-red-500 hover:text-red-700 transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <Textarea
-                  placeholder="Adicione um comentário"
-                  value={commentBox.comment}
-                  onChange={(e) =>
-                    setCommentBox((prev) => ({
-                      ...prev,
-                      comment: e.target.value,
-                    }))
-                  }
-                  className="border-gray-300 placeholder:text-gray-400 min-h-[100px] resize-none"
-                  autoFocus
-                />
-
-                <Button
-                  onClick={saveComment}
-                  className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Salvar
-                </Button>
-              </div>
+              <CommentBox
+                position={commentBox.position}
+                comment={commentBox.comment}
+                competencies={commentBox.competencies}
+                onCommentChange={(value) =>
+                  setCommentBox((prev) => ({ ...prev, comment: value }))
+                }
+                onCompetencyToggle={toggleCompetency}
+                onSave={saveComment}
+                onDelete={deleteHighlight}
+              />
             )}
           </div>
         </div>
