@@ -5,23 +5,24 @@ import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiPostWithAuth, apiDeleteWithAuth } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2 } from "lucide-react";
 import Essay from "@/types/essay";
 import Review from "@/types/review";
 import Theme from "@/types/theme";
 import Highlight from "@/types/highlight";
-import { getImageRelativeCoords } from "@/lib/imageCoords";
 import { naturalToRendered } from "@/lib/imageCoords";
-import Thread from "@/types/thread";
+import { useHighlightSelection } from "@/hooks/use-highlight-selection";
+import CommentBox from "./comment_box";
 import Header from "../header";
 
 export default function InProgressReview({ review }: { review: Review }) {
   const essay: Essay = review.essay;
   const theme: Theme = essay.theme;
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth({ requireAuth: true });
   const [competencies, setCompetencies] = useState([
     { id: 1, score: "0", comment: "" },
     { id: 2, score: "0", comment: "" },
@@ -31,13 +32,9 @@ export default function InProgressReview({ review }: { review: Review }) {
   ]);
 
   const [highlights, setHighlights] = useState<Highlight[]>([]);
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [selectionStart, setSelectionStart] = useState({ x: 0, y: 0 });
-  const [selectionEnd, setSelectionEnd] = useState({ x: 0, y: 0 });
   const [selectedHighlight, setSelectedHighlight] = useState<Highlight | null>(
     null,
   );
-
   const [commentBox, setCommentBox] = useState({
     show: false,
     position: { x: 0, y: 0 },
@@ -45,10 +42,35 @@ export default function InProgressReview({ review }: { review: Review }) {
     competencies: [] as number[],
   });
 
-  const commentBoxRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
   const [errors, setErrors] = useState<Record<number, string>>({});
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+
+  const {
+    isSelecting,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp: handleSelectionComplete,
+    getCurrentSelection,
+  } = useHighlightSelection({
+    imageRef,
+    onSelectionComplete: (x, y, width, height) => {
+      openCommentBox(x, y, width, height);
+      const newHighlight: Highlight = {
+        id: "",
+        x,
+        y,
+        width,
+        height,
+        competency: [],
+        comment: "",
+      };
+      setSelectedHighlight(newHighlight);
+      setHighlights((prev) => [...prev, newHighlight]);
+    },
+  });
 
   // Helper to get rendered coordinates from natural coordinates
   const getRenderedCoords = (
@@ -130,47 +152,6 @@ export default function InProgressReview({ review }: { review: Review }) {
     return sum + score;
   }, 0);
 
-  const handleMouseDown = (e) => {
-    if (!imageRef.current) return;
-    const { x, y } = getImageRelativeCoords(e, imageRef.current);
-
-    setIsSelecting(true);
-    setSelectionStart({ x, y });
-    setSelectionEnd({ x, y });
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isSelecting || !imageRef.current) return;
-    const { x, y } = getImageRelativeCoords(e, imageRef.current);
-    setSelectionEnd({ x, y });
-  };
-
-  const handleMouseUp = () => {
-    if (!isSelecting) return;
-    setIsSelecting(false);
-
-    const x = Math.min(selectionStart.x, selectionEnd.x);
-    const y = Math.min(selectionStart.y, selectionEnd.y);
-    const width = Math.abs(selectionEnd.x - selectionStart.x);
-    const height = Math.abs(selectionEnd.y - selectionStart.y);
-
-    if (width > 10 && height > 10) {
-      openCommentBox(x, y, width, height);
-
-      const newHighlight: Highlight = {
-        id: "",
-        x,
-        y,
-        width,
-        height,
-        competency: [],
-        comment: "",
-      };
-      setSelectedHighlight(newHighlight);
-      setHighlights((prev) => [...prev, newHighlight]);
-    }
-  };
-
   const handleHighlightClick = (highlight: Highlight, e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedHighlight(highlight);
@@ -239,14 +220,11 @@ export default function InProgressReview({ review }: { review: Review }) {
     if (!selectedHighlight) return;
 
     if (selectedHighlight.id !== "") {
-      // Show message saying that highlight needs a comment or explicitly exclude
+      setSaveError("Esta marcação já foi salva.");
       return;
     }
 
     if (!commentBox.comment.trim()) {
-      // NOTE: This should work IF we link comments to competencies
-      // || commentBox.competencies.length <= 0) {
-      // NOTE: We should notify the reviewer that there's no comment to save
       resetCommentBox();
       setHighlights((prev) => prev.filter((h) => h !== selectedHighlight));
       return;
@@ -271,25 +249,33 @@ export default function InProgressReview({ review }: { review: Review }) {
     );
 
     try {
+      setSaveError(null);
       const res = await apiPostWithAuth(url, router, formData);
-      if (!res || !res.ok) throw new Error(`Erro ${res?.status}`);
+
+      if (!res || !res.ok) {
+        setSaveError("Erro ao salvar comentário.");
+        return;
+      }
+
+      const data = await res.json();
+
+      setHighlights((prev) =>
+        prev.map((h) =>
+          h === selectedHighlight
+            ? {
+                ...h,
+                id: data.id || (formData.get("id") as string),
+                comment: commentBox.comment,
+                competency: commentBox.competencies,
+              }
+            : h,
+        ),
+      );
+      resetCommentBox();
     } catch (err) {
       console.error(err);
+      setSaveError("Erro ao salvar comentário.");
     }
-
-    setHighlights((prev) =>
-      prev.map((h) =>
-        h === selectedHighlight
-          ? {
-              ...h,
-              id: formData.get("id") as string,
-              comment: commentBox.comment,
-              competency: commentBox.competencies,
-            }
-          : h,
-      ),
-    );
-    resetCommentBox();
   };
 
   const resetCommentBox = () => {
@@ -302,16 +288,26 @@ export default function InProgressReview({ review }: { review: Review }) {
     setSelectedHighlight(null);
   };
 
-  const deleteHighlight = () => {
+  const deleteHighlight = async () => {
     if (!selectedHighlight) return;
+
     if (selectedHighlight.id !== "") {
       const url = `/api/v1/reviewer/reviews/${review.id}/threads/${selectedHighlight.id}/`;
       try {
-        apiDeleteWithAuth(url, router);
+        setSaveError(null);
+        const res = await apiDeleteWithAuth(url, router);
+
+        if (!res || !res.ok) {
+          setSaveError("Erro ao excluir marcação.");
+          return;
+        }
       } catch (err) {
         console.error(err);
+        setSaveError("Erro ao excluir marcação.");
+        return;
       }
     }
+
     setHighlights((prev) => prev.filter((h) => h !== selectedHighlight));
     resetCommentBox();
   };
@@ -352,16 +348,18 @@ export default function InProgressReview({ review }: { review: Review }) {
     return { errors: newErrors, hasError };
   };
 
-  // 🟢 Save button
   const handleSave = async () => {
     const { errors: newErrors, hasError } = validateCompetencies();
 
     if (hasError) {
       setErrors(newErrors);
+      setSaveError("Por favor, corrija os erros antes de salvar.");
       return;
     }
 
     setErrors({});
+    setSaveError(null);
+    setSaveSuccess(null);
 
     const url = `/api/v1/reviewer/themes/${theme.id}/essays/${essay.id}/reviews/${review.id}/finish/`;
 

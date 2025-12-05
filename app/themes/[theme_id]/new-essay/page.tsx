@@ -4,40 +4,50 @@ import { Suspense, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Menu, ArrowLeft } from "lucide-react";
 import { apiGetWithAuth, sendEssay } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 
 function EssayUploadContent() {
   const { theme_id } = useParams();
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth({ requireAuth: true });
 
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function checkEssayAlreadySubmitted() {
-      if (theme_id) {
-        const res = await apiGetWithAuth(
-          `/api/v1/writer/themes/${theme_id}/essays/`,
-          router,
-        );
-        if (res.ok) {
-          const essays = await res.json();
-          if (essays.length > 0) {
-            alert("Você já enviou uma redação para este tema.");
-            router.replace(`/home`);
-          }
-        }
-      } else {
-        alert("Tema não especificado.");
+      if (!theme_id) {
+        setError("Tema não especificado.");
         router.replace("/home");
+        return;
+      }
+
+      if (authLoading) return;
+
+      const res = await apiGetWithAuth(
+        `/api/v1/writer/themes/${theme_id}/essays/`,
+        router,
+      );
+
+      if (!res?.ok) {
+        setError("Erro ao verificar redações existentes.");
+        return;
+      }
+
+      const essays = await res.json();
+      if (essays.length > 0) {
+        setError("Você já enviou uma redação para este tema.");
+        router.replace(`/home`);
       }
     }
 
     checkEssayAlreadySubmitted();
-  }, [theme_id, router]);
+  }, [theme_id, router, authLoading]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -51,11 +61,11 @@ function EssayUploadContent() {
 
   async function handleSubmit() {
     if (!title.trim()) {
-      alert("Digite um título para a redação.");
+      setError("Digite um título para a redação.");
       return;
     }
     if (!file || !theme_id) {
-      alert("Selecione uma imagem antes de enviar.");
+      setError("Selecione uma imagem antes de enviar.");
       return;
     }
 
@@ -64,15 +74,21 @@ function EssayUploadContent() {
     formData.append("text_image", file);
 
     setLoading(true);
+    setError(null);
+
     const res = await sendEssay(theme_id, router, formData);
 
-    if (res.ok) {
-      alert("Redação enviada com sucesso!");
-      router.push(`/themes/${theme_id}`);
-    } else {
-      alert("Erro ao enviar a redação.");
+    if (!res?.ok) {
+      setError("Erro ao enviar a redação.");
       setLoading(false);
+      return;
     }
+
+    router.push(`/themes/${theme_id}`);
+  }
+
+  if (authLoading) {
+    return <div className="min-h-screen p-8">Carregando...</div>;
   }
 
   return (

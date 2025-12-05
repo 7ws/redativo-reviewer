@@ -129,7 +129,8 @@ export async function apiPatchWithAuth(
 }
 
 export async function apiDeleteWithAuth(url: string, router: any) {
-  await makeAuthRequest(url, "DELETE", router);
+  let res = await makeAuthRequest(url, "DELETE", router);
+  return res;
 }
 
 export async function sendEssay(themeId: string, router: any, body: FormData) {

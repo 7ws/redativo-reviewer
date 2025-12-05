@@ -1,159 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Essay from "@/types/essay";
-import Review from "@/types/review";
 import Header from "../header";
+import ReviewedEssayViewer from "./reviewed_essay_viewer";
 
 export default function EssayReviewed({ essay }: { essay: Essay }) {
-  const [review, setReview] = useState<Review>();
-  const [competencies, setCompetencies] = useState([]);
-  // rawHighlights: exactly as returned from backend
-  const [rawHighlights, setRawHighlights] = useState([]);
-  // highlights: normalized to percent-of-image { id, xPct, yPct, wPct, hPct, comment }
-  const [highlights, setHighlights] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const review = essay.reviews[0];
 
-  const [selectedHighlight, setSelectedHighlight] = useState(null);
-  const [selectedCompetency, setSelectedCompetency] = useState(null);
-
-  const imageRef = useRef(null);
-  const [renderSize, setRenderSize] = useState({ width: 0, height: 0 });
-
-  const handleCompetencyClick = (id: string) => {
-    setSelectedCompetency(selectedCompetency === id ? null : id);
-    setSelectedHighlight(null);
-  };
-
-  const handleHighlightClick = (id: string) => {
-    setSelectedHighlight(selectedHighlight === id ? null : id);
-    setSelectedCompetency(null);
-  };
-
-  // update render size (called on load & resize)
-  const updateRenderSize = () => {
-    if (imageRef.current) {
-      const r = imageRef.current.getBoundingClientRect();
-      setRenderSize({
-        width: Math.round(r.width),
-        height: Math.round(r.height),
-      });
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", updateRenderSize);
-    return () => window.removeEventListener("resize", updateRenderSize);
-  }, []);
-
-  // Fetch essay and keep backend highlight numbers untouched in rawHighlights
-  useEffect(() => {
-    function setupEssayData() {
-      const firstReview = essay.reviews[0];
-      setReview(firstReview);
-      setCompetencies([
-        {
-          id: 1,
-          score: firstReview.skill_1_score,
-          text: firstReview.skill_1_text,
-        },
-        {
-          id: 2,
-          score: firstReview.skill_2_score,
-          text: firstReview.skill_2_text,
-        },
-        {
-          id: 3,
-          score: firstReview.skill_3_score,
-          text: firstReview.skill_3_text,
-        },
-        {
-          id: 4,
-          score: firstReview.skill_4_score,
-          text: firstReview.skill_4_text,
-        },
-        {
-          id: 5,
-          score: firstReview.skill_5_score,
-          text: firstReview.skill_5_text,
-        },
-      ]);
-
-      const threads = firstReview.review_comment_threads || [];
-      // map backend threads in raw form
-      setRawHighlights(
-        threads.map((t, i) => ({
-          id: i + 1,
-          x: t.start_text_selection_x,
-          y: t.start_text_selection_y,
-          width: t.text_selection_width,
-          height: t.text_selection_height,
-          comment: t.comments?.[0].content ?? "Sem comentário disponível.",
-        })),
-      );
-      setLoading(false);
-    }
-
-    setupEssayData();
-  }, [essay]);
-
-  const normalizeHighlights = (raw, natW, natH) => {
-    return raw.map((h) => ({
-      id: h.id,
-      xPct: (Number(h.x) / natW) * 100,
-      yPct: (Number(h.y) / natH) * 100,
-      wPct: (Number(h.width) / natW) * 100,
-      hPct: (Number(h.height) / natH) * 100,
-      comment: h.comment,
-    }));
-  };
-
-  const handleImageLoad = (e) => {
-    const img = e.target;
-    const natW = img.naturalWidth || 0;
-    const natH = img.naturalHeight || 0;
-    // update render size now as well
-    updateRenderSize();
-
-    if (rawHighlights && rawHighlights.length > 0 && natW && natH) {
-      const normalized = normalizeHighlights(rawHighlights, natW, natH);
-      setHighlights(normalized);
-    }
-  };
-
-  // whenever render size changes, we just re-render: overlays will use renderSize
-  useEffect(() => {
-    // recalc split when renderSize or highlights change if needed
-  }, [renderSize, highlights]);
-
-  // If a highlight is selected, split position (in px) under image is computed from yPct + hPct
-  const getSplitPx = () => {
-    if (!selectedHighlight) return null;
-    const h = highlights.find((x) => x.id === selectedHighlight);
-    if (!h || !renderSize.height) return null;
-    const splitPx = ((h.yPct + h.hPct) / 100) * renderSize.height;
-    return Math.round(splitPx);
-  };
-
-  const splitPositionPx = getSplitPx();
-
-  // helper to compute overlay pixel rect from percent values
-  const rectFromPct = (h) => {
-    const left = (h.xPct / 100) * renderSize.width;
-    const top = (h.yPct / 100) * renderSize.height;
-    const width = (h.wPct / 100) * renderSize.width;
-    const height = (h.hPct / 100) * renderSize.height;
-    return {
-      left: Math.round(left),
-      top: Math.round(top),
-      width: Math.round(width),
-      height: Math.round(height),
-    };
-  };
-
-  // small loading guard
-  if (loading) {
-    return <div className="min-h-screen p-8">Carregando...</div>;
+  if (!review) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header
+          showLogoutButton={true}
+          showProfileButton={false}
+          showHomeButton={true}
+          showBackButton={true}
+        />
+        <div className="p-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            Nenhuma avaliação encontrada para esta redação.
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
