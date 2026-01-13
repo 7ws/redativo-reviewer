@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { apiPostWithAuth, apiDeleteWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 
 import { Button } from "@/components/ui/button";
@@ -248,34 +248,32 @@ export default function InProgressReview({ review }: { review: Review }) {
       selectedHighlight.height.toString(),
     );
 
-    try {
-      setSaveError(null);
-      const res = await apiPostWithAuth(url, router, formData);
+    setSaveError(null);
 
-      if (!res || !res.ok) {
-        setSaveError("Erro ao salvar comentário.");
-        return;
-      }
+    const { data, error } = await apiRequest(
+      url,
+      { method: "POST", body: formData },
+      router,
+    );
 
-      const data = await res.json();
-
-      setHighlights((prev) =>
-        prev.map((h) =>
-          h === selectedHighlight
-            ? {
-                ...h,
-                id: data.id || (formData.get("id") as string),
-                comment: commentBox.comment,
-                competency: commentBox.competencies,
-              }
-            : h,
-        ),
-      );
-      resetCommentBox();
-    } catch (err) {
-      console.error(err);
-      setSaveError("Erro ao salvar comentário.");
+    if (error) {
+      setSaveError(error);
+      return;
     }
+
+    setHighlights((prev) =>
+      prev.map((h) =>
+        h === selectedHighlight
+          ? {
+              ...h,
+              id: data?.id || "",
+              comment: commentBox.comment,
+              competency: commentBox.competencies,
+            }
+          : h,
+      ),
+    );
+    resetCommentBox();
   };
 
   const resetCommentBox = () => {
@@ -293,17 +291,12 @@ export default function InProgressReview({ review }: { review: Review }) {
 
     if (selectedHighlight.id !== "") {
       const url = `/api/v1/reviewer/reviews/${review.id}/threads/${selectedHighlight.id}/`;
-      try {
-        setSaveError(null);
-        const res = await apiDeleteWithAuth(url, router);
 
-        if (!res || !res.ok) {
-          setSaveError("Erro ao excluir marcação.");
-          return;
-        }
-      } catch (err) {
-        console.error(err);
-        setSaveError("Erro ao excluir marcação.");
+      setSaveError(null);
+      const { error } = await apiRequest(url, { method: "DELETE" }, router);
+
+      if (error) {
+        setSaveError(error);
         return;
       }
     }
@@ -369,22 +362,21 @@ export default function InProgressReview({ review }: { review: Review }) {
       formData.append(`skill_${c.id}_text`, c.comment);
     });
 
-    try {
-      const res = await apiPostWithAuth(url, router, formData);
+    const { error } = await apiRequest(
+      url,
+      { method: "POST", body: formData },
+      router,
+    );
 
-      if (!res || !res.ok) {
-        setSaveError("Erro ao salvar a avaliação.");
-        return;
-      }
-
-      setSaveSuccess("Avaliação salva com sucesso!");
-      setTimeout(() => {
-        router.push(`/home`);
-      }, 1000);
-    } catch (err) {
-      console.error(err);
-      setSaveError("Erro ao salvar a avaliação.");
+    if (error) {
+      setSaveError(error);
+      return;
     }
+
+    setSaveSuccess("Avaliação salva com sucesso!");
+    setTimeout(() => {
+      router.push(`/home`);
+    }, 1000);
   };
 
   if (authLoading) {

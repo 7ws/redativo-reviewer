@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
-import { apiGetWithoutAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import Theme from "@/types/theme";
 
 export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
@@ -18,19 +18,17 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
   const fetchThemes = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const res = await apiGetWithoutAuth(`/api/v1/common/themes/`, router);
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar temas");
-      }
-      const data = await res.json();
-      setThemes(data);
-    } catch (err) {
-      console.error("Error fetching active themes:", err);
-      setError("Não foi possível carregar os temas. Tente novamente.");
-    } finally {
-      setLoading(false);
+    const { data, error: apiError } = await apiRequest<Theme[]>(
+      `/api/v1/common/themes/`,
+      { method: "GET", auth: false },
+      router,
+    );
+    if (apiError) {
+      setError(apiError);
+    } else {
+      setThemes(data || []);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

@@ -104,7 +104,10 @@ export default function HomePage() {
               Minhas Revisões
             </button>
           </div>
-          <ForReviewerHomePage activeTab={activeTab} showAll={showAllThemes} />
+          <ForReviewerHomePage
+            activeTab={activeTab as "temas" | "revisoes"}
+            showAll={showAllThemes}
+          />
         </div>
         <WhatsAppButton />
       </>

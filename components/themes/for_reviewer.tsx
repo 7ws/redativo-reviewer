@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { apiGetWithAuth, apiPostWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import Theme from "@/types/theme_for_reviewer";
 
 export default function ThemeForReviewerPage({
@@ -20,22 +20,17 @@ export default function ThemeForReviewerPage({
   const fetchTheme = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const res = await apiGetWithAuth(
-        `/api/v1/reviewer/themes/${theme_id}/`,
-        router,
-      );
-      if (!res?.ok) {
-        throw new Error("Falha ao carregar tema");
-      }
-      const data = await res.json();
-      setTheme(data);
-    } catch (err) {
-      console.error("Erro ao carregar o tema:", err);
-      setError("Não foi possível carregar o tema. Tente novamente.");
-    } finally {
-      setLoading(false);
+    const { data, error: apiError } = await apiRequest<Theme>(
+      `/api/v1/reviewer/themes/${theme_id}/`,
+      { method: "GET", auth: true },
+      router,
+    );
+    if (apiError) {
+      setError(apiError);
+    } else {
+      setTheme(data || null);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -43,15 +38,13 @@ export default function ThemeForReviewerPage({
   }, [theme_id, router]);
 
   async function handleNewReview(theme_id: string, essay_id: string) {
-    try {
-      const res = await apiPostWithAuth(
-        `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/`,
-        router,
-      );
-      const data = await res.json();
+    const { data } = await apiRequest<{ id: string }>(
+      `/api/v1/reviewer/themes/${theme_id}/essays/${essay_id}/reviews/`,
+      { method: "POST", auth: true },
+      router,
+    );
+    if (data?.id) {
       router.push(`/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`);
-    } catch (err) {
-      console.error("Error starting new review:", err);
     }
   }
 

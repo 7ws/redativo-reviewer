@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import UserProfile from "@/types/user_profile";
 import { useParams, useRouter } from "next/navigation";
-import { apiPatchWithAuth } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
@@ -68,33 +68,30 @@ export default function Profile() {
     formData.append("avatar_image", file);
 
     setUpdatingAvatar(true);
-    try {
-      const res = await apiPatchWithAuth(
-        `/api/v1/users/${id}/`,
-        router,
-        formData,
-      );
-      if (res && res.ok) {
-        const updated = await res.json();
-        setUser(updated);
-        setPreview(null);
-        toast({
-          title: "Foto atualizada",
-          description: "Sua foto de perfil foi atualizada com sucesso.",
-        });
-      } else {
-        throw new Error("Falha ao enviar imagem");
-      }
-    } catch (err) {
-      console.error("Erro ao enviar imagem:", err);
+
+    const { data, error } = await apiRequest(
+      `/api/v1/users/${id}/`,
+      { method: "PATCH", body: formData },
+      router,
+    );
+
+    if (error) {
       toast({
         title: "Erro ao atualizar foto",
-        description: "Não foi possível atualizar sua foto. Tente novamente.",
+        description: error,
         variant: "destructive",
       });
-    } finally {
       setUpdatingAvatar(false);
+      return;
     }
+
+    setUser(data);
+    setPreview(null);
+    toast({
+      title: "Foto atualizada",
+      description: "Sua foto de perfil foi atualizada com sucesso.",
+    });
+    setUpdatingAvatar(false);
   };
 
   const handleNameEdit = () => {
@@ -110,33 +107,30 @@ export default function Profile() {
     formData.append("full_name", editedName);
 
     setUpdatingName(true);
-    try {
-      const res = await apiPatchWithAuth(
-        `/api/v1/users/${id}/`,
-        router,
-        formData,
-      );
-      if (res && res.ok) {
-        const updated = await res.json();
-        setUser(updated);
-        setIsEditingName(false);
-        toast({
-          title: "Nome atualizado",
-          description: "Seu nome foi atualizado com sucesso.",
-        });
-      } else {
-        throw new Error("Falha ao atualizar nome");
-      }
-    } catch (err) {
-      console.error("Erro ao atualizar nome:", err);
+
+    const { data, error } = await apiRequest(
+      `/api/v1/users/${id}/`,
+      { method: "PATCH", body: formData },
+      router,
+    );
+
+    if (error) {
       toast({
         title: "Erro ao atualizar nome",
-        description: "Não foi possível atualizar seu nome. Tente novamente.",
+        description: error,
         variant: "destructive",
       });
-    } finally {
       setUpdatingName(false);
+      return;
     }
+
+    setUser(data);
+    setIsEditingName(false);
+    toast({
+      title: "Nome atualizado",
+      description: "Seu nome foi atualizado com sucesso.",
+    });
+    setUpdatingName(false);
   };
 
   const handleNameCancel = () => {
