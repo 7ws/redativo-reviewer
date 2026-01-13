@@ -8,7 +8,6 @@ type UserProfile = {
   avatar_image: string | null;
   essay_count: string;
   is_reviewer: boolean;
-  is_writer: boolean;
 };
 
 export default UserProfile;

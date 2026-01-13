@@ -5,7 +5,6 @@ import Header from "@/components/header";
 import ThemeForReviewerPage from "@/components/themes/for_reviewer";
 import UnauthThemePage from "@/components/themes/unauthed";
 import { useAuth } from "@/hooks/use-auth";
-import ThemeForWriterPage from "@/components/themes/for_writer";
 
 export default function ThemePage() {
   const { theme_id } = useParams();
@@ -27,15 +26,6 @@ export default function ThemePage() {
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
         <ThemeForReviewerPage theme_id={theme_id.toString()} />;
-      </div>
-    );
-  }
-
-  if (user?.is_writer) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        {getHeader()}
-        <ThemeForWriterPage theme_id={theme_id.toString()} />;
       </div>
     );
   }

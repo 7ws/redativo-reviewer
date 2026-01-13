@@ -14,13 +14,10 @@ import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 import WhatsAppButton from "@/components/whatsapp_button";
 import UnauthHomePage from "@/components/home/unauthed";
-import ForWriterHomePage from "@/components/home/for_writer";
 import ForReviewerHomePage from "@/components/home/for_reviewer";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<"temas" | "redacoes" | "revisoes">(
-    "temas",
-  );
+  const [activeTab, setActiveTab] = useState<"temas" | "revisoes">("temas");
   const [showAllThemes, setShowAllThemes] = useState(false);
   const { user, loading } = useAuth();
 
@@ -43,10 +40,6 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    // --- Persist active tab in session storage ---
-    const savedTab = sessionStorage.getItem("activeTab");
-    if (savedTab === "redacoes") setActiveTab("redacoes");
-
     // --- Load showAllThemes from session storage ---
     const stored = sessionStorage.getItem("showAllThemes");
     if (stored !== null) {
@@ -82,42 +75,6 @@ export default function HomePage() {
   );
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
-
-  if (user?.is_writer) {
-    return (
-      <>
-        <div className="min-h-screen bg-gray-50">
-          {getHeader()}
-
-          <div className="flex px-4 py-2 bg-white border-b">
-            <button
-              onClick={() => setActiveTab("temas")}
-              className={`px-4 py-2 font-bold ${
-                activeTab === "temas"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 font-medium"
-              }`}
-            >
-              Temas
-            </button>
-
-            <button
-              onClick={() => setActiveTab("redacoes")}
-              className={`px-4 py-2 font-bold ${
-                activeTab === "redacoes"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 font-medium"
-              }`}
-            >
-              Minhas Redações
-            </button>
-          </div>
-          <ForWriterHomePage activeTab={activeTab} showAll={showAllThemes} />
-        </div>
-        <WhatsAppButton />
-      </>
-    );
-  }
 
   if (user?.is_reviewer) {
     return (
