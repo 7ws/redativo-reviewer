@@ -54,7 +54,7 @@ npm install
 npm run dev
 ```
 
-The application will be available at http://localhost:3000
+The application will be available at http://localhost:3000/home
 
 ### Local Development (Docker)
 
@@ -66,7 +66,7 @@ docker-compose up
 docker-compose up -d
 ```
 
-The application will be available at http://localhost:3000
+The application will be available at http://localhost:3000/home
 
 ## Available Scripts
 
