@@ -46,7 +46,7 @@ export default function LoginPage() {
         router.replace("/home");
       }
     } else {
-      const data = await res.json();
+      setIsLoading(false);
       alert("Error: " + JSON.stringify(data));
     }
   }

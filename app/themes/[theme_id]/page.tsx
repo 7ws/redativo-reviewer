@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function ThemePage() {
   const { theme_id } = useParams();
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuth({ requireAuth: true });
 
   const getHeader = () => (
     <Header
@@ -21,19 +21,10 @@ export default function ThemePage() {
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
-  if (user?.is_reviewer) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        {getHeader()}
-        <ThemeForReviewerPage theme_id={theme_id.toString()} />;
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {getHeader()}
-      <UnauthThemePage theme_id={theme_id.toString()} />;
+      <ThemeForReviewerPage theme_id={theme_id.toString()} />;
     </div>
   );
 }

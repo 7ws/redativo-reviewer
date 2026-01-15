@@ -19,7 +19,7 @@ import ForReviewerHomePage from "@/components/home/for_reviewer";
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "revisoes">("temas");
   const [showAllThemes, setShowAllThemes] = useState(false);
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuth({ requireAuth: true });
 
   const handlShowAllThemes = () => {
     localStorage.setItem("showAllThemes", JSON.stringify(!showAllThemes));
@@ -76,49 +76,37 @@ export default function HomePage() {
 
   if (loading) return <p className="p-6 text-center">Carregando...</p>;
 
-  if (user?.is_reviewer) {
-    return (
-      <>
-        <div className="min-h-screen bg-gray-50">
-          {getHeader()}
-          <div className="flex px-4 py-2 bg-white border-b">
-            <button
-              onClick={() => setActiveTab("temas")}
-              className={`px-4 py-2 font-bold ${
-                activeTab === "temas"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 font-medium"
-              }`}
-            >
-              Temas
-            </button>
-
-            <button
-              onClick={() => setActiveTab("revisoes")}
-              className={`px-4 py-2 font-bold ${
-                activeTab === "revisoes"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 font-medium"
-              }`}
-            >
-              Minhas Revisões
-            </button>
-          </div>
-          <ForReviewerHomePage
-            activeTab={activeTab as "temas" | "revisoes"}
-            showAll={showAllThemes}
-          />
-        </div>
-        <WhatsAppButton />
-      </>
-    );
-  }
-
   return (
     <>
       <div className="min-h-screen bg-gray-50">
         {getHeader()}
-        <UnauthHomePage showAll={showAllThemes} />
+        <div className="flex px-4 py-2 bg-white border-b">
+          <button
+            onClick={() => setActiveTab("temas")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "temas"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Temas
+          </button>
+
+          <button
+            onClick={() => setActiveTab("revisoes")}
+            className={`px-4 py-2 font-bold ${
+              activeTab === "revisoes"
+                ? "text-black border-b-2 border-black"
+                : "text-gray-500 font-medium"
+            }`}
+          >
+            Minhas Revisões
+          </button>
+        </div>
+        <ForReviewerHomePage
+          activeTab={activeTab as "temas" | "revisoes"}
+          showAll={showAllThemes}
+        />
       </div>
       <WhatsAppButton />
     </>
