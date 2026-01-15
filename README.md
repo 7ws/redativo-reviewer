@@ -34,12 +34,14 @@ Redativo Reviewer is a Next.js application that enables qualified reviewers to:
 Create a `.env.local` file in the root directory:
 
 ```bash
+# Local development
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-For production, set:
+For production:
 ```bash
-NEXT_PUBLIC_API_URL=https://your-api-domain.com
+# Production backend
+NEXT_PUBLIC_API_URL=https://redativo-dev.herokuapp.com
 ```
 
 ### Local Development (Node)
@@ -156,7 +158,7 @@ The application is configured for Heroku container deployment via GitHub Actions
 3. Environment variables set via Heroku config vars
 
 Required Heroku environment variables:
-- `NEXT_PUBLIC_API_URL` - Backend API URL
+- `NEXT_PUBLIC_API_URL` - Backend API URL (production: `https://redativo-dev.herokuapp.com`)
 
 ## Development Guidelines
 
