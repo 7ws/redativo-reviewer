@@ -6,8 +6,6 @@ type UserProfile = {
   full_name: string;
   created_at: string;
   avatar_image: string | null;
-  essay_count: string;
-  is_reviewer: boolean;
 };
 
 export default UserProfile;

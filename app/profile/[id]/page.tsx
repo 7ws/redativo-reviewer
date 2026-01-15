@@ -276,12 +276,6 @@ export default function Profile() {
                 })}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Redações enviadas</p>
-              <p className="text-base font-medium text-black">
-                {user.essay_count ?? 0}
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
