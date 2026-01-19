@@ -44,7 +44,9 @@ export default function ThemeForReviewerPage({
       router,
     );
     if (data?.id) {
-      router.push(`/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`);
+      router.push(
+        `/reviewers/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`,
+      );
     }
   }
 

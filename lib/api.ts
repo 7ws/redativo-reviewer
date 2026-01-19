@@ -157,6 +157,16 @@ export async function apiRequest<T = any>(
       });
     }
 
+    // Handle 403 - redirect to root for role-based routing
+    if (response.status === 403 && auth) {
+      router.replace("/");
+      return {
+        error: "Acesso não autorizado",
+        status: 403,
+        ok: false,
+      };
+    }
+
     // Handle successful response
     if (response.ok) {
       // Handle no-content responses (204)

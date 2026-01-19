@@ -13,10 +13,9 @@ import { Menu } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/header";
 import WhatsAppButton from "@/components/whatsapp_button";
-import UnauthHomePage from "@/components/home/unauthed";
 import ForReviewerHomePage from "@/components/home/for_reviewer";
 
-export default function HomePage() {
+export default function ReviewerHomePage() {
   const [activeTab, setActiveTab] = useState<"temas" | "revisoes">("temas");
   const [showAllThemes, setShowAllThemes] = useState(false);
   const { user, loading } = useAuth({ requireAuth: true });

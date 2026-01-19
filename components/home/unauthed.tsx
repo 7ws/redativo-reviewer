@@ -71,7 +71,7 @@ export default function UnauthHomePage({ showAll }: { showAll: boolean }) {
               <Card
                 key={theme.id}
                 className="overflow-hidden cursor-pointer"
-                onClick={() => router.push(`/themes/${theme.id}`)}
+                onClick={() => router.push(`/reviewers/themes/${theme.id}`)}
               >
                 <CardContent className="p-0">
                   <div className="flex">
