@@ -6,6 +6,11 @@ type UserProfile = {
   full_name: string;
   created_at: string;
   avatar_image: string | null;
+  redirect_url: string;
+  institution: {
+    id: string;
+    name: string;
+  } | null;
 };
 
 export default UserProfile;

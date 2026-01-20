@@ -375,7 +375,7 @@ export default function InProgressReview({ review }: { review: Review }) {
 
     setSaveSuccess("Avaliação salva com sucesso!");
     setTimeout(() => {
-      router.push(`/home`);
+      router.push(`/`);
     }, 1000);
   };
 

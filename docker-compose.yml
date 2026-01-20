@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: misc/docker/app.dockerfile
-    container_name: redativo-reviewer
-    image: redativo-reviewer:dev
+    container_name: redativo-web
+    image: redativo-web:dev
     volumes:
       - .:/app
       - /app/node_modules

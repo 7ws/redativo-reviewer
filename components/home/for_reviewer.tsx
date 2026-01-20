@@ -74,7 +74,9 @@ export default function ForReviewerHomePage({
       router,
     );
     if (data?.id) {
-      router.push(`/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`);
+      router.push(
+        `/reviewers/themes/${theme_id}/essays/${essay_id}/reviews/${data.id}`,
+      );
     }
   }
 
@@ -104,7 +106,7 @@ export default function ForReviewerHomePage({
                 <Card
                   key={theme.id}
                   className="overflow-hidden cursor-pointer"
-                  onClick={() => router.push(`/themes/${theme.id}`)}
+                  onClick={() => router.push(`/reviewers/themes/${theme.id}`)}
                 >
                   <CardContent className="p-0">
                     <div className="flex">
@@ -180,7 +182,7 @@ export default function ForReviewerHomePage({
                   className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() =>
                     router.push(
-                      `/themes/${essay.theme.id}/essays/${essay.id}/reviews/${review.id}/`,
+                      `/reviewers/themes/${essay.theme.id}/essays/${essay.id}/reviews/${review.id}/`,
                     )
                   }
                 >

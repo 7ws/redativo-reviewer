@@ -13,7 +13,7 @@ export default function LoginPage() {
     async function checkAuthenticated() {
       const access = localStorage.getItem("access");
       if (access) {
-        router.replace("/home");
+        router.replace("/");
       }
     }
     checkAuthenticated();
@@ -43,7 +43,7 @@ export default function LoginPage() {
       if (data.access && data.refresh) {
         localStorage.setItem("access", data.access);
         localStorage.setItem("refresh", data.refresh);
-        router.replace("/home");
+        router.replace("/");
       }
     } else {
       setIsLoading(false);

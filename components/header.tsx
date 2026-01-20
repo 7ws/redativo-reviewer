@@ -46,7 +46,7 @@ export default function Header({
 
         {showHomeButton && (
           <button
-            onClick={() => router.push("/home")}
+            onClick={() => router.push("/")}
             className="focus:outline-none"
           >
             <Home className="w-6 h-6 text-gray-600" />
@@ -80,7 +80,7 @@ export default function Header({
               {user ? (
                 <>
                   <DropdownMenuItem
-                    onClick={() => router.push(`/profile/${user.id}`)}
+                    onClick={() => router.push(`/reviewers/profile/${user.id}`)}
                   >
                     Perfil
                   </DropdownMenuItem>

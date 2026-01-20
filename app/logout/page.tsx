@@ -16,7 +16,7 @@ export default function LoginPage() {
         router,
       );
       localStorage.clear();
-      router.replace("/home");
+      router.replace("/");
     }
     handleLogout();
   }, [router]);
