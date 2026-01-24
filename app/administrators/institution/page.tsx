@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/api";
 import Header from "@/components/header";
 import Institution from "@/types/institution";
-import UserProfile from "@/types/user_profile";
 import Invitation from "@/types/invitation";
 
 type UserListItem = {
@@ -27,7 +26,6 @@ export default function InstitutionManagementPage() {
 
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [administrators, setAdministrators] = useState<UserListItem[]>([]);
-  const [reviewers, setReviewers] = useState<UserListItem[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,17 +46,6 @@ export default function InstitutionManagementPage() {
   });
   const [newAdminPassword, setNewAdminPassword] = useState<string | null>(null);
 
-  const [showReviewerForm, setShowReviewerForm] = useState(false);
-  const [reviewerForm, setReviewerForm] = useState({
-    username: "",
-    full_name: "",
-    email: "",
-    phone_number: "",
-  });
-  const [newReviewerPassword, setNewReviewerPassword] = useState<string | null>(
-    null,
-  );
-
   const [showInvitationForm, setShowInvitationForm] = useState(false);
   const [invitationForm, setInvitationForm] = useState({
     email: "",
@@ -74,29 +61,23 @@ export default function InstitutionManagementPage() {
       setLoading(true);
       setError(null);
 
-      const [instRes, adminsRes, reviewersRes, invitationsRes] =
-        await Promise.all([
-          apiRequest<Institution>(
-            `/api/v1/institutions/${user!.institution!.id}/`,
-            { method: "GET" },
-            router,
-          ),
-          apiRequest<UserListItem[]>(
-            "/api/v1/administrators/",
-            { method: "GET" },
-            router,
-          ),
-          apiRequest<UserListItem[]>(
-            "/api/v1/reviewers/",
-            { method: "GET" },
-            router,
-          ),
-          apiRequest<Invitation[]>(
-            "/api/v1/invitations/",
-            { method: "GET" },
-            router,
-          ),
-        ]);
+      const [instRes, adminsRes, invitationsRes] = await Promise.all([
+        apiRequest<Institution>(
+          `/api/v1/institutions/${user!.institution!.id}/`,
+          { method: "GET" },
+          router,
+        ),
+        apiRequest<UserListItem[]>(
+          "/api/v1/administrators/",
+          { method: "GET" },
+          router,
+        ),
+        apiRequest<Invitation[]>(
+          "/api/v1/invitations/",
+          { method: "GET" },
+          router,
+        ),
+      ]);
 
       if (instRes.ok && instRes.data) {
         setInstitution(instRes.data);
@@ -106,7 +87,6 @@ export default function InstitutionManagementPage() {
         });
       }
       if (adminsRes.ok && adminsRes.data) setAdministrators(adminsRes.data);
-      if (reviewersRes.ok && reviewersRes.data) setReviewers(reviewersRes.data);
       if (invitationsRes.ok && invitationsRes.data)
         setInvitations(invitationsRes.data);
 
@@ -162,34 +142,6 @@ export default function InstitutionManagementPage() {
       });
     } else {
       setError(error || "Erro ao criar administrador");
-    }
-    setSubmitting(false);
-  };
-
-  const handleCreateReviewer = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setNewReviewerPassword(null);
-
-    const { data, ok, error } = await apiRequest<UserListItem>(
-      "/api/v1/reviewers/",
-      { method: "POST", body: reviewerForm },
-      router,
-    );
-
-    if (ok && data) {
-      setReviewers([...reviewers, data]);
-      if (data.temporary_password) {
-        setNewReviewerPassword(data.temporary_password);
-      }
-      setReviewerForm({
-        username: "",
-        full_name: "",
-        email: "",
-        phone_number: "",
-      });
-    } else {
-      setError(error || "Erro ao criar corretor");
     }
     setSubmitting(false);
   };
@@ -460,139 +412,6 @@ export default function InstitutionManagementPage() {
             {administrators.length === 0 && (
               <li className="py-3 text-gray-500">
                 Nenhum administrador encontrado.
-              </li>
-            )}
-          </ul>
-        </section>
-
-        {/* Reviewers Section */}
-        <section className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Corretores</h2>
-            <button
-              onClick={() => setShowReviewerForm(!showReviewerForm)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              {showReviewerForm ? "Cancelar" : "Novo Corretor"}
-            </button>
-          </div>
-
-          {showReviewerForm && (
-            <form
-              onSubmit={handleCreateReviewer}
-              className="mb-6 p-4 bg-gray-50 rounded space-y-4"
-            >
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Usuário *
-                  </label>
-                  <input
-                    type="text"
-                    value={reviewerForm.username}
-                    onChange={(e) =>
-                      setReviewerForm({
-                        ...reviewerForm,
-                        username: e.target.value,
-                      })
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Nome Completo *
-                  </label>
-                  <input
-                    type="text"
-                    value={reviewerForm.full_name}
-                    onChange={(e) =>
-                      setReviewerForm({
-                        ...reviewerForm,
-                        full_name: e.target.value,
-                      })
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={reviewerForm.email}
-                    onChange={(e) =>
-                      setReviewerForm({
-                        ...reviewerForm,
-                        email: e.target.value,
-                      })
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Telefone
-                  </label>
-                  <input
-                    type="text"
-                    value={reviewerForm.phone_number}
-                    onChange={(e) =>
-                      setReviewerForm({
-                        ...reviewerForm,
-                        phone_number: e.target.value,
-                      })
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-              >
-                {submitting ? "Criando..." : "Criar Corretor"}
-              </button>
-            </form>
-          )}
-
-          {newReviewerPassword && (
-            <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded">
-              <p className="font-medium">Senha temporária do novo corretor:</p>
-              <p className="font-mono text-lg">{newReviewerPassword}</p>
-              <p className="text-sm text-gray-600 mt-2">
-                Guarde esta senha, ela não será exibida novamente.
-              </p>
-              <button
-                onClick={() => setNewReviewerPassword(null)}
-                className="mt-2 text-sm text-blue-600"
-              >
-                Fechar
-              </button>
-            </div>
-          )}
-
-          <ul className="divide-y divide-gray-200">
-            {reviewers.map((reviewer) => (
-              <li
-                key={reviewer.id}
-                className="py-3 flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-medium">{reviewer.full_name}</p>
-                  <p className="text-sm text-gray-500">
-                    {reviewer.email || "Sem email"}
-                  </p>
-                </div>
-              </li>
-            ))}
-            {reviewers.length === 0 && (
-              <li className="py-3 text-gray-500">
-                Nenhum corretor encontrado.
               </li>
             )}
           </ul>
