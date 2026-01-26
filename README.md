@@ -1,15 +1,24 @@
-# Redativo Reviewer
+# Redativo Web
 
-Web frontend for reviewers to evaluate essays and provide detailed feedback based on ENEM competency framework.
+Web frontend for reviewers and administrators to manage the Redativo platform.
 
 ## Overview
 
-Redativo Reviewer is a Next.js application that enables qualified reviewers to:
+Redativo Web is a Next.js application that serves two user roles:
+
+**Reviewers** can:
 - Browse active themes with pending essays
 - Claim essays for review
 - Score essays on 5 ENEM competencies (0-200 points each)
 - Provide detailed textual feedback
 - Track review history
+
+**Administrators** can:
+- Manage institution settings
+- Create and manage other administrators
+- Send email invitations and generate invitation codes
+- View writers associated with institution
+- Create and manage themes (active/past themes are read-only)
 
 ## Tech Stack
 
@@ -104,7 +113,7 @@ redativo-reviewer/
 - JWT token-based authentication
 - Secure token storage
 
-### Essay Review Workflow
+### Essay Review Workflow (Reviewers)
 1. Browse themes with pending essays
 2. Claim an essay for review
 3. Score on 5 competencies:
@@ -116,6 +125,15 @@ redativo-reviewer/
 4. Provide detailed feedback
 5. Submit completed review
 
+### Institution Management (Administrators)
+1. Navigate to Institution page
+2. Use tabs to manage:
+   - **Institution**: Edit institution name and description
+   - **Administrators**: Create new administrators with temporary passwords
+   - **Writers**: View all writers associated with the institution
+   - **Invitations**: Send email invitations or create invitation codes
+   - **Themes**: Create and manage essay themes (only future themes can be edited)
+
 ### User Interface
 - Clean, modern design with shadcn/ui components
 - Responsive layout for desktop and tablet
@@ -126,12 +144,29 @@ redativo-reviewer/
 
 The frontend communicates with the redativo-api backend through REST endpoints:
 
+### Authentication
 - `POST /api/v1/auth/login/` - User authentication
+
+### Reviewer Endpoints
 - `GET /api/v1/reviewer/themes/` - List themes with pending essays
 - `GET /api/v1/reviewer/themes/{theme_id}/essays/` - List essays for a theme
 - `POST /api/v1/reviewer/themes/{theme_id}/essays/{essay_id}/reviews/` - Start a review
 - `POST /api/v1/reviewer/themes/{theme_id}/essays/{essay_id}/reviews/{id}/finish/` - Submit review
 - `GET /api/v1/reviewer/my-reviews/` - List reviewer's reviews
+
+### Administrator Endpoints
+- `GET /api/v1/institutions/{id}/` - Get institution details
+- `PATCH /api/v1/institutions/{id}/` - Update institution
+- `GET /api/v1/administrators/` - List administrators
+- `POST /api/v1/administrators/` - Create administrator
+- `GET /api/v1/writers/` - List writers
+- `GET /api/v1/invitations/` - List invitations
+- `POST /api/v1/invitations/` - Create invitation
+- `POST /api/v1/invitations/{id}/cancel/` - Cancel invitation
+- `POST /api/v1/invitations/{id}/revoke/` - Revoke accepted invitation
+- `GET /api/v1/administrator/themes/` - List themes
+- `POST /api/v1/administrator/themes/` - Create theme
+- `PATCH /api/v1/administrator/themes/{id}/` - Update theme (inactive only)
 
 ## Docker Deployment
 
